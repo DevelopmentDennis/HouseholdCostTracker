@@ -1,4 +1,5 @@
-import * as React, {Component} from 'react';
+import * as React from 'react';
+import {Component} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {Input} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
