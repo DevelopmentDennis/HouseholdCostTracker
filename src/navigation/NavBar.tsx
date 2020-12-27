@@ -20,14 +20,14 @@ export default class NavBar extends Component {
         <NavBarItem
           iconType="font-awesome-5"
           iconName="history"
-          pageName="History"
+          pageName="Verlauf"
           active={Actions.currentScene === 'history'}
           onPress={() => {
             Actions.jump('history');
           }}
         />
 
-        <NavBarItem
+        {/* <NavBarItem
           iconType="font-awesome-5"
           iconName="money-bill-alt"
           pageName="Ausgaben"
@@ -35,12 +35,12 @@ export default class NavBar extends Component {
           onPress={() => {
             Actions.jump('expenses');
           }}
-        />
+        /> */}
 
         <NavBarItem
           iconType="font-awesome-5"
           iconName="cog"
-          pageName="Settings"
+          pageName="Einstellungen"
           active={Actions.currentScene === 'settings'}
           onPress={() => {
             Actions.jump('settings');

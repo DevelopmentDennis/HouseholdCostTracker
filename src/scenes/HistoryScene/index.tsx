@@ -13,6 +13,7 @@ interface HistorySceneState {
   firstEntryDate: Date;
   yearPressed: number;
   monthPressed: string;
+  totalSpendForMonth: number;
 }
 
 export default class HistoryScene extends Component<
@@ -25,6 +26,7 @@ export default class HistoryScene extends Component<
     firstEntryDate: undefined,
     yearPressed: -1,
     monthPressed: '',
+    totalSpendForMonth: 0,
   };
 
   componentDidMount() {
@@ -58,7 +60,7 @@ export default class HistoryScene extends Component<
   private getYearsSinceStartYear(): number[] {
     const startYear = moment(this.state.firstEntryDate).year();
     let years: number[] = [];
-    for (let i = startYear - 2; i <= moment().year(); i++) {
+    for (let i = startYear; i <= moment().year(); i++) {
       years.push(i);
     }
     return years;
@@ -81,6 +83,7 @@ export default class HistoryScene extends Component<
         (_, resultSet) => {
           const rows = resultSet.rows;
           let data: Transaction[] = [];
+          let totalSpend = 0;
 
           for (let i = 0; i < rows.length; i++) {
             let tra: Transaction = rows.item(i);
@@ -89,10 +92,12 @@ export default class HistoryScene extends Component<
               moment(tra.createdAt).isBetween(firstDayOfMonth, lastDayOfMonth)
             ) {
               console.log('between:', tra);
+              totalSpend = totalSpend + tra.amount;
               data.push(tra);
             }
           }
-          this.setState({elementsToDisplay: data});
+          
+          this.setState({elementsToDisplay: data,totalSpendForMonth:totalSpend});
         },
         (error) => {
           console.log('error:', error);
@@ -130,9 +135,9 @@ export default class HistoryScene extends Component<
       .localeData()
       .months()
       .map((element, index) => (
-        <View>
+        <View key={index}>
           <TouchableOpacity
-            key={index}
+            
             style={{
               borderWidth: 2,
               borderColor: 'black',
@@ -153,9 +158,31 @@ export default class HistoryScene extends Component<
             }}>
             <Text style={{fontSize: 18}}>{element.toString()}</Text>
           </TouchableOpacity>
+          
+          {this.state.monthPressed === element && this.renderTotalSpend()}
           {this.state.monthPressed === element && this.renderElementsForMonth()}
         </View>
       ));
+  }
+
+  private renderTotalSpend() {
+    return(
+      <View
+        style={{
+        borderWidth: 2,
+        borderColor: 'black',
+        borderRadius: 10,
+        padding: 5,
+        marginTop: 10,
+        marginLeft: 40,
+        backgroundColor: 'lightgray',
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        }}>
+      <Text style={{fontSize: 18}}>Gesamt</Text>
+      <Text style={{fontSize: 18}}>{this.state.totalSpendForMonth}€</Text>
+    </View>
+    )
   }
 
   private renderYearsAndMonths() {

@@ -11,6 +11,7 @@ import {
   FlatList,
   Dimensions,
   TouchableOpacity,
+  Switch,
 } from 'react-native';
 import {Icon, Input, Overlay} from 'react-native-elements';
 import SQLite from 'react-native-sqlite-storage';
@@ -25,6 +26,7 @@ interface SettingsState {
   recurringTransactions: RecurringTransaction[];
   showRecurringTransactionAddDialog: boolean;
   newCategory: string;
+  showAmountLabels: boolean;
 }
 
 const db = SQLite.openDatabase('CostTracker.db');
@@ -37,6 +39,7 @@ export default class SettingsScene extends Component<null, SettingsState> {
     recurringTransactions: [],
     showRecurringTransactionAddDialog: false,
     newCategory: '',
+    showAmountLabels: false,
   };
 
   async componentDidMount() {
@@ -44,6 +47,10 @@ export default class SettingsScene extends Component<null, SettingsState> {
       const value = await AsyncStorage.getItem('monthlyAvailableAmount');
       if (value !== null) {
         this.setState({monthlyAvailableAmount: value});
+      }
+      const showLabels = await AsyncStorage.getItem('showAmountLabels');
+      if (showLabels !== null) {
+        this.setState({showAmountLabels: showLabels === 'true'});
       }
     } catch (error) {
       Alert.alert('error');
@@ -59,6 +66,13 @@ export default class SettingsScene extends Component<null, SettingsState> {
     if (amount === '') {
       this.setState({monthlyAvailableAmount: ''});
     }
+  }
+
+  private async updateShowAmountLabels() {
+    await AsyncStorage.setItem(
+      'showAmountLabels',
+      `${this.state.showAmountLabels}`,
+    );
   }
 
   private checkAndSetRecurringTransactionAmount(amount: string) {
@@ -279,7 +293,13 @@ export default class SettingsScene extends Component<null, SettingsState> {
               onSubmitEditing={() => Keyboard.dismiss()}
               onBlur={() => Keyboard.dismiss()}
             />
-            <Button title="Speichern" onPress={() => this.storeData()} />
+            <Button
+              title="Speichern"
+              onPress={() => {
+                this.storeData();
+                Keyboard.dismiss();
+              }}
+            />
           </View>
 
           <View style={{marginTop: 10, marginBottom: 10}}>
@@ -289,6 +309,18 @@ export default class SettingsScene extends Component<null, SettingsState> {
               onPress={() =>
                 this.setState({showRecurringTransactionAddDialog: true})
               }
+            />
+          </View>
+          <View style={{marginTop: 10, marginBottom: 10, flexDirection: 'row'}}>
+            <Text>Betrag anzeigen</Text>
+            <Switch
+              onValueChange={() =>
+                this.setState(
+                  {showAmountLabels: !this.state.showAmountLabels},
+                  () => this.updateShowAmountLabels(),
+                )
+              }
+              value={this.state.showAmountLabels}
             />
           </View>
 

@@ -18,40 +18,42 @@ export default class AppRouter extends Component {
   render() {
     const scenes = Actions.create(
       <Scene key="root">
-        <Scene key="shoppingscenes" hideNavBar>
-          <Tabs key="navbar" tabBarPosition="bottom" tabBarComponent={NavBar}>
-            <Scene key="shoppingnavbartransitions" hideNavBar>
-              <Scene
-                key="home"
-                component={HomeScene}
-                title="Übersicht"
-                hideNavBar
-                statusBarColor="#000000"
-              />
-              <Scene
-                key="history"
-                component={HistoryScene}
-                title="Historie"
-                hideNavBar
-                statusBarColor="#000000"
-              />
-              <Scene
-                key="expenses"
-                component={Expenses}
-                title="Ausgaben"
-                hideNavBar
-                statusBarColor="#000000"
-              />
-              <Scene
-                key="settings"
-                component={SettingsScene}
-                title="Einstellungen"
-                hideNavBar
-                statusBarColor="#000000"
-              />
-            </Scene>
-          </Tabs>
-        </Scene>
+        <Tabs
+          key="navbar"
+          tabBarPosition="bottom"
+          tabBarComponent={NavBar}
+          hideNavBar>
+          <Scene key="navbartransitions" hideNavBar>
+            <Scene
+              key="home"
+              component={HomeScene}
+              title="Übersicht"
+              hideNavBar
+              statusBarColor="#000000"
+            />
+            <Scene
+              key="history"
+              component={HistoryScene}
+              title="Historie"
+              hideNavBar
+              statusBarColor="#000000"
+            />
+            <Scene
+              key="expenses"
+              component={Expenses}
+              title="Ausgaben"
+              hideNavBar
+              statusBarColor="#000000"
+            />
+            <Scene
+              key="settings"
+              component={SettingsScene}
+              title="Einstellungen"
+              hideNavBar
+              statusBarColor="#000000"
+            />
+          </Scene>
+        </Tabs>
       </Scene>,
     );
 

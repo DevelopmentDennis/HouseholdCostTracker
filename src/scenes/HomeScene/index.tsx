@@ -84,7 +84,26 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     }
   }
 
-  private getCustomCategories() {
+  private getAllAsyncStorageData() {
+    let showLabels: boolean = false;
+    let amountAvailable: number = 0;
+    AsyncStorage.getItem('showAmountLabels')
+      .then((value) => {
+        showLabels = value === 'true';
+      })
+      .catch();
+
+    const value = AsyncStorage.getItem('monthlyAvailableAmount')
+      .then((value) => {
+        if (value !== null) {
+          const amount = Number.parseInt(value);
+          if (!isNaN(amount)) {
+            amountAvailable = amount;
+          }
+        }
+      })
+      .catch();
+
     AsyncStorage.getItem('customCategories')
       .then((value) => {
         if (value !== null) {
@@ -92,18 +111,17 @@ export default class HomeScene extends Component<null, HomeScreenState> {
           console.log('cust cat:', customCategories);
           this.setState({
             categories: [...new Set<string>(tags), ...customCategories],
+            showLabels,
+            amountAvailable,
           });
         }
       })
       .catch((e) => {
         return;
       });
-
-    return;
   }
 
   async componentDidMount() {
-    this.setState({amountAvailable: await this.getAvailableAmount()});
     try {
       db.transaction((tx) => {
         tx.executeSql(
@@ -116,17 +134,17 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     } catch (error) {
       console.log('create failed', error);
     }
-    this.getCustomCategories();
+    this.getAllAsyncStorageData();
     setTimeout(() => this.renderCurrentTransactions(), 800);
   }
 
   private renderCurrentTransactions() {
     db.transaction((tx) => {
+      let transactions: Transaction[] = [];
       tx.executeSql(
         `select * from Transactions`,
         [],
         (_, resultSet) => {
-          let transactions: Transaction[] = [];
           const rows = resultSet.rows;
 
           for (let i = 0; i < rows.length; i++) {
@@ -138,10 +156,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             }
           }
 
-          console.log(transactions);
-          this.setState({
-            elementsToDisplay: transactions,
-          });
+          console.log('tr:', transactions);
         },
         (error) => {
           console.log('error:', error);
@@ -160,17 +175,15 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             let tra: RecurringTransaction = rows.item(i);
 
             recurringtransactions.push({
-              amount: tra.amount,
+              amount: Math.round(tra.amount),
               createdAt: new Date(),
               tag: 'Monatlich',
             });
           }
 
-          console.log(recurringtransactions);
+          console.log('rec', recurringtransactions);
           this.setState({
-            elementsToDisplay: this.state.elementsToDisplay.concat(
-              recurringtransactions,
-            ),
+            elementsToDisplay: transactions.concat(recurringtransactions),
           });
         },
         (error) => {
@@ -233,11 +246,19 @@ export default class HomeScene extends Component<null, HomeScreenState> {
   getLegendData(): LegendFormat[] {
     let stringDat: LegendFormat[] = [];
     if (this.state.amountAvailable > 0) {
-      stringDat.push({name: 'Verfügbar'});
+      if (this.state.showLabels) {
+        stringDat.push({name: `Verfügbar ${this.state.amountAvailable}€`});
+      } else {
+        stringDat.push({name: 'Verfügbar'});
+      }
     }
     this.state.elementsToDisplay.forEach((el) => {
       if (!stringDat.find((e) => e.name == el.tag)) {
-        stringDat.push({name: el.tag});
+        if (this.state.showLabels) {
+          stringDat.push({name: `${el.tag} ${el.amount}€`});
+        } else {
+          stringDat.push({name: el.tag});
+        }
       }
     });
 
@@ -255,7 +276,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
         const index = graphDat.findIndex((ind) => ind.x == el.tag);
         const data = graphDat.find((da) => da.x == el.tag);
 
-        graphDat[index].y = data.y + el.amount;
+        graphDat[index].y = Math.round(data.y + el.amount);
       } else {
         graphDat.push({x: el.tag, y: el.amount});
       }
@@ -265,7 +286,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     if (this.state.amountAvailable > 0) {
       let totalSpend: number = 0;
       graphDat.forEach((el) => (totalSpend += el.y));
-      graphDat[0].y = this.state.amountAvailable - totalSpend;
+      graphDat[0].y = Math.round(this.state.amountAvailable - totalSpend);
     }
 
     return graphDat;
@@ -274,16 +295,15 @@ export default class HomeScene extends Component<null, HomeScreenState> {
   async onRefresh() {
     this.setState({
       isRefreshing: true,
-      amountAvailable: await this.getAvailableAmount(),
     });
     this.renderCurrentTransactions();
-    this.getCustomCategories();
+    this.getAllAsyncStorageData();
     wait(2000).then(() => this.setState({isRefreshing: false}));
   }
 
   render() {
     const {height, width} = Dimensions.get('window');
-    const sliceColor = [
+    const sliceColors = [
       '#4CAF50',
       '#2196F3',
       '#F44336',
@@ -302,6 +322,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
       '#252b29',
     ];
 
+    console.log('RENDER');
     return (
       <ScrollView
         scrollEnabled={true}
@@ -311,6 +332,8 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             onRefresh={async () => await this.onRefresh()}
           />
         }>
+          <View>
+
         <Overlay
           isVisible={this.state.isModalVisible}
           overlayStyle={{width: width * 0.7}}
@@ -372,33 +395,31 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             padding={10}
             innerRadius={width * 0.15}
             padAngle={1}
-            colorScale={sliceColor}
+            colorScale={sliceColors}
             cornerRadius={10}
             standalone={true}
             labels={() => null}
           />
         </View>
-        <View
+        <TouchableOpacity
           style={{
-            justifyContent: 'flex-end',
-            flexDirection: 'row',
-            alignItems: 'flex-start',
+            borderRadius: 50,
+            alignSelf: 'flex-end',
+            marginTop: -40,
             paddingRight: 20,
+          }}
+          onPress={() => {
+            console.log('press'), this.setState({isModalVisible: true});
           }}>
-          <TouchableOpacity
-            style={{borderRadius: 50}}
-            onPress={() => {
-              console.log('press'), this.setState({isModalVisible: true});
-            }}>
-            <Icon
-              name="plus"
-              type="font-awesome"
-              size={25}
-              reverse
-              color="blue"
-            />
-          </TouchableOpacity>
-        </View>
+          <Icon
+            name="plus"
+            type="font-awesome"
+            size={25}
+            reverse
+            color="blue"
+          />
+        </TouchableOpacity>
+
         <View
           style={{
             justifyContent: 'center',
@@ -406,15 +427,17 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             alignItems: 'center',
           }}>
           <VictoryLegend
-            colorScale={sliceColor}
+            colorScale={sliceColors}
             data={this.getLegendData()}
             orientation="horizontal"
-            itemsPerRow={3}
+            itemsPerRow={this.state.showLabels ? 2 : 3}
             gutter={40}
+            borderPadding={{bottom: 0, left: 10, right: 5}}
             width={width}
             symbolSpacer={15}
           />
         </View>
+          </View>
       </ScrollView>
     );
   }
