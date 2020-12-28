@@ -13,6 +13,8 @@ import HistoryScene from '../scenes/HistoryScene';
 import SettingsScene from '../scenes/SettingsScene';
 import {SafeAreaView} from 'react-native';
 import Expenses from '../scenes/ExpensesScene';
+import LicensesScene from '../scenes/LicensesScene';
+import RecuringTransactionsScene from '../scenes/RecurringTransactionsScene';
 
 export default class AppRouter extends Component {
   render() {
@@ -29,31 +31,33 @@ export default class AppRouter extends Component {
               component={HomeScene}
               title="Übersicht"
               hideNavBar
-              statusBarColor="#000000"
             />
             <Scene
               key="history"
               component={HistoryScene}
               title="Historie"
               hideNavBar
-              statusBarColor="#000000"
             />
             <Scene
               key="expenses"
               component={Expenses}
               title="Ausgaben"
               hideNavBar
-              statusBarColor="#000000"
             />
             <Scene
               key="settings"
               component={SettingsScene}
               title="Einstellungen"
               hideNavBar
-              statusBarColor="#000000"
             />
           </Scene>
         </Tabs>
+        <Scene key="licenses" component={LicensesScene} title="Bibliotheken" />
+        <Scene
+          key="recurring"
+          component={RecuringTransactionsScene}
+          title="Monatliche Ausgaben"
+        />
       </Scene>,
     );
 

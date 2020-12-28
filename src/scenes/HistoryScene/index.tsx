@@ -78,7 +78,7 @@ export default class HistoryScene extends Component<
 
     db.transaction((tx) => {
       tx.executeSql(
-        `select * from Transactions`,
+        `select * from Transactions order by date(createdAt) asc`,
         [],
         (_, resultSet) => {
           const rows = resultSet.rows;
@@ -187,7 +187,7 @@ export default class HistoryScene extends Component<
 
   private renderYearsAndMonths() {
     return this.getYearsSinceStartYear().map((element, index) => (
-      <View>
+      <View  key={index}>
         <TouchableOpacity
           key={index}
           style={{

@@ -1,0 +1,139 @@
+{
+  "licenses": [
+    {
+      "name": "@react-native-community/async-storage@1.12.1",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/react-native-community/react-native-async-storage",
+        "licenseUrl": "https://github.com/react-native-community/react-native-async-storage/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "@react-native-community/datetimepicker@3.0.8",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/react-native-community/datetimepicker",
+        "licenseUrl": "https://github.com/react-native-community/datetimepicker/raw/master/LICENSE.md",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "@react-native-community/picker@1.8.1",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/react-native-community/react-native-picker",
+        "licenseUrl": "https://github.com/react-native-community/react-native-picker/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "moment@2.29.1",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/moment/moment",
+        "licenseUrl": "https://github.com/moment/moment/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "react-native-elements@2.3.2",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/react-native-elements/react-native-elements",
+        "licenseUrl": "https://github.com/react-native-elements/react-native-elements/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "react-native-gesture-handler@1.9.0",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/software-mansion/react-native-gesture-handler",
+        "licenseUrl": "https://github.com/software-mansion/react-native-gesture-handler/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "react-native-reanimated@1.13.2",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/software-mansion/react-native-reanimated",
+        "licenseUrl": "https://github.com/software-mansion/react-native-reanimated/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "react-native-router-flux@4.2.0",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/aksonov/react-native-router-flux",
+        "licenseUrl": "https://github.com/aksonov/react-native-router-flux/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "react-native-screens@2.16.1",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/kmagiera/react-native-screens",
+        "licenseUrl": "https://github.com/kmagiera/react-native-screens/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "react-native-sqlite-storage@5.0.0",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/andpor/react-native-sqlite-storage",
+        "licenseUrl": "https://github.com/andpor/react-native-sqlite-storage/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "react-native-svg@12.1.0",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/react-native-community/react-native-svg",
+        "licenseUrl": "https://github.com/react-native-community/react-native-svg/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "react-native-vector-icons@7.1.0",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/oblador/react-native-vector-icons",
+        "licenseUrl": "https://github.com/oblador/react-native-vector-icons/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "react-native@0.63.2",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/facebook/react-native",
+        "licenseUrl": "https://github.com/facebook/react-native/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "react@16.13.1",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/facebook/react",
+        "licenseUrl": "https://github.com/facebook/react/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "victory-native@35.3.1",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/FormidableLabs/victory-native",
+        "licenseUrl": "https://github.com/FormidableLabs/victory-native/raw/master/LICENSE.txt",
+        "parents": "MonthlyCostTracker"
+      }
+    }
+  ]
+}

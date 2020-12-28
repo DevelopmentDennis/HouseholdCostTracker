@@ -37,9 +37,14 @@ class DateTimeInput extends Component<DateTimeInputProps, DateTimeInputState> {
             mode="date"
             is24Hour={true}
             display="default"
-            onChange={(event, selectedDate) => {
-              this.setState({date: selectedDate, isDatePickerVisible: false}),
-                this.props.onDateChanged(selectedDate);
+            onChange={(event, value) => { 
+              if(value != null && moment(value).isValid()){
+                this.setState({date: value, isDatePickerVisible: false}),
+                  this.props.onDateChanged(value);
+              }
+              else{
+                this.setState({isDatePickerVisible:false});
+              }
             }}
           />
         )}

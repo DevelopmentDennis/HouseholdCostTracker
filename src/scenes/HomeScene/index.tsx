@@ -70,20 +70,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     categories: tags,
   };
 
-  private async getAvailableAmount(): Promise<number> {
-    try {
-      const value = await AsyncStorage.getItem('monthlyAvailableAmount');
-      if (value !== null) {
-        const amount = Number.parseInt(value);
-        if (!isNaN(amount)) {
-          return amount;
-        }
-      }
-    } catch (e) {
-      return 0;
-    }
-  }
-
   private getAllAsyncStorageData() {
     let showLabels: boolean = false;
     let amountAvailable: number = 0;
@@ -93,7 +79,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
       })
       .catch();
 
-    const value = AsyncStorage.getItem('monthlyAvailableAmount')
+    AsyncStorage.getItem('monthlyAvailableAmount')
       .then((value) => {
         if (value !== null) {
           const amount = Number.parseInt(value);
@@ -219,6 +205,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     const amount = this.validateAmountInput();
     const tag = this.state.dialogCategory ? this.state.dialogCategory : tags[0];
 
+    console.log("datetime:", moment(this.state.dialogDateTime).format("YYYY-MM-DD"));
     if (amount === 0) {
       this.setState({isModalVisible: false});
       return;
@@ -228,18 +215,18 @@ export default class HomeScene extends Component<null, HomeScreenState> {
       (tx) => {
         tx.executeSql(
           'INSERT INTO Transactions (amount, createdAt, tag) VALUES (?, ? , ?) ',
-          [amount, moment(this.state.dialogDateTime).format(), tag],
+          [amount, moment(this.state.dialogDateTime).format("YYYY-MM-DD"), tag],
         );
       },
       (error) => console.log('error adding transaction', error),
-      () => console.log('successfully added to table'),
+      () =>  this.setState({
+        isModalVisible: false,
+        dialogAmount: '',
+        dialogDateTime: new Date(),
+        dialogCategory: '',
+      }),
     );
-    this.setState({
-      isModalVisible: false,
-      dialogAmount: '',
-      dialogDateTime: new Date(),
-      dialogCategory: '',
-    });
+   
     this.renderCurrentTransactions();
   }
 
@@ -332,8 +319,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             onRefresh={async () => await this.onRefresh()}
           />
         }>
-          <View>
-
         <Overlay
           isVisible={this.state.isModalVisible}
           overlayStyle={{width: width * 0.7}}
@@ -437,7 +422,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             symbolSpacer={15}
           />
         </View>
-          </View>
       </ScrollView>
     );
   }
