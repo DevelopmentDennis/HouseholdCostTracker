@@ -6,19 +6,14 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Alert,
-  Button,
   Keyboard,
-  FlatList,
   Dimensions,
   TouchableOpacity,
-  Switch,
 } from 'react-native';
-import {Icon, Input, Overlay} from 'react-native-elements';
 
 import AsyncStorage from '@react-native-community/async-storage';
-import {styles} from '../HomeScene/styles';
-import {RecurringTransaction} from '../../types/types';
 import {Actions} from 'react-native-router-flux';
+import {ListItem} from 'react-native-elements';
 
 interface SettingsState {
   monthlyAvailableAmount: string;
@@ -106,55 +101,60 @@ export default class SettingsScene extends Component<null, SettingsState> {
   render() {
     const {width} = Dimensions.get('window');
     return (
-      <KeyboardAvoidingView style={{padding: 20, flex: 1}}>
-        <Text
-          style={{
-            fontSize: 22,
-            fontWeight: 'bold',
-            color: 'gray',
-            marginBottom: 20,
-          }}>
-          Einstellungen
-        </Text>
+      <KeyboardAvoidingView
+        style={{padding: 20, flex: 1, backgroundColor: '#cccccc32'}}>
         <View
           style={{
             flexDirection: 'column',
             alignItems: 'flex-start',
           }}>
-          <Text style={{marginBottom: 15}}>Monatlich verfügbares Geld</Text>
+          <Text style={{marginBottom: 15}}>
+            Monatlich verfügbarer Betrag in €
+          </Text>
           <View
             style={{
+              width: '100%',
               borderBottomColor: 'black',
-              justifyContent: 'center',
+              justifyContent: 'space-around',
               alignItems: 'center',
+              backgroundColor: 'white',
               flexDirection: 'row',
-              borderBottomWidth: 2,
-              flexGrow: 1,
+              borderRadius: 10,
+              borderColor: 'black',
+              borderWidth: 1,
             }}>
-            <Icon
-              name="euro-sign"
-              type="font-awesome-5"
-              size={20}
-              style={{marginRight: 25}}
-            />
             <TextInput
-              style={{fontSize: 17}}
+              style={{
+                fontSize: 17,
+                width: width * 0.4,
+                paddingLeft: 25,
+              }}
               placeholder="Betrag"
               value={this.state.monthlyAvailableAmount}
               onChangeText={(text) => this.checkAndSetAviableAmount(text)}
               onSubmitEditing={() => Keyboard.dismiss()}
               onBlur={() => Keyboard.dismiss()}
             />
-            <Button
-              title="Speichern"
+
+            <TouchableOpacity
+              style={{
+                borderLeftWidth: 1,
+                borderLeftColor: 'black',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderTopRightRadius: 10,
+                borderBottomRightRadius: 10,
+                paddingLeft: 15,
+              }}
               onPress={() => {
+                console.log('pressed');
                 this.storeData();
                 Keyboard.dismiss();
-              }}
-            />
+              }}>
+              <Text>Speichern</Text>
+            </TouchableOpacity>
           </View>
 
-          <Button onPress={() => Actions.jump('licenses')} title="Lizenzen" />
           {/* <View style={{marginTop: 10, marginBottom: 10, flexDirection: 'row'}}>
             <Text>Betrag anzeigen</Text>
             <Switch
@@ -168,32 +168,79 @@ export default class SettingsScene extends Component<null, SettingsState> {
             />
           </View> */}
 
+          <Text style={{marginBottom: 15, marginTop: 20}}>
+            Eigene Kategorie hinzufügen
+          </Text>
           <View
             style={{
+              backgroundColor: 'white',
+              width: '100%',
               borderBottomColor: 'black',
-              justifyContent: 'center',
+              justifyContent: 'space-around',
               alignItems: 'center',
               flexDirection: 'row',
-              borderBottomWidth: 2,
-              flexGrow: 1,
+              borderRadius: 10,
+              borderColor: 'black',
+              borderWidth: 1,
             }}>
-            <Text style={styles.text}>Kategorie hinzufügen</Text>
             <TextInput
-              style={{fontSize: 17}}
+              style={{
+                fontSize: 17,
+                width: width * 0.4,
+                paddingLeft: 25,
+              }}
               placeholder="Kategorie"
               value={this.state.newCategory}
-              onChangeText={(text) => this.setState({newCategory: text})}
+              onChangeText={(text) => this.checkAndSetAviableAmount(text)}
               onSubmitEditing={() => Keyboard.dismiss()}
               onBlur={() => Keyboard.dismiss()}
             />
-            <Button title="Speichern" onPress={() => this.addCategory()} />
+
+            <TouchableOpacity
+              style={{
+                borderLeftWidth: 1,
+                borderLeftColor: 'black',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderTopRightRadius: 10,
+                borderBottomRightRadius: 10,
+                paddingLeft: 15,
+              }}
+              onPress={() => {
+                console.log('pressed2');
+                this.addCategory();
+              }}>
+              <Text>Speichern</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={{width: '100%', marginTop: 20}}>
+            <ListItem
+              bottomDivider
+              topDivider
+              style={{backgroundColor: '#cccccc32'}}
+              onPress={() => Actions.jump('recurring')}>
+              <ListItem.Content>
+                <ListItem.Title>Monatliche Ausgaben</ListItem.Title>
+              </ListItem.Content>
+              <ListItem.Chevron />
+            </ListItem>
+
+            <ListItem bottomDivider onPress={() => Actions.jump('licenses')}>
+              <ListItem.Content>
+                <ListItem.Title>Verwendete Bibliotheken</ListItem.Title>
+              </ListItem.Content>
+              <ListItem.Chevron />
+            </ListItem>
           </View>
         </View>
-        <Button
-          title="Monatliche Ausgaben"
-          onPress={() => Actions.jump('recurring')}
-        />
-        <Text>Version 1.0</Text>
+        <View style={{flex: 1, bottom: 0}}>
+          <ListItem bottomDivider>
+            <ListItem.Content>
+              <ListItem.Title>Version 1.0</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+        </View>
       </KeyboardAvoidingView>
     );
   }

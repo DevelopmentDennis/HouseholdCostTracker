@@ -3,6 +3,7 @@ import * as React from 'react';
 import {Component} from 'react';
 import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
+import {globalStyles} from '../../styles/styles';
 import {GraphFormat, Transaction} from '../../types/types';
 
 const db = SQLite.openDatabase('CostTracker.db');
@@ -46,8 +47,6 @@ export default class HistoryScene extends Component<
           } catch (error) {
             console.log('error', error);
           }
-
-          //this.setState({firstEntryDate:resultSet})
         },
         (error) => {
           console.log('error:', error);
@@ -91,13 +90,15 @@ export default class HistoryScene extends Component<
             if (
               moment(tra.createdAt).isBetween(firstDayOfMonth, lastDayOfMonth)
             ) {
-              console.log('between:', tra);
               totalSpend = totalSpend + tra.amount;
               data.push(tra);
             }
           }
-          
-          this.setState({elementsToDisplay: data,totalSpendForMonth:totalSpend});
+
+          this.setState({
+            elementsToDisplay: data,
+            totalSpendForMonth: totalSpend,
+          });
         },
         (error) => {
           console.log('error:', error);
@@ -110,22 +111,12 @@ export default class HistoryScene extends Component<
     return this.state.elementsToDisplay.map((element, index) => (
       <View
         key={index}
-        style={{
-          borderWidth: 2,
-          borderColor: 'black',
-          borderRadius: 10,
-          padding: 5,
-          marginTop: 10,
-          marginLeft: 40,
-          backgroundColor: 'lightgray',
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-        }}>
+        style={[globalStyles.rowContainerItem, {marginLeft: 20}]}>
         <Text style={{fontSize: 18}}>
           {moment(element.createdAt).format('dd DD.MM.YYYY').toString()}
         </Text>
-        <Text style={{fontSize: 18}}>{element.amount}</Text>
         <Text style={{fontSize: 18}}>{element.tag}</Text>
+        <Text style={{fontSize: 18}}>{element.amount}€</Text>
       </View>
     ));
   }
@@ -137,16 +128,7 @@ export default class HistoryScene extends Component<
       .map((element, index) => (
         <View key={index}>
           <TouchableOpacity
-            
-            style={{
-              borderWidth: 2,
-              borderColor: 'black',
-              borderRadius: 10,
-              padding: 5,
-              marginTop: 10,
-              marginLeft: 20,
-              backgroundColor: 'lightgray',
-            }}
+            style={[globalStyles.rowContainerItem, {marginLeft: 10}]}
             onPress={() => {
               if (this.state.monthPressed === element) {
                 this.setState({monthPressed: ''});
@@ -158,7 +140,7 @@ export default class HistoryScene extends Component<
             }}>
             <Text style={{fontSize: 18}}>{element.toString()}</Text>
           </TouchableOpacity>
-          
+
           {this.state.monthPressed === element && this.renderTotalSpend()}
           {this.state.monthPressed === element && this.renderElementsForMonth()}
         </View>
@@ -166,43 +148,37 @@ export default class HistoryScene extends Component<
   }
 
   private renderTotalSpend() {
-    return(
-      <View
-        style={{
-        borderWidth: 2,
-        borderColor: 'black',
-        borderRadius: 10,
-        padding: 5,
-        marginTop: 10,
-        marginLeft: 40,
-        backgroundColor: 'lightgray',
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        }}>
-      <Text style={{fontSize: 18}}>Gesamt</Text>
-      <Text style={{fontSize: 18}}>{this.state.totalSpendForMonth}€</Text>
-    </View>
-    )
+    console.log('renderTotalSpend');
+    if (this.state.totalSpendForMonth === 0) {
+      return (
+        <View style={[globalStyles.rowContainerItem, {marginLeft: 20}]}>
+          <Text style={{fontSize: 18, color: 'gray'}}>
+            Keine Einträge für diesen Monat
+          </Text>
+        </View>
+      );
+    } else {
+      console.log('ausgaben:', this.state.totalSpendForMonth);
+      return (
+        <View style={[globalStyles.rowContainerItem, {marginLeft: 20}]}>
+          <Text style={{fontSize: 18, color: 'black'}}>Ausgaben Gesamt</Text>
+          <Text style={{fontSize: 18}}>{this.state.totalSpendForMonth}€</Text>
+        </View>
+      );
+    }
   }
 
   private renderYearsAndMonths() {
     return this.getYearsSinceStartYear().map((element, index) => (
-      <View  key={index}>
+      <View key={index}>
         <TouchableOpacity
           key={index}
-          style={{
-            borderWidth: 2,
-            borderColor: 'black',
-            borderRadius: 10,
-            padding: 5,
-            marginTop: 10,
-            backgroundColor: 'lightgray',
-          }}
+          style={[globalStyles.rowContainerItem]}
           onPress={() => {
             if (this.state.yearPressed === element) {
-              this.setState({yearPressed: -1});
+              this.setState({yearPressed: -1, monthPressed: ''});
             } else {
-              this.setState({yearPressed: element});
+              this.setState({yearPressed: element, monthPressed: ''});
             }
           }}>
           <Text style={{fontSize: 18}}>{element.toString()}</Text>
@@ -214,11 +190,10 @@ export default class HistoryScene extends Component<
 
   render() {
     return (
-      <ScrollView>
-        <Text style={{fontSize: 24, fontWeight: 'bold', alignSelf: 'center'}}>
-          Alle Einträge
-        </Text>
+      <ScrollView style={{padding: 10, backgroundColor: '#cccccc32'}}>
+        <View style={{marginTop: 15}} />
         {this.renderYearsAndMonths()}
+        <View style={{marginTop: 15}} />
       </ScrollView>
     );
   }

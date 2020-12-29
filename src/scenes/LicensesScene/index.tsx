@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Component} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text} from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {ScrollView} from 'react-native-gesture-handler';
 import {licenses} from '../../../assets/licenses.json';
@@ -16,7 +16,7 @@ export default class LicensesScene extends Component<undefined, LicensesState> {
 
   render() {
     return (
-      <View style={{flex: 1, padding: 10}}>
+      <View style={{flex: 1, padding: 10, backgroundColor: '#cccccc32'}}>
         <Text style={{fontSize: 16, marginBottom: 20, padding: 10}}>
           Alle nachfolgenden Bibliotheken wurden unter der{' '}
           <Text
@@ -30,7 +30,15 @@ export default class LicensesScene extends Component<undefined, LicensesState> {
         </Text>
 
         {this.state.showLicenseText && (
-          <ScrollView style={{padding: 15}}>
+          <ScrollView
+            style={{
+              padding: 15,
+              borderWidth: 1,
+              backgroundColor: 'white',
+              borderBottomColor: 'black',
+              borderRadius: 10,
+              marginBottom: 20,
+            }}>
             <Text style={{fontSize: 15}}>
               {`MIT License
 

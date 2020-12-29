@@ -2,7 +2,6 @@ import * as React from 'react';
 import {Component} from 'react';
 import {
   Alert,
-  Button,
   Keyboard,
   View,
   Text,
@@ -10,11 +9,11 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import {Icon, Input, Overlay} from 'react-native-elements';
+import {Icon, Input, Overlay, Button} from 'react-native-elements';
 import SQLite from 'react-native-sqlite-storage';
+import {globalStyles} from '../../styles/styles';
 import {RecurringTransaction} from '../../types/types';
 import {styles} from '../HomeScene/styles';
-
 export interface RecuringTransactionsProps {}
 
 export interface RecuringTransactionsState {
@@ -129,7 +128,7 @@ export default class RecuringTransactionsScene extends Component<
   render() {
     const {width} = Dimensions.get('window');
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: '#cccccc32'}}>
         <Overlay
           isVisible={this.state.showRecurringTransactionAddDialog}
           overlayStyle={{width: width * 0.7}}
@@ -178,26 +177,15 @@ export default class RecuringTransactionsScene extends Component<
           onPress={() =>
             this.setState({showRecurringTransactionAddDialog: true})
           }>
-          <Icon type="font-awesome" name="plus" reverse />
-          <Text>Hinzufügen</Text>
+          <Icon type="font-awesome" name="plus" reverse color={'blue'} />
+          <Text style={{fontSize: 17}}>Hinzufügen</Text>
         </TouchableOpacity>
         <View style={{padding: 10, flex: 1}}>
           <FlatList
             data={this.state.recurringTransactions}
             showsVerticalScrollIndicator={true}
             renderItem={({item, index}) => (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  padding: 10,
-                  backgroundColor: '#cccccc20',
-                  marginBottom: 5,
-                  alignItems: 'center',
-                  elevation: 1,
-                  shadowColor: 'black',
-                  borderRadius: 10,
-                }}>
+              <View style={globalStyles.rowContainerItem}>
                 <Text style={[styles.text]}>
                   {item.description} : {item.amount} €
                 </Text>

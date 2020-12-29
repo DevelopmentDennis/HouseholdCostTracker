@@ -5,20 +5,14 @@ import {Component} from 'react';
 import {
   View,
   Text,
-  Button,
   Dimensions,
   TouchableOpacity,
   ScrollView,
   RefreshControl,
   Keyboard,
 } from 'react-native';
-import {Icon, Input, Overlay} from 'react-native-elements';
-import {
-  VictoryLabel,
-  VictoryLegend,
-  VictoryPie,
-  VictoryTooltip,
-} from 'victory-native';
+import {Icon, Input, Overlay, Button} from 'react-native-elements';
+import {VictoryLegend, VictoryPie} from 'victory-native';
 import DateTimeInput from '../../components/DateTimeInput';
 import SQLite from 'react-native-sqlite-storage';
 import {styles} from './styles';
@@ -31,9 +25,6 @@ import {
   Transaction,
 } from '../../types/types';
 import AsyncStorage from '@react-native-community/async-storage';
-
-const graphicData = [{y: 10}, {y: 50}, {y: 40}];
-const graphicColor = ['#388087', '#6fb3b8', '#badfe7'];
 
 const db = SQLite.openDatabase('CostTracker.db');
 
@@ -205,7 +196,10 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     const amount = this.validateAmountInput();
     const tag = this.state.dialogCategory ? this.state.dialogCategory : tags[0];
 
-    console.log("datetime:", moment(this.state.dialogDateTime).format("YYYY-MM-DD"));
+    console.log(
+      'datetime:',
+      moment(this.state.dialogDateTime).format('YYYY-MM-DD'),
+    );
     if (amount === 0) {
       this.setState({isModalVisible: false});
       return;
@@ -215,18 +209,19 @@ export default class HomeScene extends Component<null, HomeScreenState> {
       (tx) => {
         tx.executeSql(
           'INSERT INTO Transactions (amount, createdAt, tag) VALUES (?, ? , ?) ',
-          [amount, moment(this.state.dialogDateTime).format("YYYY-MM-DD"), tag],
+          [amount, moment(this.state.dialogDateTime).format('YYYY-MM-DD'), tag],
         );
       },
       (error) => console.log('error adding transaction', error),
-      () =>  this.setState({
-        isModalVisible: false,
-        dialogAmount: '',
-        dialogDateTime: new Date(),
-        dialogCategory: '',
-      }),
+      () =>
+        this.setState({
+          isModalVisible: false,
+          dialogAmount: '',
+          dialogDateTime: new Date(),
+          dialogCategory: '',
+        }),
     );
-   
+
     this.renderCurrentTransactions();
   }
 
@@ -312,6 +307,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     console.log('RENDER');
     return (
       <ScrollView
+        style={{backgroundColor: '#cccccc32'}}
         scrollEnabled={true}
         refreshControl={
           <RefreshControl
@@ -389,8 +385,9 @@ export default class HomeScene extends Component<null, HomeScreenState> {
         <TouchableOpacity
           style={{
             borderRadius: 50,
+            marginBottom: 10,
             alignSelf: 'flex-end',
-            marginTop: -40,
+
             paddingRight: 20,
           }}
           onPress={() => {
