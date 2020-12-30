@@ -25,7 +25,7 @@ export default class HistoryScene extends Component<
     elementsToDisplay: [],
     graphData: [],
     firstEntryDate: undefined,
-    yearPressed: -1,
+    yearPressed: moment().year(),
     monthPressed: '',
     totalSpendForMonth: 0,
   };
@@ -166,7 +166,9 @@ export default class HistoryScene extends Component<
       return (
         <View style={[globalStyles.rowContainerItem, {marginLeft: 20}]}>
           <Text style={{fontSize: 18, color: 'black'}}>Ausgaben Gesamt</Text>
-          <Text style={{fontSize: 18}}>{this.state.totalSpendForMonth}€</Text>
+          <Text style={{fontSize: 18}}>
+            {this.state.totalSpendForMonth.toFixed(2)}€
+          </Text>
         </View>
       );
     }

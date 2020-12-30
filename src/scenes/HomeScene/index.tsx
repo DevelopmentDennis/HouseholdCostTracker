@@ -22,6 +22,7 @@ import {
   GraphFormat,
   LegendFormat,
   RecurringTransaction,
+  sliceColors,
   Transaction,
 } from '../../types/types';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -285,24 +286,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
 
   render() {
     const {height, width} = Dimensions.get('window');
-    const sliceColors = [
-      '#4CAF50',
-      '#2196F3',
-      '#F44336',
-      '#FFEB3B',
-      '#FF9800',
-      '#663399',
-      '#5ce8ed',
-      '#6ff542',
-      '#bdb76b',
-      '#ee82ee',
-      '#8b0000',
-      '#696969',
-      '#f0e68c',
-      '#8b4513',
-      '#9acd32',
-      '#252b29',
-    ];
 
     return (
       <ScrollView
@@ -381,44 +364,60 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             labels={() => null}
           />
         </View>
-        <TouchableOpacity
-          style={{
-            borderRadius: 50,
-            marginBottom: 10,
-            alignSelf: 'flex-end',
-            zIndex: 100,
-            marginTop: -10,
-            paddingRight: 20,
-          }}
-          onPress={() => {
-            console.log('press'), this.setState({isModalVisible: true});
-          }}>
-          <Icon
-            name="plus"
-            type="font-awesome"
-            size={25}
-            reverse
-            color="royalblue"
-          />
-        </TouchableOpacity>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <TouchableOpacity
+            style={{
+              borderRadius: 50,
+              marginBottom: 10,
+              paddingLeft: 20,
+              zIndex: 100,
+              marginTop: -10,
+            }}
+            onPress={() => {
+              this.onRefresh();
+            }}>
+            <Icon
+              name="sync"
+              type="font-awesome-5"
+              size={25}
+              reverse
+              color="gray"
+            />
+          </TouchableOpacity>
 
-        <View
-          style={{
-            justifyContent: 'center',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <VictoryLegend
-            colorScale={sliceColors}
-            data={this.getLegendData()}
-            orientation="horizontal"
-            itemsPerRow={this.state.showLabels ? 2 : 3}
-            gutter={40}
-            borderPadding={{bottom: 0, left: 10, right: 5}}
-            width={width}
-            symbolSpacer={15}
-          />
+          <TouchableOpacity
+            style={{
+              borderRadius: 50,
+              marginBottom: 10,
+
+              zIndex: 100,
+              marginTop: -10,
+              paddingRight: 20,
+            }}
+            onPress={() => {
+              console.log('press'), this.setState({isModalVisible: true});
+            }}>
+            <Icon
+              name="plus"
+              type="font-awesome"
+              size={25}
+              reverse
+              color="royalblue"
+            />
+          </TouchableOpacity>
         </View>
+
+        <VictoryLegend
+          colorScale={sliceColors}
+          data={this.getLegendData()}
+          orientation="horizontal"
+          itemsPerRow={this.state.showLabels ? 2 : 3}
+          gutter={40}
+          height={height * 0.25}
+          borderPadding={{bottom: 0, left: 10, right: 5}}
+          width={width}
+          symbolSpacer={15}
+        />
       </ScrollView>
     );
   }

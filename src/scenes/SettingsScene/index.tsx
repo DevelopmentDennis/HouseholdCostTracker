@@ -195,7 +195,7 @@ export default class SettingsScene extends Component<null, SettingsState> {
               }}
               placeholder="Kategorie"
               value={this.state.newCategory}
-              onChangeText={(text) => this.checkAndSetAviableAmount(text)}
+              onChangeText={(text) => this.setState({newCategory: text})}
               onSubmitEditing={() => Keyboard.dismiss()}
               onBlur={() => Keyboard.dismiss()}
             />
@@ -244,17 +244,8 @@ export default class SettingsScene extends Component<null, SettingsState> {
             </ListItem>
           </View>
         </View>
-        <View style={{flex: 1, bottom: 0}}>
-          <ListItem bottomDivider>
-            <ListItem.Content>
-              <ListItem.Title> </ListItem.Title>
-            </ListItem.Content>
-          </ListItem>
-          <ListItem bottomDivider>
-            <ListItem.Content>
-              <ListItem.Title> </ListItem.Title>
-            </ListItem.Content>
-          </ListItem>
+        <View style={{flexGrow: 1}}></View>
+        <View style={{bottom: 0}}>
           <ListItem bottomDivider>
             <ListItem.Content>
               <ListItem.Title>App-Version 1.0</ListItem.Title>
