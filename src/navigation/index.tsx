@@ -15,6 +15,7 @@ import {SafeAreaView} from 'react-native';
 import Expenses from '../scenes/ExpensesScene';
 import LicensesScene from '../scenes/LicensesScene';
 import RecuringTransactionsScene from '../scenes/RecurringTransactionsScene';
+import PrivacyScene from '../scenes/PrivacyScene';
 
 export default class AppRouter extends Component {
   render() {
@@ -31,6 +32,7 @@ export default class AppRouter extends Component {
               component={HomeScene}
               title="Übersicht"
               hideNavBar
+              initial
             />
             <Scene
               key="history"
@@ -58,6 +60,7 @@ export default class AppRouter extends Component {
           component={RecuringTransactionsScene}
           title="Monatliche Ausgaben"
         />
+        <Scene key="privacy" title="Datenschutz" component={PrivacyScene} />
       </Scene>,
     );
 

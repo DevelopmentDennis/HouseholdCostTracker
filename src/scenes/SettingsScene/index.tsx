@@ -9,6 +9,7 @@ import {
   Keyboard,
   Dimensions,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
@@ -63,15 +64,17 @@ export default class SettingsScene extends Component<null, SettingsState> {
   }
 
   private async storeData() {
-    try {
-      if (!isNaN(Number.parseInt(this.state.monthlyAvailableAmount))) {
-        await AsyncStorage.setItem(
-          'monthlyAvailableAmount',
-          this.state.monthlyAvailableAmount,
+    if (!isNaN(Number.parseInt(this.state.monthlyAvailableAmount))) {
+      AsyncStorage.setItem(
+        'monthlyAvailableAmount',
+        this.state.monthlyAvailableAmount,
+      )
+        .then(() =>
+          ToastAndroid.show('Erfolgreich gespeichert', ToastAndroid.SHORT),
+        )
+        .catch((error) =>
+          Alert.alert(`Es ist ein Fehler aufgetreten ${error}`),
         );
-      }
-    } catch (e) {
-      Alert.alert('ERROR speichern');
     }
   }
 
@@ -89,12 +92,13 @@ export default class SettingsScene extends Component<null, SettingsState> {
       let categoriesArray: string[] = JSON.parse(data);
       categoriesArray.push(this.state.newCategory);
 
-      await AsyncStorage.setItem(
+      AsyncStorage.setItem(
         'customCategories',
         JSON.stringify([...new Set<string>(categoriesArray)]),
-      );
-      this.setState({newCategory: ''});
-      Alert.alert('Hinzugefügt');
+      ).then(() => {
+        ToastAndroid.show('Erfolgreich hinzugefügt', ToastAndroid.SHORT),
+          this.setState({newCategory: ''});
+      });
     }
   }
 
@@ -151,7 +155,7 @@ export default class SettingsScene extends Component<null, SettingsState> {
                 this.storeData();
                 Keyboard.dismiss();
               }}>
-              <Text>Speichern</Text>
+              <Text style={{color: 'green'}}>Speichern</Text>
             </TouchableOpacity>
           </View>
 
@@ -210,7 +214,7 @@ export default class SettingsScene extends Component<null, SettingsState> {
                 console.log('pressed2');
                 this.addCategory();
               }}>
-              <Text>Speichern</Text>
+              <Text style={{color: 'green'}}>Speichern</Text>
             </TouchableOpacity>
           </View>
 
@@ -218,7 +222,6 @@ export default class SettingsScene extends Component<null, SettingsState> {
             <ListItem
               bottomDivider
               topDivider
-              style={{backgroundColor: '#cccccc32'}}
               onPress={() => Actions.jump('recurring')}>
               <ListItem.Content>
                 <ListItem.Title>Monatliche Ausgaben</ListItem.Title>
@@ -232,12 +235,29 @@ export default class SettingsScene extends Component<null, SettingsState> {
               </ListItem.Content>
               <ListItem.Chevron />
             </ListItem>
+
+            <ListItem bottomDivider onPress={() => Actions.jump('privacy')}>
+              <ListItem.Content>
+                <ListItem.Title>Datenschutz</ListItem.Title>
+              </ListItem.Content>
+              <ListItem.Chevron />
+            </ListItem>
           </View>
         </View>
         <View style={{flex: 1, bottom: 0}}>
           <ListItem bottomDivider>
             <ListItem.Content>
-              <ListItem.Title>Version 1.0</ListItem.Title>
+              <ListItem.Title> </ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+          <ListItem bottomDivider>
+            <ListItem.Content>
+              <ListItem.Title> </ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+          <ListItem bottomDivider>
+            <ListItem.Content>
+              <ListItem.Title>App-Version 1.0</ListItem.Title>
             </ListItem.Content>
           </ListItem>
         </View>
