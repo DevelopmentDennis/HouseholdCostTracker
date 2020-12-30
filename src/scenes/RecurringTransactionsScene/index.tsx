@@ -177,7 +177,7 @@ export default class RecuringTransactionsScene extends Component<
           onPress={() =>
             this.setState({showRecurringTransactionAddDialog: true})
           }>
-          <Icon type="font-awesome" name="plus" reverse color={'blue'} />
+          <Icon type="font-awesome" name="plus" reverse color={'royalblue'} />
           <Text style={{fontSize: 17}}>Hinzufügen</Text>
         </TouchableOpacity>
         <View style={{padding: 10, flex: 1}}>
@@ -186,15 +186,18 @@ export default class RecuringTransactionsScene extends Component<
             showsVerticalScrollIndicator={true}
             renderItem={({item, index}) => (
               <View style={globalStyles.rowContainerItem}>
-                <Text style={[styles.text]}>
+                <Text style={[styles.text, {paddingLeft: 15}]}>
                   {item.description} : {item.amount} €
                 </Text>
+
                 <TouchableOpacity
                   style={{
-                    padding: 5,
+                    borderLeftWidth: 1,
+                    borderLeftColor: 'black',
+                    paddingLeft: 15,
                   }}
                   onPress={() => this.deleteRecurringTransaction(item.id)}>
-                  <Text style={[styles.text, {color: 'red'}]}>Löschen</Text>
+                  <Text style={[{color: 'red'}]}>Löschen</Text>
                 </TouchableOpacity>
               </View>
             )}

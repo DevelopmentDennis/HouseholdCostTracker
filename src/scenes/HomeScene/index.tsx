@@ -304,7 +304,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
       '#252b29',
     ];
 
-    console.log('RENDER');
     return (
       <ScrollView
         style={{backgroundColor: '#cccccc32'}}
@@ -387,7 +386,8 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             borderRadius: 50,
             marginBottom: 10,
             alignSelf: 'flex-end',
-
+            zIndex: 100,
+            marginTop: -10,
             paddingRight: 20,
           }}
           onPress={() => {
@@ -398,7 +398,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             type="font-awesome"
             size={25}
             reverse
-            color="blue"
+            color="royalblue"
           />
         </TouchableOpacity>
 

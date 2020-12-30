@@ -139,6 +139,10 @@ export default class HistoryScene extends Component<
               }
             }}>
             <Text style={{fontSize: 18}}>{element.toString()}</Text>
+            <Text style={{fontSize: 18, color: 'lightgray'}}>
+              {' '}
+              {this.state.monthPressed === element ? '⌄' : '>'}
+            </Text>
           </TouchableOpacity>
 
           {this.state.monthPressed === element && this.renderTotalSpend()}
@@ -182,6 +186,9 @@ export default class HistoryScene extends Component<
             }
           }}>
           <Text style={{fontSize: 18}}>{element.toString()}</Text>
+          <Text style={{fontSize: 18, color: 'lightgray'}}>
+            {this.state.yearPressed === element ? '⌄' : '>'}
+          </Text>
         </TouchableOpacity>
         {this.state.yearPressed === element && this.renderMonths()}
       </View>

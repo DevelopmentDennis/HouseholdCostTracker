@@ -23,7 +23,7 @@ export default (props: NavBarItemProps) => {
           type={props.iconType}
           name={props.iconName}
           size={props.iconSize ? props.iconSize : 25}
-          color={props.active ? 'blue' : 'gray'}
+          color={props.active ? 'royalblue' : 'gray'}
         />
 
         {props.children}

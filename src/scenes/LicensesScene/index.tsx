@@ -20,7 +20,7 @@ export default class LicensesScene extends Component<undefined, LicensesState> {
         <Text style={{fontSize: 16, marginBottom: 20, padding: 10}}>
           Alle nachfolgenden Bibliotheken wurden unter der{' '}
           <Text
-            style={{textDecorationLine: 'underline'}}
+            style={{textDecorationLine: 'underline', color: 'gray'}}
             onPress={() =>
               this.setState({showLicenseText: !this.state.showLicenseText})
             }>
