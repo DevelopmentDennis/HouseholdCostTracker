@@ -10,6 +10,7 @@ import {
   ScrollView,
   RefreshControl,
   Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import {Icon, Input, Overlay, Button} from 'react-native-elements';
 import {VictoryLegend, VictoryPie} from 'victory-native';
@@ -62,7 +63,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     categories: tags,
   };
 
-  private getAllAsyncStorageData() {
+  private async getAllAsyncStorageData() {
     let showLabels: boolean = false;
     let amountAvailable: number = 0;
     AsyncStorage.getItem('showAmountLabels')
@@ -94,12 +95,10 @@ export default class HomeScene extends Component<null, HomeScreenState> {
           });
         }
       })
-      .catch((e) => {
-        return;
-      });
+      .catch((e) => {});
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     try {
       db.transaction((tx) => {
         tx.executeSql(
@@ -113,7 +112,8 @@ export default class HomeScene extends Component<null, HomeScreenState> {
       console.log('create failed', error);
     }
     this.getAllAsyncStorageData();
-    setTimeout(() => this.renderCurrentTransactions(), 800);
+    this.renderCurrentTransactions();
+    //setTimeout(() => , 800);
   }
 
   private renderCurrentTransactions() {
@@ -286,7 +286,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
 
   render() {
     const {height, width} = Dimensions.get('window');
-
     return (
       <ScrollView
         style={{backgroundColor: '#cccccc32'}}
@@ -350,19 +349,39 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             </Text>
           </View>
           {/* <Button title="Delete" onPress={() => this.dropTable()} /> */}
-
-          <VictoryPie
-            animate={{easing: 'exp'}}
-            data={this.getGraphData()}
-            width={width * 0.9}
-            padding={10}
-            innerRadius={width * 0.15}
-            padAngle={1}
-            colorScale={sliceColors}
-            cornerRadius={10}
-            standalone={true}
-            labels={() => null}
-          />
+          {this.state.elementsToDisplay.length === 0 &&
+            this.state.amountAvailable === 0 && (
+              <View style={{marginTop: 50, marginBottom: 50}}>
+                <Text style={{fontSize: 17}}>Noch nichts anzuzeigen</Text>
+                <Text
+                  style={{
+                    textDecorationLine: 'underline',
+                    color: 'gray',
+                    fontSize: 16,
+                    textAlign: 'center',
+                  }}
+                  onPress={() => this.setState({isModalVisible: true})}>
+                  Ausgabe hinzufügen
+                </Text>
+              </View>
+            )}
+          {this.state.elementsToDisplay.length === 0 && (
+            <ActivityIndicator size="large" />
+          )}
+          {this.state.elementsToDisplay.length > 0 && (
+            <VictoryPie
+              animate={{easing: 'exp'}}
+              data={this.getGraphData()}
+              width={width * 0.9}
+              padding={10}
+              innerRadius={width * 0.15}
+              padAngle={1}
+              colorScale={sliceColors}
+              cornerRadius={10}
+              standalone={true}
+              labels={() => null}
+            />
+          )}
         </View>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <TouchableOpacity
