@@ -181,28 +181,46 @@ export default class RecuringTransactionsScene extends Component<
           <Text style={{fontSize: 17}}>Hinzufügen</Text>
         </TouchableOpacity>
         <View style={{padding: 10, flex: 1}}>
-          <FlatList
-            data={this.state.recurringTransactions}
-            showsVerticalScrollIndicator={true}
-            renderItem={({item, index}) => (
-              <View style={globalStyles.rowContainerItem}>
-                <Text style={[styles.text, {paddingLeft: 15}]}>
-                  {item.description} : {item.amount} €
-                </Text>
+          {this.state.recurringTransactions.length === 0 && (
+            <View style={{alignItems: 'center'}}>
+              <Text style={{fontSize: 17}}>Noch nichts anzuzeigen</Text>
+              <Text
+                style={{
+                  textDecorationLine: 'underline',
+                  color: 'gray',
+                  fontSize: 16,
+                }}
+                onPress={() =>
+                  this.setState({showRecurringTransactionAddDialog: true})
+                }>
+                Monatliche Ausgabe hinzufügen
+              </Text>
+            </View>
+          )}
+          {this.state.recurringTransactions.length > 0 && (
+            <FlatList
+              data={this.state.recurringTransactions}
+              showsVerticalScrollIndicator={true}
+              renderItem={({item, index}) => (
+                <View style={globalStyles.rowContainerItem}>
+                  <Text style={[styles.text, {paddingLeft: 15}]}>
+                    {item.description} : {item.amount} €
+                  </Text>
 
-                <TouchableOpacity
-                  style={{
-                    borderLeftWidth: 1,
-                    borderLeftColor: 'black',
-                    paddingLeft: 15,
-                  }}
-                  onPress={() => this.deleteRecurringTransaction(item.id)}>
-                  <Text style={[{color: 'red'}]}>Löschen</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
+                  <TouchableOpacity
+                    style={{
+                      borderLeftWidth: 1,
+                      borderLeftColor: 'black',
+                      paddingLeft: 15,
+                    }}
+                    onPress={() => this.deleteRecurringTransaction(item.id)}>
+                    <Text style={[{color: 'red'}]}>Löschen</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          )}
         </View>
       </View>
     );

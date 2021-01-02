@@ -35,15 +35,15 @@ class DateTimeInput extends Component<DateTimeInputProps, DateTimeInputState> {
             testID="dateTimePicker"
             value={this.state.date}
             mode="date"
+            maximumDate={moment().toDate()}
             is24Hour={true}
             display="default"
-            onChange={(event, value) => { 
-              if(value != null && moment(value).isValid()){
+            onChange={(event, value) => {
+              if (value != null && moment(value).isValid()) {
                 this.setState({date: value, isDatePickerVisible: false}),
                   this.props.onDateChanged(value);
-              }
-              else{
-                this.setState({isDatePickerVisible:false});
+              } else {
+                this.setState({isDatePickerVisible: false});
               }
             }}
           />

@@ -213,6 +213,7 @@ export default class SettingsScene extends Component<null, SettingsState> {
               onPress={() => {
                 console.log('pressed2');
                 this.addCategory();
+                Keyboard.dismiss();
               }}>
               <Text style={{color: 'green'}}>Speichern</Text>
             </TouchableOpacity>

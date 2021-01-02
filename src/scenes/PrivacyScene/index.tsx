@@ -23,7 +23,9 @@ export default class PrivacyScene extends Component {
           gerne eine{' '}
           <Text
             style={{textDecorationLine: 'underline', color: 'gray'}}
-            onPress={() => Linking.openURL('mailto:mothy@dennisostertag.de')}>
+            onPress={() =>
+              Linking.openURL('mailto:doco-app@dennisostertag.de')
+            }>
             Email
           </Text>
           .

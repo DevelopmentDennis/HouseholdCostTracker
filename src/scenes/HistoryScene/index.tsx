@@ -24,7 +24,7 @@ export default class HistoryScene extends Component<
   readonly state: HistorySceneState = {
     elementsToDisplay: [],
     graphData: [],
-    firstEntryDate: undefined,
+    firstEntryDate: new Date(),
     yearPressed: moment().year(),
     monthPressed: '',
     totalSpendForMonth: 0,
@@ -41,9 +41,13 @@ export default class HistoryScene extends Component<
         [],
         (_, resultSet) => {
           try {
-            this.setState({
-              firstEntryDate: new Date(resultSet.rows?.item(0).date),
-            });
+            if (resultSet.rows?.item(0).date == null) {
+              this.setState({firstEntryDate: new Date()});
+            } else {
+              this.setState({
+                firstEntryDate: new Date(resultSet.rows?.item(0).date),
+              });
+            }
           } catch (error) {
             console.log('error', error);
           }
@@ -57,6 +61,7 @@ export default class HistoryScene extends Component<
   }
 
   private getYearsSinceStartYear(): number[] {
+    console.log('startyahr:', moment(this.state.firstEntryDate).year());
     const startYear = moment(this.state.firstEntryDate).year();
     let years: number[] = [];
     for (let i = startYear; i <= moment().year(); i++) {
