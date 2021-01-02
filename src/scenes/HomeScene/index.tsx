@@ -87,7 +87,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
       .then((value) => {
         if (value !== null) {
           const customCategories = [...new Set<string>(JSON.parse(value))];
-          console.log('cust cat:', customCategories);
+
           this.setState({
             categories: [...new Set<string>(tags), ...customCategories],
             showLabels,
@@ -133,8 +133,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
               });
             }
           }
-
-          console.log('tr:', transactions);
         },
         (error) => {
           console.log('error:', error);
@@ -159,7 +157,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             });
           }
 
-          console.log('rec', recurringtransactions);
           this.setState({
             elementsToDisplay: transactions.concat(recurringtransactions),
           });
@@ -176,7 +173,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     const amount = parseFloat(this.state.dialogAmount.replace(',', '.'));
 
     if (amount == null || isNaN(amount)) {
-      console.log(amount);
       return 0;
     }
     return amount;
@@ -197,10 +193,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     const amount = this.validateAmountInput();
     const tag = this.state.dialogCategory ? this.state.dialogCategory : tags[0];
 
-    console.log(
-      'datetime:',
-      moment(this.state.dialogDateTime).format('YYYY-MM-DD'),
-    );
     if (amount === 0) {
       this.setState({isModalVisible: false});
       return;
@@ -264,7 +256,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
         graphDat.push({x: el.tag, y: el.amount});
       }
     });
-    console.log('data:', graphDat);
 
     if (this.state.amountAvailable > 0) {
       let totalSpend: number = 0;
@@ -414,7 +405,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
               paddingRight: 20,
             }}
             onPress={() => {
-              console.log('press'), this.setState({isModalVisible: true});
+              this.setState({isModalVisible: true});
             }}>
             <Icon
               name="plus"

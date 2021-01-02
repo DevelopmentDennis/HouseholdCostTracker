@@ -61,7 +61,6 @@ export default class HistoryScene extends Component<
   }
 
   private getYearsSinceStartYear(): number[] {
-    console.log('startyahr:', moment(this.state.firstEntryDate).year());
     const startYear = moment(this.state.firstEntryDate).year();
     let years: number[] = [];
     for (let i = startYear; i <= moment().year(); i++) {
@@ -77,8 +76,6 @@ export default class HistoryScene extends Component<
       .startOf('month')
       .toDate();
     const lastDayOfMonth = moment(firstDayOfMonth).add(1, 'M').toDate();
-
-    console.log(firstDayOfMonth);
 
     db.transaction((tx) => {
       tx.executeSql(
@@ -157,7 +154,6 @@ export default class HistoryScene extends Component<
   }
 
   private renderTotalSpend() {
-    console.log('renderTotalSpend');
     if (this.state.totalSpendForMonth === 0) {
       return (
         <View style={[globalStyles.rowContainerItem, {marginLeft: 20}]}>
@@ -167,7 +163,6 @@ export default class HistoryScene extends Component<
         </View>
       );
     } else {
-      console.log('ausgaben:', this.state.totalSpendForMonth);
       return (
         <View style={[globalStyles.rowContainerItem, {marginLeft: 20}]}>
           <Text style={{fontSize: 18, color: 'black'}}>Ausgaben Gesamt</Text>

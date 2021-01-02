@@ -151,7 +151,6 @@ export default class SettingsScene extends Component<null, SettingsState> {
                 paddingLeft: 15,
               }}
               onPress={() => {
-                console.log('pressed');
                 this.storeData();
                 Keyboard.dismiss();
               }}>
@@ -211,7 +210,6 @@ export default class SettingsScene extends Component<null, SettingsState> {
                 paddingLeft: 15,
               }}
               onPress={() => {
-                console.log('pressed2');
                 this.addCategory();
                 Keyboard.dismiss();
               }}>

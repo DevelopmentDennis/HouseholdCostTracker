@@ -62,7 +62,6 @@ export default class RecuringTransactionsScene extends Component<
             });
           }
 
-          console.log(transactions);
           this.setState({recurringTransactions: transactions});
         },
         (error) => {
@@ -107,12 +106,11 @@ export default class RecuringTransactionsScene extends Component<
         },
         (error) => console.log('error adding recurringTransaction', error),
         () => {
-          console.log('successfully added to recurring table'),
-            this.setState({
-              addRecurringTransactionAmount: 0,
-              addRecurringTransactionDescription: '',
-              showRecurringTransactionAddDialog: false,
-            });
+          this.setState({
+            addRecurringTransactionAmount: 0,
+            addRecurringTransactionDescription: '',
+            showRecurringTransactionAddDialog: false,
+          });
           this.getRecurringData();
         },
       );
