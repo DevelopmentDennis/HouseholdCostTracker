@@ -77,7 +77,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
         if (value !== null) {
           const amount = Number.parseInt(value);
           if (!isNaN(amount)) {
-            amountAvailable = amount;
+            this.setState({amountAvailable: amount});
           }
         }
       })
@@ -91,7 +91,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
           this.setState({
             categories: [...new Set<string>(tags), ...customCategories],
             showLabels,
-            amountAvailable,
           });
         }
       })
@@ -359,7 +358,8 @@ export default class HomeScene extends Component<null, HomeScreenState> {
           {this.state.elementsToDisplay.length === 0 && (
             <ActivityIndicator size="large" />
           )}
-          {this.state.elementsToDisplay.length > 0 && (
+          {(this.state.elementsToDisplay.length > 0 ||
+            this.state.amountAvailable > 0) && (
             <VictoryPie
               animate={{easing: 'exp'}}
               data={this.getGraphData()}
