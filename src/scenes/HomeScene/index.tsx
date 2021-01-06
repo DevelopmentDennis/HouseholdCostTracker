@@ -55,7 +55,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     showLabels: false,
     isModalVisible: false,
     dialogAmount: '',
-    dialogDateTime: new Date(),
+    dialogDateTime: moment().toDate(),
     dialogCategory: '',
     elementsToDisplay: [],
     amountAvailable: 0,
@@ -77,7 +77,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
         if (value !== null) {
           const amount = Number.parseInt(value);
           if (!isNaN(amount)) {
-            this.setState({amountAvailable: amount});
+            amountAvailable = amount;
           }
         }
       })
@@ -92,9 +92,19 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             categories: [...new Set<string>(tags), ...customCategories],
             showLabels,
           });
+        } else {
+          this.setState({
+            showLabels,
+            amountAvailable,
+          });
         }
       })
-      .catch((e) => {});
+      .catch((e) => {
+        this.setState({
+          showLabels,
+          amountAvailable,
+        });
+      });
   }
 
   componentDidMount() {
@@ -126,7 +136,8 @@ export default class HomeScene extends Component<null, HomeScreenState> {
 
           for (let i = 0; i < rows.length; i++) {
             let tra: Transaction = rows.item(i);
-            if (moment(tra.createdAt) > moment().startOf('month')) {
+
+            if (moment(tra.createdAt) >= moment().startOf('month')) {
               transactions.push({
                 ...rows.item(i),
               });
@@ -201,7 +212,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
       (tx) => {
         tx.executeSql(
           'INSERT INTO Transactions (amount, createdAt, tag) VALUES (?, ? , ?) ',
-          [amount, moment(this.state.dialogDateTime).format('YYYY-MM-DD'), tag],
+          [amount, moment(this.state.dialogDateTime).format(), tag],
         );
       },
       (error) => console.log('error adding transaction', error),
@@ -339,27 +350,25 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             </Text>
           </View>
           {/* <Button title="Delete" onPress={() => this.dropTable()} /> */}
-          {this.state.elementsToDisplay.length === 0 &&
-            this.state.amountAvailable === 0 && (
-              <View style={{marginTop: 50, marginBottom: 50}}>
-                <Text style={{fontSize: 17}}>Noch nichts anzuzeigen</Text>
-                <Text
-                  style={{
-                    textDecorationLine: 'underline',
-                    color: 'gray',
-                    fontSize: 16,
-                    textAlign: 'center',
-                  }}
-                  onPress={() => this.setState({isModalVisible: true})}>
-                  Ausgabe hinzufügen
-                </Text>
-              </View>
-            )}
+          {this.state.elementsToDisplay.length === 0 && (
+            <View style={{marginTop: 50, marginBottom: 50}}>
+              <Text style={{fontSize: 17}}>Noch nichts anzuzeigen</Text>
+              <Text
+                style={{
+                  textDecorationLine: 'underline',
+                  color: 'gray',
+                  fontSize: 16,
+                  textAlign: 'center',
+                }}
+                onPress={() => this.setState({isModalVisible: true})}>
+                Ausgabe hinzufügen
+              </Text>
+            </View>
+          )}
           {this.state.elementsToDisplay.length === 0 && (
             <ActivityIndicator size="large" />
           )}
-          {(this.state.elementsToDisplay.length > 0 ||
-            this.state.amountAvailable > 0) && (
+          {this.state.elementsToDisplay.length > 0 && (
             <VictoryPie
               animate={{easing: 'exp'}}
               data={this.getGraphData()}
@@ -416,18 +425,19 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             />
           </TouchableOpacity>
         </View>
-
-        <VictoryLegend
-          colorScale={sliceColors}
-          data={this.getLegendData()}
-          orientation="horizontal"
-          itemsPerRow={this.state.showLabels ? 2 : 3}
-          gutter={40}
-          height={height * 0.25}
-          borderPadding={{bottom: 0, left: 10, right: 5}}
-          width={width}
-          symbolSpacer={15}
-        />
+        {this.state.elementsToDisplay.length > 0 && (
+          <VictoryLegend
+            colorScale={sliceColors}
+            data={this.getLegendData()}
+            orientation="horizontal"
+            itemsPerRow={this.state.showLabels ? 2 : 3}
+            gutter={40}
+            height={height * 0.25}
+            borderPadding={{bottom: 0, left: 10, right: 5}}
+            width={width}
+            symbolSpacer={15}
+          />
+        )}
       </ScrollView>
     );
   }
