@@ -78,30 +78,6 @@ export default class SettingsScene extends Component<null, SettingsState> {
     }
   }
 
-  private async addCategory() {
-    if (this.state.newCategory == '') {
-      return;
-    }
-    const data = await AsyncStorage.getItem('customCategories');
-    if (data === null) {
-      await AsyncStorage.setItem(
-        'customCategories',
-        JSON.stringify([this.state.newCategory]),
-      );
-    } else {
-      let categoriesArray: string[] = JSON.parse(data);
-      categoriesArray.push(this.state.newCategory);
-
-      AsyncStorage.setItem(
-        'customCategories',
-        JSON.stringify([...new Set<string>(categoriesArray)]),
-      ).then(() => {
-        ToastAndroid.show('Erfolgreich hinzugefügt', ToastAndroid.SHORT),
-          this.setState({newCategory: ''});
-      });
-    }
-  }
-
   render() {
     const {width} = Dimensions.get('window');
     return (
@@ -171,59 +147,23 @@ export default class SettingsScene extends Component<null, SettingsState> {
             />
           </View> */}
 
-          <Text style={{marginBottom: 15, marginTop: 20}}>
-            Eigene Kategorie hinzufügen
-          </Text>
-          <View
-            style={{
-              backgroundColor: 'white',
-              width: '100%',
-              borderBottomColor: 'black',
-              justifyContent: 'space-around',
-              alignItems: 'center',
-              flexDirection: 'row',
-              borderRadius: 10,
-              borderColor: 'black',
-              borderWidth: 1,
-            }}>
-            <TextInput
-              style={{
-                fontSize: 17,
-                width: width * 0.4,
-                paddingLeft: 25,
-              }}
-              placeholder="Kategorie"
-              value={this.state.newCategory}
-              onChangeText={(text) => this.setState({newCategory: text})}
-              onSubmitEditing={() => Keyboard.dismiss()}
-              onBlur={() => Keyboard.dismiss()}
-            />
-
-            <TouchableOpacity
-              style={{
-                borderLeftWidth: 1,
-                borderLeftColor: 'black',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderTopRightRadius: 10,
-                borderBottomRightRadius: 10,
-                paddingLeft: 15,
-              }}
-              onPress={() => {
-                this.addCategory();
-                Keyboard.dismiss();
-              }}>
-              <Text style={{color: 'green'}}>Speichern</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={{width: '100%', marginTop: 20}}>
+          <View style={{width: '100%', marginTop: 40}}>
             <ListItem
               bottomDivider
               topDivider
               onPress={() => Actions.jump('recurring')}>
               <ListItem.Content>
                 <ListItem.Title>Monatliche Ausgaben</ListItem.Title>
+              </ListItem.Content>
+              <ListItem.Chevron />
+            </ListItem>
+
+            <ListItem
+              bottomDivider
+              topDivider
+              onPress={() => Actions.jump('categories')}>
+              <ListItem.Content>
+                <ListItem.Title>Eigene Kategorien</ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
             </ListItem>

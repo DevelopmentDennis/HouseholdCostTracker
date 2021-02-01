@@ -16,6 +16,7 @@ import Expenses from '../scenes/ExpensesScene';
 import LicensesScene from '../scenes/LicensesScene';
 import RecuringTransactionsScene from '../scenes/RecurringTransactionsScene';
 import PrivacyScene from '../scenes/PrivacyScene';
+import CategoriesScene from '../scenes/CategoriesScene';
 
 export default class AppRouter extends Component {
   render() {
@@ -59,6 +60,11 @@ export default class AppRouter extends Component {
           key="recurring"
           component={RecuringTransactionsScene}
           title="Monatliche Ausgaben"
+        />
+        <Scene
+          key="categories"
+          title="Eigene Kategorien"
+          component={CategoriesScene}
         />
         <Scene key="privacy" title="Datenschutz" component={PrivacyScene} />
       </Scene>,

@@ -27,6 +27,7 @@ import {
   Transaction,
 } from '../../types/types';
 import AsyncStorage from '@react-native-community/async-storage';
+import BackPressHandler from '../../components/BackPressHandler';
 
 const db = SQLite.openDatabase('CostTracker.db');
 
@@ -89,8 +90,9 @@ export default class HomeScene extends Component<null, HomeScreenState> {
           const customCategories = [...new Set<string>(JSON.parse(value))];
 
           this.setState({
-            categories: [...new Set<string>(tags), ...customCategories],
+            categories: [...customCategories, ...new Set<string>(tags)],
             showLabels,
+            amountAvailable,
           });
         } else {
           this.setState({
@@ -337,6 +339,8 @@ export default class HomeScene extends Component<null, HomeScreenState> {
           </View>
         </Overlay>
 
+        <BackPressHandler />
+
         <View
           style={{
             justifyContent: 'flex-start',
@@ -429,6 +433,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
           <VictoryLegend
             colorScale={sliceColors}
             data={this.getLegendData()}
+            style={{labels: {fontSize: 15}}}
             orientation="horizontal"
             itemsPerRow={this.state.showLabels ? 2 : 3}
             gutter={40}
