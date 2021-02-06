@@ -203,7 +203,14 @@ export default class HomeScene extends Component<null, HomeScreenState> {
 
   addExpense() {
     const amount = this.validateAmountInput();
-    const tag = this.state.dialogCategory ? this.state.dialogCategory : tags[0];
+    let tag = '';
+    if (this.state.categories.length > 0) {
+      tag = this.state.dialogCategory
+        ? this.state.dialogCategory
+        : this.state.categories[0];
+    } else {
+      tag = this.state.dialogCategory ? this.state.dialogCategory : tags[0];
+    }
 
     if (amount === 0) {
       this.setState({isModalVisible: false});
@@ -348,10 +355,17 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             alignItems: 'center',
           }}>
           <View>
-            <Text style={[styles.textHeading]}>Monats Kosten Übersicht</Text>
+            <Text style={[styles.textHeading, {textAlign: 'center'}]}>
+              Monats Kosten Übersicht
+            </Text>
             <Text style={styles.text}>
               {moment().locale('de').format('MMMM YYYY')}
             </Text>
+            {this.state.amountAvailable > 0 && (
+              <Text style={styles.text}>{`noch ${
+                this.getGraphData()[0].y
+              }€ verfügbar`}</Text>
+            )}
           </View>
           {/* <Button title="Delete" onPress={() => this.dropTable()} /> */}
           {this.state.elementsToDisplay.length === 0 && (
