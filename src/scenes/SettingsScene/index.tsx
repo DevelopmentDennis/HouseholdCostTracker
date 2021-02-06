@@ -187,7 +187,7 @@ export default class SettingsScene extends Component<null, SettingsState> {
         <View style={{bottom: 0}}>
           <ListItem bottomDivider>
             <ListItem.Content>
-              <ListItem.Title>App-Version 1.1</ListItem.Title>
+              <ListItem.Title>App-Version 1.2</ListItem.Title>
             </ListItem.Content>
           </ListItem>
         </View>
