@@ -28,6 +28,7 @@ import {
 } from '../../types/types';
 import AsyncStorage from '@react-native-community/async-storage';
 import BackPressHandler from '../../components/BackPressHandler';
+import Svg from 'react-native-svg';
 
 const db = SQLite.openDatabase('CostTracker.db');
 
@@ -354,7 +355,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             flexDirection: 'column',
             alignItems: 'center',
           }}>
-          <View>
+          <View style={{flex: 1}}>
             <Text style={[styles.textHeading, {textAlign: 'center'}]}>
               Monats Kosten Übersicht
             </Text>
@@ -387,18 +388,47 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             <ActivityIndicator size="large" />
           )}
           {this.state.elementsToDisplay.length > 0 && (
-            <VictoryPie
-              animate={{easing: 'exp'}}
-              data={this.getGraphData()}
-              width={width * 0.9}
-              padding={10}
-              innerRadius={width * 0.15}
-              padAngle={1}
-              colorScale={sliceColors}
-              cornerRadius={10}
-              standalone={true}
-              labels={() => null}
-            />
+            <Svg style={{flex: 1}} height={width}>
+              <VictoryPie
+                events={[
+                  {
+                    target: 'data',
+                    eventHandlers: {
+                      onPressIn: () => {
+                        return [
+                          {
+                            target: 'labels',
+                            mutation: (props) => {
+                              return !!props.text
+                                ? {text: ''}
+                                : {
+                                    text: `${
+                                      props?.slice?.data?.xName
+                                    }\n${Number(props.slice?.data?.y).toFixed(
+                                      2,
+                                    )}€`,
+                                  };
+                            },
+                          },
+                        ];
+                      },
+                    },
+                  },
+                ]}
+                animate={{easing: 'exp'}}
+                data={this.getGraphData()}
+                width={width * 0.9}
+                labelRadius={width * 0.2}
+                padding={10}
+                style={{labels: {fontSize: 20, fill: 'black', fontWeight: 600}}}
+                innerRadius={width * 0.15}
+                padAngle={1}
+                colorScale={sliceColors}
+                cornerRadius={10}
+                standalone={true}
+                labels={() => null}
+              />
+            </Svg>
           )}
         </View>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
