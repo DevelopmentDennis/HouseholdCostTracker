@@ -2,6 +2,7 @@ import moment from 'moment';
 import * as React from 'react';
 import {Component} from 'react';
 import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
+import {Actions} from 'react-native-router-flux';
 import SQLite from 'react-native-sqlite-storage';
 import {globalStyles} from '../../styles/styles';
 import {GraphFormat, Transaction} from '../../types/types';
@@ -123,6 +124,26 @@ export default class HistoryScene extends Component<
     ));
   }
 
+  private renderDetailButton() {
+    if (this.state.totalSpendForMonth !== 0) {
+      return (
+        <View style={[globalStyles.rowContainerItem, {marginLeft: 20}]}>
+          <TouchableOpacity
+            onPress={() =>
+              Actions.jump('details', {
+                month: this.state.monthPressed,
+                year: this.state.yearPressed,
+                elementsToDisplay: this.state.elementsToDisplay,
+                totalSpend: this.state.totalSpendForMonth.toFixed(2),
+              })
+            }>
+            <Text style={{fontSize: 18}}>Für mehr Details hier drücken</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  }
+
   private renderMonths() {
     return moment()
       .localeData()
@@ -142,11 +163,11 @@ export default class HistoryScene extends Component<
             }}>
             <Text style={{fontSize: 18}}>{element.toString()}</Text>
             <Text style={{fontSize: 18, color: 'lightgray'}}>
-              {' '}
               {this.state.monthPressed === element ? '⌄' : '>'}
             </Text>
           </TouchableOpacity>
 
+          {this.state.monthPressed === element && this.renderDetailButton()}
           {this.state.monthPressed === element && this.renderTotalSpend()}
           {this.state.monthPressed === element && this.renderElementsForMonth()}
         </View>

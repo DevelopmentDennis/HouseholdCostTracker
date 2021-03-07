@@ -17,6 +17,7 @@ import LicensesScene from '../scenes/LicensesScene';
 import RecuringTransactionsScene from '../scenes/RecurringTransactionsScene';
 import PrivacyScene from '../scenes/PrivacyScene';
 import CategoriesScene from '../scenes/CategoriesScene';
+import MonthDetailScene from '../scenes/MonthDetailScene';
 
 export default class AppRouter extends Component {
   render() {
@@ -61,6 +62,7 @@ export default class AppRouter extends Component {
           component={RecuringTransactionsScene}
           title="Monatliche Ausgaben"
         />
+        <Scene key="details" component={MonthDetailScene} title="Details" />
         <Scene
           key="categories"
           title="Eigene Kategorien"
