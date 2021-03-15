@@ -7,6 +7,7 @@ import moment from 'moment';
 
 export interface DateTimeInputProps {
   onDateChanged: (date: Date) => void;
+  initialDate: Date;
 }
 
 export interface DateTimeInputState {
@@ -17,7 +18,7 @@ export interface DateTimeInputState {
 class DateTimeInput extends Component<DateTimeInputProps, DateTimeInputState> {
   readonly state: DateTimeInputState = {
     isDatePickerVisible: false,
-    date: new Date(),
+    date: this.props.initialDate,
   };
 
   render() {
@@ -27,7 +28,8 @@ class DateTimeInput extends Component<DateTimeInputProps, DateTimeInputState> {
           onPress={() => this.setState({isDatePickerVisible: true})}>
           <Input
             disabled
-            value={moment(this.state.date).format('DD.MM.YYYY')}></Input>
+            value={moment(this.state.date).format('DD.MM.YYYY')}
+          />
         </TouchableOpacity>
 
         {this.state.isDatePickerVisible && (

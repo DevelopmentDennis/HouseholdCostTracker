@@ -1,9 +1,16 @@
 import moment from 'moment';
 import * as React from 'react';
 import {Component} from 'react';
-import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  ToastAndroid,
+} from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import SQLite from 'react-native-sqlite-storage';
+import TransactionDialog from '../../components/TransactionDialog';
 import {globalStyles} from '../../styles/styles';
 import {GraphFormat, Transaction} from '../../types/types';
 
@@ -16,6 +23,8 @@ interface HistorySceneState {
   yearPressed: number;
   monthPressed: string;
   totalSpendForMonth: number;
+  isDialogVisible: boolean;
+  entryPressed: Transaction;
 }
 
 export default class HistoryScene extends Component<
@@ -24,11 +33,13 @@ export default class HistoryScene extends Component<
 > {
   readonly state: HistorySceneState = {
     elementsToDisplay: [],
+    isDialogVisible: false,
     graphData: [],
     firstEntryDate: new Date(),
     yearPressed: moment().year(),
     monthPressed: '',
     totalSpendForMonth: 0,
+    entryPressed: undefined,
   };
 
   componentDidMount() {
@@ -110,17 +121,51 @@ export default class HistoryScene extends Component<
     });
   }
 
+  private updateEntry(amount: number, category: string, date: Date) {
+    console.log('update entry');
+    console.log('amount:', amount);
+    console.log('category:', category);
+    console.log('date:', date);
+    console.log('id:', this.state.entryPressed.id);
+    if (!this.state.entryPressed || !this.state.entryPressed.id) {
+      ToastAndroid.show(
+        'Eintrag kann nicht bearbeitet werden',
+        ToastAndroid.SHORT,
+      );
+    }
+    db.transaction((tx) => {
+      tx.executeSql(
+        'UPDATE Transactions set amount=?, tag=?, createdAt=? where id=?',
+        [amount, category, moment(date).format(), this.state.entryPressed.id],
+        (tx, results) => {
+          console.log('Results', results.rowsAffected);
+          if (results.rowsAffected > 0) {
+            ToastAndroid.show('User updated successfully', ToastAndroid.SHORT);
+            this.calculateElementsForMonth();
+          } else alert('Updation Failed');
+        },
+        (error) => {
+          console.log('error:', error);
+        },
+      );
+    });
+  }
+
   private renderElementsForMonth() {
     return this.state.elementsToDisplay.map((element, index) => (
-      <View
+      <TouchableOpacity
         key={index}
-        style={[globalStyles.rowContainerItem, {marginLeft: 20}]}>
-        <Text style={{fontSize: 18}}>
-          {moment(element.createdAt).format('dd DD.MM.YYYY').toString()}
-        </Text>
-        <Text style={{fontSize: 18}}>{element.tag}</Text>
-        <Text style={{fontSize: 18}}>{element.amount}€</Text>
-      </View>
+        onPress={() =>
+          this.setState({isDialogVisible: true, entryPressed: element})
+        }>
+        <View style={[globalStyles.rowContainerItem, {marginLeft: 20}]}>
+          <Text style={{fontSize: 18}}>
+            {moment(element.createdAt).format('dd DD.MM.YYYY').toString()}
+          </Text>
+          <Text style={{fontSize: 18}}>{element.tag}</Text>
+          <Text style={{fontSize: 18}}>{element.amount}€</Text>
+        </View>
+      </TouchableOpacity>
     ));
   }
 
@@ -221,6 +266,14 @@ export default class HistoryScene extends Component<
   render() {
     return (
       <ScrollView style={{padding: 10, backgroundColor: '#cccccc32'}}>
+        <TransactionDialog
+          isVisible={this.state.isDialogVisible}
+          onCloseRequested={() => this.setState({isDialogVisible: false})}
+          onFinish={this.updateEntry.bind(this)}
+          dataToDisplay={this.state.entryPressed}
+          submitButtonText={'Ändern'}
+        />
+
         <View style={{marginTop: 15}} />
         {this.renderYearsAndMonths()}
         <View style={{marginTop: 15}} />

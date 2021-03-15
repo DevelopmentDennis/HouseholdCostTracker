@@ -1,4 +1,3 @@
-import {Picker} from '@react-native-community/picker';
 import moment from 'moment';
 import * as React from 'react';
 import {Component} from 'react';
@@ -9,12 +8,10 @@ import {
   TouchableOpacity,
   ScrollView,
   RefreshControl,
-  Keyboard,
   ActivityIndicator,
 } from 'react-native';
-import {Icon, Input, Overlay, Button} from 'react-native-elements';
+import {Icon} from 'react-native-elements';
 import {VictoryLegend, VictoryPie} from 'victory-native';
-import DateTimeInput from '../../components/DateTimeInput';
 import SQLite from 'react-native-sqlite-storage';
 import {styles} from './styles';
 import {tags} from '../../../assets/defaultTags.json';
@@ -29,6 +26,7 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import BackPressHandler from '../../components/BackPressHandler';
 import Svg from 'react-native-svg';
+import TransactionDialog from '../../components/TransactionDialog';
 
 const db = SQLite.openDatabase('CostTracker.db');
 
@@ -36,13 +34,11 @@ interface HomeScreenState {
   showLabels: boolean;
   isModalVisible: boolean;
   defaultGraphicData: any;
-  dialogAmount: string;
-  dialogDateTime: Date;
-  dialogCategory: string;
   elementsToDisplay: Transaction[];
   amountAvailable: number;
   isRefreshing: boolean;
   categories: string[];
+  didLoadAllData: boolean;
 }
 
 const wait = (timeout: number) => {
@@ -56,13 +52,11 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     defaultGraphicData: [{y: 0}, {y: 0}, {y: 100}],
     showLabels: false,
     isModalVisible: false,
-    dialogAmount: '',
-    dialogDateTime: moment().toDate(),
-    dialogCategory: '',
     elementsToDisplay: [],
     amountAvailable: 0,
     isRefreshing: false,
     categories: tags,
+    didLoadAllData: false,
   };
 
   private async getAllAsyncStorageData() {
@@ -125,10 +119,11 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     }
     this.getAllAsyncStorageData();
     this.renderCurrentTransactions();
-    //setTimeout(() => , 800);
+    this.setState({didLoadAllData: true});
   }
 
   private renderCurrentTransactions() {
+    console.log('rerenerTransactions:');
     db.transaction((tx) => {
       let transactions: Transaction[] = [];
       tx.executeSql(
@@ -182,15 +177,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     });
   }
 
-  validateAmountInput(): number {
-    const amount = parseFloat(this.state.dialogAmount.replace(',', '.'));
-
-    if (amount == null || isNaN(amount)) {
-      return 0;
-    }
-    return amount;
-  }
-
   public dropTable() {
     db.transaction(
       (tx) => {
@@ -202,40 +188,27 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     return true;
   }
 
-  addExpense() {
-    const amount = this.validateAmountInput();
-    let tag = '';
-    if (this.state.categories.length > 0) {
-      tag = this.state.dialogCategory
-        ? this.state.dialogCategory
-        : this.state.categories[0];
-    } else {
-      tag = this.state.dialogCategory ? this.state.dialogCategory : tags[0];
-    }
-
+  addExpense(amount: number, category: string, date: Date) {
     if (amount === 0) {
-      this.setState({isModalVisible: false});
       return;
     }
+
+    console.log('amount:', amount);
+    console.log('category:', category);
+    console.log('date:', date);
 
     db.transaction(
       (tx) => {
         tx.executeSql(
           'INSERT INTO Transactions (amount, createdAt, tag) VALUES (?, ? , ?) ',
-          [amount, moment(this.state.dialogDateTime).format(), tag],
+          [amount, moment(date).format(), category],
         );
       },
       (error) => console.log('error adding transaction', error),
-      () =>
-        this.setState({
-          isModalVisible: false,
-          dialogAmount: '',
-          dialogDateTime: new Date(),
-          dialogCategory: '',
-        }),
+      () => {
+        console.log('added');
+      },
     );
-
-    this.renderCurrentTransactions();
   }
 
   getLegendData(): LegendFormat[] {
@@ -307,45 +280,14 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             onRefresh={async () => await this.onRefresh()}
           />
         }>
-        <Overlay
-          isVisible={this.state.isModalVisible}
-          overlayStyle={{width: width * 0.7}}
-          onBackdropPress={() => this.setState({isModalVisible: false})}>
-          <View>
-            <Text style={[styles.text, styles.textSubHeading]}>
-              Ausgabe hinzufügen
-            </Text>
-            <Text style={styles.text}>Betrag</Text>
-            <Input
-              placeholder="Betrag"
-              keyboardType="numbers-and-punctuation"
-              onChangeText={(amount) => this.setState({dialogAmount: amount})}
-              onBlur={() => Keyboard.dismiss()}
-            />
-            <Text style={styles.text}>Datum</Text>
-            <DateTimeInput
-              onDateChanged={(date) => this.setState({dialogDateTime: date})}
-            />
-            <Text style={styles.text}>Kategorie</Text>
-            <Picker
-              selectedValue={this.state.dialogCategory}
-              itemStyle={[styles.text, {fontSize: 20}]}
-              onValueChange={(itemValue, itemIndex) => {
-                this.setState({dialogCategory: itemValue.toString()});
-                Keyboard.dismiss();
-              }}>
-              {this.state.categories.map((value, index) => (
-                <Picker.Item
-                  key={index}
-                  label={value}
-                  value={value}
-                  color={'#707070'}
-                />
-              ))}
-            </Picker>
-            <Button title="Hinzufügen" onPress={() => this.addExpense()} />
-          </View>
-        </Overlay>
+        {this.state.didLoadAllData && (
+          <TransactionDialog
+            isVisible={this.state.isModalVisible}
+            onCloseRequested={() => this.setState({isModalVisible: false})}
+            onFinish={this.addExpense}
+            triggerRerender={() => this.renderCurrentTransactions()}
+          />
+        )}
 
         <BackPressHandler />
 
@@ -420,7 +362,9 @@ export default class HomeScene extends Component<null, HomeScreenState> {
                 width={width * 0.9}
                 labelRadius={width * 0.2}
                 padding={10}
-                style={{labels: {fontSize: 20, fill: 'black', fontWeight: 600}}}
+                style={{
+                  labels: {fontSize: 20, fill: 'black', fontWeight: 600},
+                }}
                 innerRadius={width * 0.15}
                 padAngle={1}
                 colorScale={sliceColors}
