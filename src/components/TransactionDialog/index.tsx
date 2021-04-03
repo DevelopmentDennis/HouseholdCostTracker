@@ -27,6 +27,7 @@ export interface TransactionDialogState {
   selectedDate: Date;
   categories: string[];
   elementId: number;
+  showDefaultKeyboard: boolean;
 }
 
 class TransactionDialog extends Component<
@@ -39,24 +40,15 @@ class TransactionDialog extends Component<
     selectedDate: moment().toDate(),
     categories: tags,
     elementId: undefined,
+    showDefaultKeyboard: false,
   };
 
   componentDidMount() {
-    AsyncStorage.getItem('customCategories')
-      .then((value) => {
-        if (value !== null) {
-          const customCategories = [...new Set<string>(JSON.parse(value))];
-          this.setState({
-            categories: [...customCategories, ...new Set<string>(tags)],
-          });
-        }
-      })
-      .catch((e) => {
-        console.log('error');
-      });
+    this.getCustomCategories();
+    this.getKeyboardType();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps: TransactionDialogProps) {
     if (this.props.dataToDisplay) {
       if (this.props.dataToDisplay.id !== this.state.elementId) {
         this.setState({elementId: this.props.dataToDisplay.id});
@@ -71,6 +63,37 @@ class TransactionDialog extends Component<
         }
       }
     }
+    if (this.props.isVisible && !prevProps.isVisible) {
+      this.getKeyboardType();
+      this.getCustomCategories();
+    }
+  }
+
+  getKeyboardType() {
+    AsyncStorage.getItem('showDefaultKeyboardType')
+      .then((value) => {
+        if (value != null) {
+          this.setState({showDefaultKeyboard: value === 'true'});
+        }
+      })
+      .catch((e) => {
+        console.log('error', e);
+      });
+  }
+
+  getCustomCategories() {
+    AsyncStorage.getItem('customCategories')
+      .then((value) => {
+        if (value !== null) {
+          const customCategories = [...new Set<string>(JSON.parse(value))];
+          this.setState({
+            categories: [...customCategories, ...new Set<string>(tags)],
+          });
+        }
+      })
+      .catch((e) => {
+        console.log('error');
+      });
   }
 
   onClose() {
@@ -85,10 +108,17 @@ class TransactionDialog extends Component<
     );
   }
 
+  validateCategory() {
+    if (this.state.selectedCategory !== '') {
+      return this.state.selectedCategory;
+    }
+    return this.state.categories[0];
+  }
+
   onSubmit() {
     this.props.onFinish(
       this.validateAmountInput(),
-      this.state.selectedCategory,
+      this.validateCategory(),
       this.state.selectedDate,
     );
     if (this.props.triggerRerender) {
@@ -124,7 +154,9 @@ class TransactionDialog extends Component<
           <Text style={styles.text}>Betrag</Text>
           <Input
             placeholder="Betrag"
-            keyboardType="numeric"
+            keyboardType={
+              this.state.showDefaultKeyboard ? 'default' : 'numeric'
+            }
             value={this.state.amount}
             onChangeText={(amount) => this.setState({amount})}
             onBlur={() => Keyboard.dismiss()}

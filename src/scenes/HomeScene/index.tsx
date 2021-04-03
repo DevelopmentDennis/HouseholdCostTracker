@@ -9,6 +9,7 @@ import {
   ScrollView,
   RefreshControl,
   ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import {VictoryLegend, VictoryPie} from 'victory-native';
@@ -31,7 +32,6 @@ import TransactionDialog from '../../components/TransactionDialog';
 const db = SQLite.openDatabase('CostTracker.db');
 
 interface HomeScreenState {
-  showLabels: boolean;
   isModalVisible: boolean;
   defaultGraphicData: any;
   elementsToDisplay: Transaction[];
@@ -39,6 +39,7 @@ interface HomeScreenState {
   isRefreshing: boolean;
   categories: string[];
   didLoadAllData: boolean;
+  showDarkModeStyle: boolean;
 }
 
 const wait = (timeout: number) => {
@@ -50,23 +51,32 @@ const wait = (timeout: number) => {
 export default class HomeScene extends Component<null, HomeScreenState> {
   readonly state: HomeScreenState = {
     defaultGraphicData: [{y: 0}, {y: 0}, {y: 100}],
-    showLabels: false,
     isModalVisible: false,
     elementsToDisplay: [],
     amountAvailable: 0,
     isRefreshing: false,
     categories: tags,
     didLoadAllData: false,
+    showDarkModeStyle: false,
   };
 
   private async getAllAsyncStorageData() {
-    let showLabels: boolean = false;
     let amountAvailable: number = 0;
-    AsyncStorage.getItem('showAmountLabels')
-      .then((value) => {
-        showLabels = value === 'true';
-      })
-      .catch();
+
+    AsyncStorage.multiGet(['monthlyAvailableAmount', 'showDarkmodeStyle']).then(
+      (values) => {
+        console.log(values);
+        if (values[0][1]) {
+          const amount = Number.parseInt(values[0][1]);
+          if (!isNaN(amount)) {
+            amountAvailable = amount;
+          }
+        }
+        if (values[1][1]) {
+          this.setState({showDarkModeStyle: values[1][1] === 'true'});
+        }
+      },
+    );
 
     AsyncStorage.getItem('monthlyAvailableAmount')
       .then((value) => {
@@ -86,19 +96,16 @@ export default class HomeScene extends Component<null, HomeScreenState> {
 
           this.setState({
             categories: [...customCategories, ...new Set<string>(tags)],
-            showLabels,
             amountAvailable,
           });
         } else {
           this.setState({
-            showLabels,
             amountAvailable,
           });
         }
       })
       .catch((e) => {
         this.setState({
-          showLabels,
           amountAvailable,
         });
       });
@@ -154,20 +161,27 @@ export default class HomeScene extends Component<null, HomeScreenState> {
         (_, resultSet) => {
           const rows = resultSet.rows;
           let recurringtransactions: Transaction[] = [];
+          if (rows.length != 0) {
+            for (let i = 0; i < rows.length; i++) {
+              let tra: RecurringTransaction = rows.item(i);
 
-          for (let i = 0; i < rows.length; i++) {
-            let tra: RecurringTransaction = rows.item(i);
+              recurringtransactions.push({
+                amount: Math.round(tra.amount),
+                createdAt: new Date(),
+                tag: 'Monatlich',
+              });
+            }
 
-            recurringtransactions.push({
-              amount: Math.round(tra.amount),
-              createdAt: new Date(),
-              tag: 'Monatlich',
+            transactions.splice(0, 0, recurringtransactions[0]);
+
+            this.setState({
+              elementsToDisplay: transactions.concat(
+                recurringtransactions.slice(1),
+              ),
             });
+          } else {
+            this.setState({elementsToDisplay: transactions});
           }
-
-          this.setState({
-            elementsToDisplay: transactions.concat(recurringtransactions),
-          });
         },
         (error) => {
           console.log('error:', error);
@@ -204,9 +218,9 @@ export default class HomeScene extends Component<null, HomeScreenState> {
           [amount, moment(date).format(), category],
         );
       },
-      (error) => console.log('error adding transaction', error),
+      (error) => ToastAndroid.show(error, ToastAndroid.SHORT),
       () => {
-        console.log('added');
+        ToastAndroid.show('Ausgabe hinzugefügt', ToastAndroid.SHORT);
       },
     );
   }
@@ -214,19 +228,11 @@ export default class HomeScene extends Component<null, HomeScreenState> {
   getLegendData(): LegendFormat[] {
     let stringDat: LegendFormat[] = [];
     if (this.state.amountAvailable > 0) {
-      if (this.state.showLabels) {
-        stringDat.push({name: `Verfügbar ${this.state.amountAvailable}€`});
-      } else {
-        stringDat.push({name: 'Verfügbar'});
-      }
+      stringDat.push({name: 'Verfügbar'});
     }
     this.state.elementsToDisplay.forEach((el) => {
       if (!stringDat.find((e) => e.name == el.tag)) {
-        if (this.state.showLabels) {
-          stringDat.push({name: `${el.tag} ${el.amount}€`});
-        } else {
-          stringDat.push({name: el.tag});
-        }
+        stringDat.push({name: el.tag});
       }
     });
 
@@ -298,10 +304,21 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             alignItems: 'center',
           }}>
           <View style={{flex: 1}}>
-            <Text style={[styles.textHeading, {textAlign: 'center'}]}>
+            <Text
+              style={[
+                styles.textHeading,
+                {
+                  textAlign: 'center',
+                  color: this.state.showDarkModeStyle ? 'white' : 'black',
+                },
+              ]}>
               Monats Kosten Übersicht
             </Text>
-            <Text style={styles.text}>
+            <Text
+              style={[
+                styles.text,
+                {color: this.state.showDarkModeStyle ? 'white' : 'black'},
+              ]}>
               {moment().locale('de').format('MMMM YYYY')}
             </Text>
             {this.state.amountAvailable > 0 && (
@@ -421,9 +438,14 @@ export default class HomeScene extends Component<null, HomeScreenState> {
           <VictoryLegend
             colorScale={sliceColors}
             data={this.getLegendData()}
-            style={{labels: {fontSize: 15}}}
+            style={{
+              labels: {
+                fontSize: 16,
+                fill: this.state.showDarkModeStyle ? 'white' : 'black',
+              },
+            }}
             orientation="horizontal"
-            itemsPerRow={this.state.showLabels ? 2 : 3}
+            itemsPerRow={3}
             gutter={40}
             height={height * 0.25}
             borderPadding={{bottom: 0, left: 10, right: 5}}

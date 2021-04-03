@@ -1,85 +1,11 @@
 import * as React from 'react';
 import {Component} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  KeyboardAvoidingView,
-  Alert,
-  Keyboard,
-  Dimensions,
-  TouchableOpacity,
-  ToastAndroid,
-} from 'react-native';
-
-import AsyncStorage from '@react-native-community/async-storage';
+import {View, KeyboardAvoidingView, Text} from 'react-native';
 import {Actions} from 'react-native-router-flux';
 import {ListItem} from 'react-native-elements';
 
-interface SettingsState {
-  monthlyAvailableAmount: string;
-
-  newCategory: string;
-  showAmountLabels: boolean;
-}
-
-export default class SettingsScene extends Component<null, SettingsState> {
-  readonly state: SettingsState = {
-    monthlyAvailableAmount: '',
-
-    newCategory: '',
-    showAmountLabels: false,
-  };
-
-  async componentDidMount() {
-    try {
-      const value = await AsyncStorage.getItem('monthlyAvailableAmount');
-      if (value !== null) {
-        this.setState({monthlyAvailableAmount: value});
-      }
-      const showLabels = await AsyncStorage.getItem('showAmountLabels');
-      if (showLabels !== null) {
-        this.setState({showAmountLabels: showLabels === 'true'});
-      }
-    } catch (error) {
-      Alert.alert('error');
-    }
-  }
-
-  private checkAndSetAviableAmount(amount: string) {
-    const data = Number.parseInt(amount);
-    if (!isNaN(data)) {
-      this.setState({monthlyAvailableAmount: data.toString()});
-    }
-    if (amount === '') {
-      this.setState({monthlyAvailableAmount: ''});
-    }
-  }
-
-  private async updateShowAmountLabels() {
-    await AsyncStorage.setItem(
-      'showAmountLabels',
-      `${this.state.showAmountLabels}`,
-    );
-  }
-
-  private async storeData() {
-    if (!isNaN(Number.parseInt(this.state.monthlyAvailableAmount))) {
-      AsyncStorage.setItem(
-        'monthlyAvailableAmount',
-        this.state.monthlyAvailableAmount,
-      )
-        .then(() =>
-          ToastAndroid.show('Erfolgreich gespeichert', ToastAndroid.SHORT),
-        )
-        .catch((error) =>
-          Alert.alert(`Es ist ein Fehler aufgetreten ${error}`),
-        );
-    }
-  }
-
+export default class SettingsScene extends Component {
   render() {
-    const {width} = Dimensions.get('window');
     return (
       <KeyboardAvoidingView
         style={{padding: 20, flex: 1, backgroundColor: '#cccccc32'}}>
@@ -88,82 +14,45 @@ export default class SettingsScene extends Component<null, SettingsState> {
             flexDirection: 'column',
             alignItems: 'flex-start',
           }}>
-          <Text style={{marginBottom: 15}}>
-            Monatlich verfügbarer Betrag in €
-          </Text>
-          <View
-            style={{
-              width: '100%',
-              borderBottomColor: 'black',
-              justifyContent: 'space-around',
-              alignItems: 'center',
-              backgroundColor: 'white',
-              flexDirection: 'row',
-              borderRadius: 10,
-              borderColor: 'black',
-              borderWidth: 1,
-            }}>
-            <TextInput
+          <View style={{width: '100%', marginTop: 20}}>
+            <Text
               style={{
-                fontSize: 17,
-                width: width * 0.4,
-                paddingLeft: 25,
-              }}
-              placeholder="Betrag"
-              value={this.state.monthlyAvailableAmount}
-              onChangeText={(text) => this.checkAndSetAviableAmount(text)}
-              onSubmitEditing={() => Keyboard.dismiss()}
-              onBlur={() => Keyboard.dismiss()}
-            />
-
-            <TouchableOpacity
-              style={{
-                borderLeftWidth: 1,
-                borderLeftColor: 'black',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderTopRightRadius: 10,
-                borderBottomRightRadius: 10,
-                paddingLeft: 15,
-              }}
-              onPress={() => {
-                this.storeData();
-                Keyboard.dismiss();
+                fontWeight: 'bold',
+                marginBottom: 15,
+                fontSize: 20,
+                textAlign: 'left',
               }}>
-              <Text style={{color: 'green'}}>Speichern</Text>
-            </TouchableOpacity>
-          </View>
+              Einstellungen
+            </Text>
 
-          {/* <View style={{marginTop: 10, marginBottom: 10, flexDirection: 'row'}}>
-            <Text>Betrag anzeigen</Text>
-            <Switch
-              onValueChange={() =>
-                this.setState(
-                  {showAmountLabels: !this.state.showAmountLabels},
-                  () => this.updateShowAmountLabels(),
-                )
-              }
-              value={this.state.showAmountLabels}
-            />
-          </View> */}
-
-          <View style={{width: '100%', marginTop: 40}}>
             <ListItem
               bottomDivider
               topDivider
-              onPress={() => Actions.jump('recurring')}>
+              onPress={() => Actions.jump('monthlyAvailable')}>
+              <ListItem.Content>
+                <ListItem.Title>Monatlich verfügbares Geld</ListItem.Title>
+              </ListItem.Content>
+              <ListItem.Chevron />
+            </ListItem>
+            <ListItem bottomDivider onPress={() => Actions.jump('recurring')}>
               <ListItem.Content>
                 <ListItem.Title>Monatliche Ausgaben</ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
             </ListItem>
 
-            <ListItem
-              bottomDivider
-              topDivider
-              onPress={() => Actions.jump('categories')}>
+            <ListItem bottomDivider onPress={() => Actions.jump('categories')}>
               <ListItem.Content>
                 <ListItem.Title>Eigene Kategorien</ListItem.Title>
+              </ListItem.Content>
+              <ListItem.Chevron />
+            </ListItem>
+
+            <ListItem
+              bottomDivider
+              onPress={() => Actions.jump('otherSettings')}>
+              <ListItem.Content>
+                <ListItem.Title>Sonstige Einstellungen</ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
             </ListItem>
@@ -184,7 +73,7 @@ export default class SettingsScene extends Component<null, SettingsState> {
           </View>
         </View>
         <View style={{flexGrow: 1}}></View>
-        <View style={{bottom: 0}}>
+        <View>
           <ListItem bottomDivider>
             <ListItem.Content>
               <ListItem.Title>App-Version 1.2</ListItem.Title>

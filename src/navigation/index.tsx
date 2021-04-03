@@ -18,6 +18,8 @@ import RecuringTransactionsScene from '../scenes/RecurringTransactionsScene';
 import PrivacyScene from '../scenes/PrivacyScene';
 import CategoriesScene from '../scenes/CategoriesScene';
 import MonthDetailScene from '../scenes/MonthDetailScene';
+import MonthlyAvailableScene from '../scenes/MonthlyAvailableScene';
+import OtherSettingsScene from '../scenes/OtherSettingsScene';
 
 export default class AppRouter extends Component {
   render() {
@@ -62,7 +64,17 @@ export default class AppRouter extends Component {
           component={RecuringTransactionsScene}
           title="Monatliche Ausgaben"
         />
+        <Scene
+          key="monthlyAvailable"
+          component={MonthlyAvailableScene}
+          title="Verfügbarer Betrag"
+        />
         <Scene key="details" component={MonthDetailScene} title="Details" />
+        <Scene
+          key="otherSettings"
+          component={OtherSettingsScene}
+          title="Sonstige Einstellungen"
+        />
         <Scene
           key="categories"
           title="Eigene Kategorien"
