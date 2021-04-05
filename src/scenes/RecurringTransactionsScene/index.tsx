@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import * as React from 'react';
 import {Component} from 'react';
 import {
@@ -21,6 +22,7 @@ export interface RecuringTransactionsState {
   addRecurringTransactionDescription: string;
   recurringTransactions: RecurringTransaction[];
   showRecurringTransactionAddDialog: boolean;
+  showDefaultKeyboard: boolean;
 }
 
 const db = SQLite.openDatabase('CostTracker.db');
@@ -34,6 +36,7 @@ export default class RecuringTransactionsScene extends Component<
     addRecurringTransactionDescription: '',
     recurringTransactions: [],
     showRecurringTransactionAddDialog: false,
+    showDefaultKeyboard: false,
   };
 
   private checkAndSetRecurringTransactionAmount(amount: string) {
@@ -119,8 +122,21 @@ export default class RecuringTransactionsScene extends Component<
     }
   }
 
+  getKeyboardType() {
+    AsyncStorage.getItem('showDefaultKeyboardType')
+      .then((value) => {
+        if (value != null) {
+          this.setState({showDefaultKeyboard: value === 'true'});
+        }
+      })
+      .catch((e) => {
+        console.log('error', e);
+      });
+  }
+
   componentDidMount() {
     this.getRecurringData();
+    this.getKeyboardType();
   }
 
   render() {
@@ -140,7 +156,9 @@ export default class RecuringTransactionsScene extends Component<
             <Text style={styles.text}>Betrag</Text>
             <Input
               placeholder="Betrag"
-              keyboardType="numbers-and-punctuation"
+              keyboardType={
+                this.state.showDefaultKeyboard ? 'default' : 'numeric'
+              }
               onChangeText={(amount) =>
                 this.checkAndSetRecurringTransactionAmount(amount)
               }
