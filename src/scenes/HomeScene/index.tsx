@@ -65,7 +65,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
 
     AsyncStorage.multiGet(['monthlyAvailableAmount', 'showDarkmodeStyle']).then(
       (values) => {
-        console.log(values);
         if (values[0][1]) {
           const amount = Number.parseInt(values[0][1]);
           if (!isNaN(amount)) {
@@ -130,7 +129,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
   }
 
   private renderCurrentTransactions() {
-    console.log('rerenerTransactions:');
     db.transaction((tx) => {
       let transactions: Transaction[] = [];
       tx.executeSql(
@@ -207,10 +205,6 @@ export default class HomeScene extends Component<null, HomeScreenState> {
       return;
     }
 
-    console.log('amount:', amount);
-    console.log('category:', category);
-    console.log('date:', date);
-
     db.transaction(
       (tx) => {
         tx.executeSql(
@@ -223,6 +217,21 @@ export default class HomeScene extends Component<null, HomeScreenState> {
         ToastAndroid.show('Ausgabe hinzugefügt', ToastAndroid.SHORT);
       },
     );
+  }
+
+  private checkColorBrightness(color: string): string {
+    var c = color.substring(1); // strip #
+    var rgb = parseInt(c, 16); // convert rrggbb to decimal
+    var r = (rgb >> 16) & 0xff; // extract red
+    var g = (rgb >> 8) & 0xff; // extract green
+    var b = (rgb >> 0) & 0xff; // extract blue
+
+    var luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
+
+    if (luma < 50) {
+      return 'lightgray';
+    }
+    return 'black';
   }
 
   getLegendData(): LegendFormat[] {
@@ -366,6 +375,13 @@ export default class HomeScene extends Component<null, HomeScreenState> {
                                     }\n${Number(props.slice?.data?.y).toFixed(
                                       2,
                                     )}€`,
+                                    style: {
+                                      fill: this.checkColorBrightness(
+                                        sliceColors[props.index],
+                                      ),
+                                      fontSize: 20,
+                                      fontWeight: 600,
+                                    },
                                   };
                             },
                           },
