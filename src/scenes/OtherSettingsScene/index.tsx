@@ -25,7 +25,6 @@ class OtherSettingsScene extends Component<
       'showDefaultKeyboardType',
       'showDarkmodeStyle',
     ]).then((values) => {
-      console.log(values);
       if (values[0][1]) {
         this.setState({showDefaultKeyboard: values[0][1] === 'true'});
       }
@@ -36,11 +35,9 @@ class OtherSettingsScene extends Component<
   }
 
   async switchKeyboardType(value: boolean) {
-    console.log('switch Keyboard Type', value);
-
     this.setState({showDefaultKeyboard: value});
     AsyncStorage.setItem('showDefaultKeyboardType', value.toString())
-      .then(() => console.log('success'))
+      .then()
       .catch(() => {
         ToastAndroid.show(
           'Es ist ein Fehler beim Speichern aufgetreten',
@@ -51,11 +48,9 @@ class OtherSettingsScene extends Component<
   }
 
   async setDarkmodeSupport(value: boolean) {
-    console.log('switch Keyboard Type', value);
-
     this.setState({showDarkModeStyle: value});
     AsyncStorage.setItem('showDarkmodeStyle', value.toString())
-      .then(() => console.log('success'))
+      .then()
       .catch(() => {
         ToastAndroid.show(
           'Es ist ein Fehler beim Speichern aufgetreten',
