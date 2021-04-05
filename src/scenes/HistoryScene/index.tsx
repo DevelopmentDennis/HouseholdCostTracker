@@ -8,6 +8,7 @@ import {
   ScrollView,
   ToastAndroid,
 } from 'react-native';
+import {Icon} from 'react-native-elements';
 import {Actions} from 'react-native-router-flux';
 import SQLite from 'react-native-sqlite-storage';
 import TransactionDialog from '../../components/TransactionDialog';
@@ -122,11 +123,6 @@ export default class HistoryScene extends Component<
   }
 
   private updateEntry(amount: number, category: string, date: Date) {
-    console.log('update entry');
-    console.log('amount:', amount);
-    console.log('category:', category);
-    console.log('date:', date);
-    console.log('id:', this.state.entryPressed.id);
     if (!this.state.entryPressed || !this.state.entryPressed.id) {
       ToastAndroid.show(
         'Eintrag kann nicht bearbeitet werden',
@@ -138,14 +134,16 @@ export default class HistoryScene extends Component<
         'UPDATE Transactions set amount=?, tag=?, createdAt=? where id=?',
         [amount, category, moment(date).format(), this.state.entryPressed.id],
         (tx, results) => {
-          console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
-            ToastAndroid.show('User updated successfully', ToastAndroid.SHORT);
+            ToastAndroid.show('Eintrag aktualisiert', ToastAndroid.SHORT);
             this.calculateElementsForMonth();
           } else alert('Updation Failed');
         },
         (error) => {
-          console.log('error:', error);
+          ToastAndroid.show(
+            'Es ist ein Fehler aufgetreten',
+            ToastAndroid.SHORT,
+          );
         },
       );
     });
@@ -174,6 +172,7 @@ export default class HistoryScene extends Component<
       return (
         <View style={[globalStyles.rowContainerItem, {marginLeft: 20}]}>
           <TouchableOpacity
+            style={{flexDirection: 'row'}}
             onPress={() =>
               Actions.jump('details', {
                 month: this.state.monthPressed,
@@ -182,7 +181,16 @@ export default class HistoryScene extends Component<
                 totalSpend: this.state.totalSpendForMonth.toFixed(2),
               })
             }>
-            <Text style={{fontSize: 18}}>Für mehr Details hier drücken</Text>
+            <Icon name="info-circle" type="font-awesome" color="gray" />
+            <Text
+              style={{
+                fontSize: 18,
+                marginLeft: 10,
+                color: 'gray',
+                textDecorationLine: 'underline',
+              }}>
+              Details anzeigen
+            </Text>
           </TouchableOpacity>
         </View>
       );
