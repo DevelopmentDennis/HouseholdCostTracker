@@ -20,6 +20,7 @@ import CategoriesScene from '../scenes/CategoriesScene';
 import MonthDetailScene from '../scenes/MonthDetailScene';
 import MonthlyAvailableScene from '../scenes/MonthlyAvailableScene';
 import OtherSettingsScene from '../scenes/OtherSettingsScene';
+import ExportImportScene from '../scenes/ExportImportScene';
 
 export default class AppRouter extends Component {
   render() {
@@ -63,6 +64,11 @@ export default class AppRouter extends Component {
           key="recurring"
           component={RecuringTransactionsScene}
           title="Monatliche Ausgaben"
+        />
+        <Scene
+          key="exportimport"
+          component={ExportImportScene}
+          title="Export/Import"
         />
         <Scene
           key="monthlyAvailable"
