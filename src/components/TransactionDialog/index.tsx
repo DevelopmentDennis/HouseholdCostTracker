@@ -14,10 +14,10 @@ export interface TransactionDialogProps {
   isVisible: boolean;
   onCloseRequested: () => void;
   onFinish: (amount: number, category: string, date: Date) => void;
-  showDeleteButton?: boolean;
-  onDelete?: () => void;
+  onDelete?: (id:number) => void;
   submitButtonText?: string;
   triggerRerender?: () => void;
+  transactionDialogType: "Edit" | "Create";
   dataToDisplay?: Transaction;
 }
 
@@ -149,7 +149,7 @@ class TransactionDialog extends Component<
         onBackdropPress={() => this.onClose()}>
         <View>
           <Text style={[styles.text, styles.textSubHeading]}>
-            Ausgabe hinzufügen
+            {this.props.transactionDialogType === "Create" ? "Ausgabe hinzufügen": "Ausgabe bearbeiten"}
           </Text>
           <Text style={styles.text}>Betrag</Text>
           <Input
@@ -195,12 +195,12 @@ class TransactionDialog extends Component<
             }
             onPress={() => this.onSubmit()}
           />
-          {this.props.showDeleteButton && (
+          {this.props.transactionDialogType === "Edit" && (
             <View style={{marginTop: 10}}>
               <Button
                 title="Löschen"
-                buttonStyle={{backgroundColor: 'red'}}
-                onPress={() => this.props.onDelete()}
+                buttonStyle={{backgroundColor: 'crimson'}}
+                onPress={() => {this.props.onDelete(this.props.dataToDisplay.id),this.props.onCloseRequested()}}
               />
             </View>
           )}

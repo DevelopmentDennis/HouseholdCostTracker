@@ -122,6 +122,26 @@ export default class HistoryScene extends Component<
     });
   }
 
+  private deleteEntry(id: number) {
+    db.transaction((tx) => {
+      tx.executeSql(
+        `delete from Transactions where id=?`,
+        [id],
+        (_, resultSet) => {
+          if (resultSet.rowsAffected > 0) {
+            ToastAndroid.show('Eintrag gelöscht', ToastAndroid.SHORT);
+            this.calculateElementsForMonth();
+          } else {
+            console.log('id not found');
+          }
+        },
+        (error) => {
+          console.log('error:', error);
+        },
+      );
+    });
+  }
+
   private updateEntry(amount: number, category: string, date: Date) {
     if (!this.state.entryPressed || !this.state.entryPressed.id) {
       ToastAndroid.show(
@@ -275,6 +295,8 @@ export default class HistoryScene extends Component<
     return (
       <ScrollView style={{padding: 10, backgroundColor: '#cccccc32'}}>
         <TransactionDialog
+          onDelete={this.deleteEntry.bind(this)}
+          transactionDialogType="Edit"
           isVisible={this.state.isDialogVisible}
           onCloseRequested={() => this.setState({isDialogVisible: false})}
           onFinish={this.updateEntry.bind(this)}

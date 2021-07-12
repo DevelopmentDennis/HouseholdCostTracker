@@ -297,6 +297,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
         }>
         {this.state.didLoadAllData && (
           <TransactionDialog
+            transactionDialogType="Create"
             isVisible={this.state.isModalVisible}
             onCloseRequested={() => this.setState({isModalVisible: false})}
             onFinish={this.addExpense}
