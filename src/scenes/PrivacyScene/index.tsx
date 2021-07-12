@@ -13,13 +13,16 @@ export default class PrivacyScene extends Component {
             marginTop: 10,
             marginBottom: 25,
           }}>
-          Ihre Daten gehören nur Ihnen!
+          Deine Daten gehören nur dir!
         </Text>
         <Text style={{fontSize: 17, flex: 1, flexWrap: 'wrap'}}>
-          {`Deshalb werden Ihre Daten ausschließlich auf Ihrem Gerät gespeichert, keine Server und keine Auswertung Ihrer Daten, auch keine anonymen Diagnosedaten.`}
+          {`Deshalb werden deine Daten von uns nirgends gespeichert, außer auf deinem Gerät.\nSolltest du App Backup eingeschaltet haben, 
+          wird die Datenbank mit deinen Ausgaben in deiner Google Drive gespeichert und bei Installation auf einem neuen Gerät wieder hergestellt.
+          Normalerweise ist diese Einstellung unter System -> Backup/Wiederherstellung zu finden.
+          Dort werden bis zu 25 MB gespeichert, die aber nicht in dein Google Drive Speicherlimit zählen.\nFalls du dies nicht möchtest, musst du diese Synchronisation ausschalten.`}
         </Text>
         <Text style={{fontSize: 16, flex: 1}}>
-          Sollten Sie dennoch Fragen zum Datenschutz haben, schreiben Sie uns
+          Solltest du dennoch Fragen zum Datenschutz haben, schreib uns
           gerne eine{' '}
           <Text
             style={{textDecorationLine: 'underline', color: 'gray'}}
