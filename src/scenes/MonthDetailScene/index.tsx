@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import * as React from 'react';
 import {Component} from 'react';
 import {View, Text, Linking, Dimensions, Switch} from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import Svg from 'react-native-svg';
 import {VictoryLegend, VictoryPie} from 'victory-native';
 import {
@@ -42,7 +43,7 @@ export default class MonthDetailScene extends Component<
 
     var luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
 
-    if (luma < 50) {
+    if (luma < 90) {
       return 'lightgray';
     }
     return 'black';
@@ -97,13 +98,15 @@ export default class MonthDetailScene extends Component<
   render() {
     const {width, height} = Dimensions.get('window');
     return (
-      <View
+      <ScrollView
         style={{
           backgroundColor: '#cccccc32',
           flex: 1,
           paddingHorizontal: 10,
         }}>
-        <View style={{flex: 1.5, paddingHorizontal: 10}}>
+
+
+        <View style={{flex: 2, paddingHorizontal: 10, marginBottom:10}}>
           <Text
             style={[
               styles.textHeading,
@@ -130,11 +133,11 @@ export default class MonthDetailScene extends Component<
             <Switch
               value={this.state.showLabels}
               onValueChange={(value) => this.setState({showLabels: value})}
-            />
+              />
           </View>
         </View>
-        <View style={{flex: 7}}>
-          <Svg>
+
+          <Svg style={{flex: 1}} height={width}>
             <VictoryPie
               events={[
                 {
@@ -146,48 +149,51 @@ export default class MonthDetailScene extends Component<
                           target: 'labels',
                           mutation: (props) => {
                             return !!props.text
-                              ? {text: ''}
-                              : {
-                                  text: `${props?.slice?.data?.xName}\n${Number(
-                                    props.slice?.data?.y,
-                                  ).toFixed(2)}€`,
-                                  style: {
-                                    fill: this.checkColorBrightness(
-                                      sliceColors[props.index],
+                            ? {text: ''}
+                            : {
+                              text: `${props?.slice?.data?.xName}\n${Number(
+                                props.slice?.data?.y,
+                                ).toFixed(2)}€`,
+                                style: {
+                                  fill: this.checkColorBrightness(
+                                    sliceColors[props.index],
                                     ),
                                     fontSize: 20,
                                     fontWeight: 600,
+                                    textShadowColor:"black",
+                                    textShadowOffset:2
                                   },
                                 };
-                          },
+                              },
+                            },
+                          ];
                         },
-                      ];
+                      },
                     },
-                  },
-                },
-              ]}
-              animate={{easing: 'exp'}}
-              data={this.getGraphData()}
-              width={width * 0.9}
-              padding={10}
-              innerRadius={width * 0.15}
-              labelRadius={width * 0.2}
-              padAngle={1}
-              labels={(props) =>
-                this.state.showLabels
-                  ? null
-                  : `${props?.slice?.data?.xName}\n${Number(
+                  ]}
+                  animate={{easing: 'exp'}}
+                  data={this.getGraphData()}
+                  width={width * 0.9}
+                  padding={10}
+                  innerRadius={width * 0.15}
+                  labelRadius={width * 0.2}
+                  padAngle={1}
+                  labels={(props) =>
+                    this.state.showLabels
+                    ? 
+                    `${props?.slice?.data?.xName}\n${Number(
                       props.slice?.data?.y,
-                    ).toFixed(2)}€`
-              }
-              colorScale={sliceColors}
-              cornerRadius={10}
-              style={{labels: {fontSize: 20, fill: 'black', fontWeight: 600}}}
-              standalone={false}
-            />
+                      ).toFixed(2)}€`
+                      :null
+                    }
+                    colorScale={sliceColors}
+                    cornerRadius={10}
+                    style={{labels: {fontSize: 20, fill: 'black', fontWeight: 600}}}
+                    standalone={false}
+                    />
           </Svg>
-        </View>
-        <View style={{flex: 3}}>
+
+        <View style={{flex:1,marginTop:30}}>
           <VictoryLegend
             events={[
               {
@@ -201,16 +207,16 @@ export default class MonthDetailScene extends Component<
                           console.log('pressed:', props);
                           const fill = props.style && props.style.fill;
                           return fill === '#c43a31'
-                            ? null
-                            : {style: {fill: '#c43a31'}};
+                          ? null
+                          : {style: {fill: '#c43a31'}};
                         },
                       },
                       {
                         target: 'labels',
                         mutation: (props) => {
                           return props.text === 'clicked'
-                            ? null
-                            : {text: 'clicked'};
+                          ? null
+                          : {text: 'clicked'};
                         },
                       },
                     ];
@@ -227,16 +233,18 @@ export default class MonthDetailScene extends Component<
               },
             }}
             orientation="horizontal"
-            itemsPerRow={3}
+            itemsPerRow={2}
             gutter={40}
+            height={height*0.45}
             borderPadding={{bottom: 0, left: 10, right: 5}}
             width={width}
             symbolSpacer={15}
-          />
+            />
         </View>
 
         {/* <View style={{flex: 1}} /> */}
-      </View>
+
+      </ScrollView>
     );
   }
 }

@@ -228,7 +228,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
 
     var luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
 
-    if (luma < 50) {
+    if (luma < 90) {
       return 'lightgray';
     }
     return 'black';
@@ -463,9 +463,9 @@ export default class HomeScene extends Component<null, HomeScreenState> {
               },
             }}
             orientation="horizontal"
-            itemsPerRow={3}
+            itemsPerRow={2}
             gutter={40}
-            height={height * 0.25}
+            height={height * 0.45}
             borderPadding={{bottom: 0, left: 10, right: 5}}
             width={width}
             symbolSpacer={15}
