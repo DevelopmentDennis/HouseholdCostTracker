@@ -50,15 +50,6 @@ export default class SettingsScene extends Component {
 
             <ListItem
               bottomDivider
-              onPress={() => Actions.jump('exportimport')}>
-              <ListItem.Content>
-                <ListItem.Title>Export/Import</ListItem.Title>
-              </ListItem.Content>
-              <ListItem.Chevron />
-            </ListItem>
-
-            <ListItem
-              bottomDivider
               onPress={() => Actions.jump('otherSettings')}>
               <ListItem.Content>
                 <ListItem.Title>Sonstige Einstellungen</ListItem.Title>
