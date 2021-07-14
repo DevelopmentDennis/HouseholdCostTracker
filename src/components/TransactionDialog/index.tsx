@@ -116,6 +116,7 @@ class TransactionDialog extends Component<
   }
 
   onSubmit() {
+    Keyboard.dismiss();
     this.props.onFinish(
       this.validateAmountInput(),
       this.validateCategory(),

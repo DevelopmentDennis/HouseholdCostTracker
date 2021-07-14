@@ -289,6 +289,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
       <ScrollView
         style={{backgroundColor: '#cccccc32'}}
         scrollEnabled={true}
+        keyboardShouldPersistTaps="always"
         refreshControl={
           <RefreshControl
             refreshing={this.state.isRefreshing}
