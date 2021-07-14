@@ -45,6 +45,8 @@ export default class HistoryScene extends Component<
 
   componentDidMount() {
     this.getOldestEntry();
+    this.setState({monthPressed: moment().format("MMMM")}, () =>
+    this.calculateElementsForMonth());
   }
 
   private getOldestEntry() {
@@ -224,7 +226,7 @@ export default class HistoryScene extends Component<
       .map((element, index) => (
         <View key={index}>
           <TouchableOpacity
-            style={[globalStyles.rowContainerItem, {marginLeft: 10}]}
+            style={[globalStyles.rowContainerItem, {borderColor: moment().format("MMMM") === element ? "green":"gray",marginLeft: 10}]}
             onPress={() => {
               if (this.state.monthPressed === element) {
                 this.setState({monthPressed: ''});
