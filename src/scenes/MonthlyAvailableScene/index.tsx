@@ -11,7 +11,7 @@ import {
   ToastAndroid,
   Alert,
 } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Actions} from 'react-native-router-flux';
 
 export interface MonthlyAvailableSceneProps {}

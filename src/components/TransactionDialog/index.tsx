@@ -1,5 +1,5 @@
-import AsyncStorage from '@react-native-community/async-storage';
-import {Picker} from '@react-native-community/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Picker as SelectPicker} from '@react-native-community/picker';
 import * as React from 'react';
 import {Component} from 'react';
 import {View, Text, Keyboard, Dimensions} from 'react-native';
@@ -172,7 +172,7 @@ class TransactionDialog extends Component<
             onDateChanged={(date) => this.setState({selectedDate: date})}
           />
           <Text style={styles.text}>Kategorie</Text>
-          <Picker
+          <SelectPicker
             selectedValue={this.state.selectedCategory}
             itemStyle={[styles.text, {fontSize: 20}]}
             onValueChange={(itemValue, itemIndex) => {
@@ -180,14 +180,14 @@ class TransactionDialog extends Component<
               Keyboard.dismiss();
             }}>
             {this.state.categories.map((value, index) => (
-              <Picker.Item
+              <SelectPicker.Item
                 key={index}
                 label={value}
                 value={value}
                 color={'#707070'}
               />
             ))}
-          </Picker>
+          </SelectPicker>
           <Button
             title={
               this.props.submitButtonText

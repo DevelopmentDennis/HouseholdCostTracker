@@ -10,8 +10,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@react-native-community/async-storage": "^1.12.0",
-    "@react-native-community/datetimepicker": "^3.0.2",
+    "@react-native-async-storage/async-storage": "^1.15.7",
+    "@react-native-community/datetimepicker": "^3.5.2",
     "@react-native-community/picker": "^1.8.0",
     "moment": "^2.27.0",
     "react": "16.13.1",
@@ -22,7 +22,7 @@
     "react-native-router-flux": "^4.2.0",
     "react-native-screens": "^2.10.1",
     "react-native-sqlite-storage": "^5.0.0",
-    "react-native-svg": "^12.1.0",
+    "react-native-svg": "^12.1.1",
     "react-native-vector-icons": "^7.0.0",
     "victory-native": "^35.3.3"
   },

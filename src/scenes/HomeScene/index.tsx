@@ -24,7 +24,7 @@ import {
   sliceColors,
   Transaction,
 } from '../../types/types';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackPressHandler from '../../components/BackPressHandler';
 import Svg from 'react-native-svg';
 import TransactionDialog from '../../components/TransactionDialog';
