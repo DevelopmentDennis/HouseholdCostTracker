@@ -76,7 +76,7 @@ export default class SettingsScene extends Component {
         <View>
           <ListItem bottomDivider>
             <ListItem.Content>
-              <ListItem.Title>App-Version 1.3</ListItem.Title>
+              <ListItem.Title>App-Version 1.4</ListItem.Title>
             </ListItem.Content>
           </ListItem>
         </View>
