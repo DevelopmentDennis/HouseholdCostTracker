@@ -45,8 +45,9 @@ export default class HistoryScene extends Component<
 
   componentDidMount() {
     this.getOldestEntry();
-    this.setState({monthPressed: moment().format("MMMM")}, () =>
-    this.calculateElementsForMonth());
+    this.setState({monthPressed: moment().format('MMMM')}, () =>
+      this.calculateElementsForMonth(),
+    );
   }
 
   private getOldestEntry() {
@@ -219,6 +220,13 @@ export default class HistoryScene extends Component<
     }
   }
 
+  private isCurrentMonthOrFocus(month: string): boolean {
+    if (this.state.monthPressed) {
+      return this.state.monthPressed === month;
+    }
+    return moment().format('MMMM') === month;
+  }
+
   private renderMonths() {
     return moment()
       .localeData()
@@ -226,7 +234,16 @@ export default class HistoryScene extends Component<
       .map((element, index) => (
         <View key={index}>
           <TouchableOpacity
-            style={[globalStyles.rowContainerItem, {borderColor: moment().format("MMMM") === element ? "green":"gray",marginLeft: 10}]}
+            style={[
+              globalStyles.rowContainerItem,
+              {
+                borderColor: this.isCurrentMonthOrFocus(element)
+                  ? 'green'
+                  : 'gray',
+                borderWidth: this.isCurrentMonthOrFocus(element) ? 2 : 1,
+                marginLeft: 10,
+              },
+            ]}
             onPress={() => {
               if (this.state.monthPressed === element) {
                 this.setState({monthPressed: ''});
