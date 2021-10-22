@@ -1,16 +1,16 @@
 {
   "licenses": [
     {
-      "name": "@react-native-community/async-storage@1.12.1",
+      "name": "@react-native-async-storage/async-storage@1.15.7",
       "data": {
         "licenses": "MIT",
-        "repository": "https://github.com/react-native-community/react-native-async-storage",
-        "licenseUrl": "https://github.com/react-native-community/react-native-async-storage/raw/master/LICENSE",
+        "repository": "https://github.com/react-native-async-storage/async-storage",
+        "licenseUrl": "https://github.com/react-native-async-storage/async-storage/raw/master/LICENSE",
         "parents": "MonthlyCostTracker"
       }
     },
     {
-      "name": "@react-native-community/datetimepicker@3.0.8",
+      "name": "@react-native-community/datetimepicker@3.5.2",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-community/datetimepicker",
@@ -19,7 +19,7 @@
       }
     },
     {
-      "name": "@react-native-community/picker@1.8.1",
+      "name": "@react-native-community/picker@1.8.0",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-community/react-native-picker",
@@ -28,7 +28,7 @@
       }
     },
     {
-      "name": "moment@2.29.1",
+      "name": "moment@2.27.0",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/moment/moment",
@@ -37,7 +37,7 @@
       }
     },
     {
-      "name": "react-native-elements@2.3.2",
+      "name": "react-native-elements@2.4.2",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-elements/react-native-elements",
@@ -46,7 +46,7 @@
       }
     },
     {
-      "name": "react-native-gesture-handler@1.9.0",
+      "name": "react-native-gesture-handler@1.10.3",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/software-mansion/react-native-gesture-handler",
@@ -55,7 +55,7 @@
       }
     },
     {
-      "name": "react-native-reanimated@1.13.2",
+      "name": "react-native-reanimated@2.2.0",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/software-mansion/react-native-reanimated",
@@ -64,7 +64,7 @@
       }
     },
     {
-      "name": "react-native-router-flux@4.2.0",
+      "name": "react-native-router-flux@4.3.1",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/aksonov/react-native-router-flux",
@@ -73,7 +73,7 @@
       }
     },
     {
-      "name": "react-native-screens@2.16.1",
+      "name": "react-native-screens@3.6.0",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/kmagiera/react-native-screens",
@@ -82,7 +82,7 @@
       }
     },
     {
-      "name": "react-native-sqlite-storage@5.0.0",
+      "name": "react-native-sqlite-storage@6.0.1",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/andpor/react-native-sqlite-storage",
@@ -91,7 +91,16 @@
       }
     },
     {
-      "name": "react-native-svg@12.1.0",
+      "name": "react-native-safe-area-context@3.3.0",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/th3rdwave/react-native-safe-area-context",
+        "licenseUrl": "https://github.com/th3rdwave/react-native-safe-area-context/blob/main/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "react-native-svg@12.1.1",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-community/react-native-svg",
@@ -100,7 +109,7 @@
       }
     },
     {
-      "name": "react-native-vector-icons@7.1.0",
+      "name": "react-native-vector-icons@8.1.0",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/oblador/react-native-vector-icons",
