@@ -333,9 +333,11 @@ export default class HomeScene extends Component<null, HomeScreenState> {
               {moment().locale('de').format('MMMM YYYY')}
             </Text>
             {this.state.amountAvailable > 0 && (
-              <Text style={[styles.text, {color:this.state.showDarkModeStyle? 'white' : 'black'}]}>{`noch ${
-                this.getGraphData()[0].y
-              }€ verfügbar`}</Text>
+              <Text
+                style={[
+                  styles.text,
+                  {color: this.state.showDarkModeStyle ? 'white' : 'black'},
+                ]}>{`noch ${this.getGraphData()[0].y}€ verfügbar`}</Text>
             )}
           </View>
           {/* <Button title="Delete" onPress={() => this.dropTable()} /> */}

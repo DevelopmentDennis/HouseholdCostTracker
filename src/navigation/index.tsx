@@ -1,12 +1,6 @@
 import * as React from 'react';
 import {Component, Fragment} from 'react';
-import {
-  Actions,
-  Reducer as FluxReducer,
-  Router,
-  Scene,
-  Tabs,
-} from 'react-native-router-flux';
+import {Actions, Router, Scene, Tabs} from 'react-native-router-flux';
 import NavBar from './NavBar';
 import HomeScene from '../scenes/HomeScene';
 import HistoryScene from '../scenes/HistoryScene';
