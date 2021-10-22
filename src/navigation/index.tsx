@@ -18,7 +18,7 @@ import OtherSettingsScene from '../scenes/OtherSettingsScene';
 export default class AppRouter extends Component {
   render() {
     const scenes = Actions.create(
-      <Scene key="root">
+      <Scene key="root" back>
         <Tabs
           key="navbar"
           tabBarPosition="bottom"
