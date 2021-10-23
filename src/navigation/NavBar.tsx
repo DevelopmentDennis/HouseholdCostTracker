@@ -4,8 +4,10 @@ import HistoryScene from '../scenes/HistoryScene';
 import SettingsScene from '../scenes/SettingsScene';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Icon} from 'react-native-elements';
+import {Dimensions} from 'react-native';
 
 const Tab = createBottomTabNavigator();
+const {height} = Dimensions.get('screen');
 export default class NavBar extends Component {
   render() {
     return (
@@ -37,9 +39,14 @@ export default class NavBar extends Component {
               />
             );
           },
+          tabBarStyle: {
+            height: height * 0.08,
+            minHeight: 55,
+          },
           tabBarLabelStyle: {
             fontWeight: 'bold',
             fontSize: 12,
+            marginBottom: 5,
           },
           tabBarActiveTintColor: 'royalblue',
           tabBarInactiveTintColor: 'gray',
