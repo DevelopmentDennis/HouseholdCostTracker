@@ -1,13 +1,14 @@
+import {useIsFocused, useRoute} from '@react-navigation/core';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {Platform, BackHandler, ToastAndroid} from 'react-native';
-import {Actions} from 'react-native-router-flux';
+import {BackHandler, ToastAndroid} from 'react-native';
 
 export const HandleBackPress = (props) => {
   const {message} = props;
   const [exitApp, setExitApp] = useState(0);
+  const isHomeSceneFocused = useIsFocused();
   const backAction = () => {
-    if (Actions.currentScene != 'home') {
+    if (!isHomeSceneFocused) {
       return false;
     }
     setTimeout(() => {
@@ -30,6 +31,11 @@ export const HandleBackPress = (props) => {
     );
     return () => backHandler.remove();
   });
+  useEffect(
+    () => () =>
+      BackHandler.removeEventListener('hardwareBackPress', backAction),
+    [],
+  );
   return <></>;
 };
 

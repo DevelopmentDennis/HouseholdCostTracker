@@ -1,10 +1,13 @@
 import * as React from 'react';
 import {Component} from 'react';
 import {View, KeyboardAvoidingView, Text} from 'react-native';
-import {Actions} from 'react-native-router-flux';
 import {ListItem} from 'react-native-elements';
 
-export default class SettingsScene extends Component {
+interface SettingsSceneProps {
+  navigation: any;
+}
+
+export default class SettingsScene extends Component<SettingsSceneProps> {
   render() {
     return (
       <KeyboardAvoidingView
@@ -28,20 +31,26 @@ export default class SettingsScene extends Component {
             <ListItem
               bottomDivider
               topDivider
-              onPress={() => Actions.jump('monthlyAvailable')}>
+              onPress={() =>
+                this.props.navigation.navigate('MonthlyAvailable')
+              }>
               <ListItem.Content>
                 <ListItem.Title>Monatlich verfügbares Geld</ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
             </ListItem>
-            <ListItem bottomDivider onPress={() => Actions.jump('recurring')}>
+            <ListItem
+              bottomDivider
+              onPress={() => this.props.navigation.navigate('Recurring')}>
               <ListItem.Content>
                 <ListItem.Title>Monatliche Ausgaben</ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
             </ListItem>
 
-            <ListItem bottomDivider onPress={() => Actions.jump('categories')}>
+            <ListItem
+              bottomDivider
+              onPress={() => this.props.navigation.navigate('Categories')}>
               <ListItem.Content>
                 <ListItem.Title>Eigene Kategorien</ListItem.Title>
               </ListItem.Content>
@@ -50,21 +59,25 @@ export default class SettingsScene extends Component {
 
             <ListItem
               bottomDivider
-              onPress={() => Actions.jump('otherSettings')}>
+              onPress={() => this.props.navigation.navigate('OtherSettings')}>
               <ListItem.Content>
                 <ListItem.Title>Sonstige Einstellungen</ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
             </ListItem>
 
-            <ListItem bottomDivider onPress={() => Actions.jump('licenses')}>
+            <ListItem
+              bottomDivider
+              onPress={() => this.props.navigation.navigate('Licenses')}>
               <ListItem.Content>
                 <ListItem.Title>Verwendete Bibliotheken</ListItem.Title>
               </ListItem.Content>
               <ListItem.Chevron />
             </ListItem>
 
-            <ListItem bottomDivider onPress={() => Actions.jump('privacy')}>
+            <ListItem
+              bottomDivider
+              onPress={() => this.props.navigation.navigate('Privacy')}>
               <ListItem.Content>
                 <ListItem.Title>Datenschutz</ListItem.Title>
               </ListItem.Content>

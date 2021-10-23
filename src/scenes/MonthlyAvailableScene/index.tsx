@@ -12,9 +12,10 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Actions} from 'react-native-router-flux';
 
-export interface MonthlyAvailableSceneProps {}
+export interface MonthlyAvailableSceneProps {
+  navigation: any;
+}
 
 export interface MonthlyAvailableSceneState {
   monthlyAvailableAmount: string;
@@ -118,7 +119,7 @@ class MonthlyAvailableScene extends Component<
           steht. Dies ist normalerweise Ihr Nettolohn.{'\n\n'}Jeden Monat
           gleiche Ausgaben, wie Miete, Versicherungen etc, können Sie{' '}
           <Text
-            onPress={() => Actions.jump('recurring')}
+            onPress={() => this.props.navigation.navigate('Recurring')}
             style={{textDecorationLine: 'underline', color: 'gray'}}>
             hier
           </Text>{' '}

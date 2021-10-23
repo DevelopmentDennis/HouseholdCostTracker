@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as React from 'react';
 import {Component} from 'react';
-import {View, Text, Linking, Dimensions, Switch} from 'react-native';
+import {View, Text, Dimensions, Switch} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import Svg from 'react-native-svg';
 import {VictoryLegend, VictoryPie} from 'victory-native';
@@ -13,11 +13,20 @@ import {
 } from '../../types/types';
 import {styles} from '../HomeScene/styles';
 
-interface MonthDetailProps {
+type MonthDetails = {
   month: string;
   elementsToDisplay: Transaction[];
   totalSpend: string;
   year: number;
+};
+
+type RouteParams = {
+  params: MonthDetails;
+};
+
+interface MonthDetailProps {
+  navigation: any;
+  route: RouteParams;
 }
 
 interface MonthDetailState {
@@ -52,11 +61,13 @@ export default class MonthDetailScene extends Component<
   getGraphData(): GraphFormat[] {
     let graphDat: GraphFormat[] = [];
 
-    if (!this.props.elementsToDisplay) {
+    const {elementsToDisplay} = this.props.route?.params;
+
+    if (!elementsToDisplay) {
       return [];
     }
 
-    this.props.elementsToDisplay?.forEach((el) => {
+    elementsToDisplay?.forEach((el) => {
       if (graphDat.find((e) => e.x == el.tag)) {
         const index = graphDat.findIndex((ind) => ind.x == el.tag);
         const data = graphDat.find((da) => da.x == el.tag);
@@ -72,8 +83,13 @@ export default class MonthDetailScene extends Component<
 
   getLegendData(): LegendFormat[] {
     let stringDat: LegendFormat[] = [];
+    const {elementsToDisplay} = this.props.route?.params;
 
-    this.props.elementsToDisplay.forEach((el) => {
+    if (!elementsToDisplay) {
+      return stringDat;
+    }
+
+    elementsToDisplay.forEach((el) => {
       if (!stringDat.find((e) => e.name == el.tag)) {
         stringDat.push({name: el.tag});
       }
@@ -83,10 +99,12 @@ export default class MonthDetailScene extends Component<
   }
 
   componentDidMount() {
-    // @ts-ignore */}
-    this.props.navigation.setParams({
-      title: `Details ${this.props.month} ${this.props.year}`,
-    });
+    const {year, month} = this.props.route.params;
+    if (!!year && !!month) {
+      this.props.navigation.setOptions({
+        title: `Details ${month} ${year}`,
+      });
+    }
 
     AsyncStorage.getItem('showDarkmodeStyle').then((value) => {
       if (value) {
@@ -97,6 +115,7 @@ export default class MonthDetailScene extends Component<
 
   render() {
     const {width, height} = Dimensions.get('window');
+    const {totalSpend} = this.props.route?.params;
     return (
       <ScrollView
         style={{
@@ -112,7 +131,7 @@ export default class MonthDetailScene extends Component<
                 color: this.state.showDarkModeStyle ? 'white' : 'black',
               },
             ]}>
-            Ausgaben Gesamt: {this.props.totalSpend}€
+            Ausgaben Gesamt: {totalSpend ?? 0}€
           </Text>
           <View
             style={{

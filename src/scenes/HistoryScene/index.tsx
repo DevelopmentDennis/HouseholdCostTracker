@@ -9,7 +9,6 @@ import {
   ToastAndroid,
 } from 'react-native';
 import {Icon} from 'react-native-elements';
-import {Actions} from 'react-native-router-flux';
 import SQLite from 'react-native-sqlite-storage';
 import TransactionDialog from '../../components/TransactionDialog';
 import {globalStyles} from '../../styles/styles';
@@ -28,8 +27,12 @@ interface HistorySceneState {
   entryPressed: Transaction;
 }
 
+interface HistorySceneProps {
+  navigation: any;
+}
+
 export default class HistoryScene extends Component<
-  undefined,
+  HistorySceneProps,
   HistorySceneState
 > {
   readonly state: HistorySceneState = {
@@ -197,7 +200,7 @@ export default class HistoryScene extends Component<
           <TouchableOpacity
             style={{flexDirection: 'row'}}
             onPress={() =>
-              Actions.jump('details', {
+              this.props.navigation.navigate('MonthDetails', {
                 month: this.state.monthPressed,
                 year: this.state.yearPressed,
                 elementsToDisplay: this.state.elementsToDisplay,

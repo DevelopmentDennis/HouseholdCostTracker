@@ -27,6 +27,34 @@
         "parents": "MonthlyCostTracker"
       }
     },
+
+    {
+      "name": "@react-navigation/bottom-tabs@6.0.9",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/react-native-community/react-native-picker",
+        "licenseUrl": "https://github.com/react-native-community/react-native-picker/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "@react-navigation/native@6.0.6",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/react-native-community/react-native-picker",
+        "licenseUrl": "https://github.com/react-native-community/react-native-picker/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
+    {
+      "name": "@react-navigation/native-stack@6.2.5",
+      "data": {
+        "licenses": "MIT",
+        "repository": "https://github.com/react-native-community/react-native-picker",
+        "licenseUrl": "https://github.com/react-native-community/react-native-picker/raw/master/LICENSE",
+        "parents": "MonthlyCostTracker"
+      }
+    },
     {
       "name": "moment@2.27.0",
       "data": {
@@ -60,15 +88,6 @@
         "licenses": "MIT",
         "repository": "https://github.com/software-mansion/react-native-reanimated",
         "licenseUrl": "https://github.com/software-mansion/react-native-reanimated/raw/master/LICENSE",
-        "parents": "MonthlyCostTracker"
-      }
-    },
-    {
-      "name": "react-native-router-flux@4.3.1",
-      "data": {
-        "licenses": "MIT",
-        "repository": "https://github.com/aksonov/react-native-router-flux",
-        "licenseUrl": "https://github.com/aksonov/react-native-router-flux/raw/master/LICENSE",
         "parents": "MonthlyCostTracker"
       }
     },

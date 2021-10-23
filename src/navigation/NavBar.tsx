@@ -1,68 +1,68 @@
 import React, {Component} from 'react';
-import {View, StyleSheet} from 'react-native';
-import {Actions} from 'react-native-router-flux';
-import NavBarItem from './NavBarItem';
+import HomeScene from '../scenes/HomeScene';
+import HistoryScene from '../scenes/HistoryScene';
+import SettingsScene from '../scenes/SettingsScene';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {Icon} from 'react-native-elements';
 
+const Tab = createBottomTabNavigator();
 export default class NavBar extends Component {
   render() {
     return (
-      <View style={styles.navContainer}>
-        <NavBarItem
-          iconType="font-awesome-5"
-          iconName="chart-pie"
-          pageName="Übersicht"
-          active={Actions.currentScene === 'home'}
-          onPress={() => {
-            Actions.jump('home');
-          }}
+      <Tab.Navigator
+        initialRouteName="Home"
+        screenOptions={({route}) => ({
+          tabBarIcon: ({focused, color, size}) => {
+            let iconName;
+            switch (route.name) {
+              case 'Home':
+                iconName = 'chart-pie';
+                break;
+              case 'History':
+                iconName = 'history';
+                break;
+              case 'Settings':
+                iconName = 'cog';
+                break;
+              default:
+                iconName = 'question-circle';
+                break;
+            }
+            return (
+              <Icon
+                type={'font-awesome-5'}
+                name={iconName}
+                size={focused ? 30 : 25}
+                color={color}
+              />
+            );
+          },
+          tabBarLabelStyle: {
+            fontWeight: 'bold',
+            fontSize: 12,
+          },
+          tabBarActiveTintColor: 'royalblue',
+          tabBarInactiveTintColor: 'gray',
+        })}>
+        <Tab.Screen
+          name="Home"
+          component={HomeScene}
+          options={{headerShown: false, tabBarLabel: 'Übersicht'}}
+          navigationKey={'home'}
         />
-
-        <NavBarItem
-          iconType="font-awesome-5"
-          iconName="history"
-          pageName="Verlauf"
-          active={Actions.currentScene === 'history'}
-          onPress={() => {
-            Actions.jump('history');
-          }}
+        <Tab.Screen
+          name="History"
+          component={HistoryScene}
+          options={{headerShown: false, tabBarLabel: 'Verlauf'}}
+          navigationKey={'history'}
         />
-
-        {/* <NavBarItem
-          iconType="font-awesome-5"
-          iconName="money-bill-alt"
-          pageName="Ausgaben"
-          active={Actions.currentScene === 'expenses'}
-          onPress={() => {
-            Actions.jump('expenses');
-          }}
-        /> */}
-
-        <NavBarItem
-          iconType="font-awesome-5"
-          iconName="cog"
-          pageName="Einstellungen"
-          active={Actions.currentScene === 'settings'}
-          onPress={() => {
-            Actions.jump('settings');
-          }}
+        <Tab.Screen
+          name="Settings"
+          component={SettingsScene}
+          options={{headerShown: false, tabBarLabel: 'Einstellungen'}}
+          navigationKey={'settings'}
         />
-      </View>
+      </Tab.Navigator>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  navContainer: {
-    width: '100%',
-    maxHeight: 60,
-    backgroundColor: '#ffffff',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    flexDirection: 'row',
-    paddingLeft: 20,
-    paddingRight: 20,
-    paddingTop: 10,
-    paddingBottom: 10,
-    overflow: 'visible',
-  },
-});
