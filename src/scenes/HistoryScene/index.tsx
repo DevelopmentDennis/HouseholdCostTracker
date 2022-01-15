@@ -227,7 +227,10 @@ export default class HistoryScene extends Component<
     if (this.state.monthPressed) {
       return this.state.monthPressed === month;
     }
-    return moment().format('MMMM') === month;
+    return (
+      moment().format('MMMM') === month &&
+      moment().year() === this.state.yearPressed
+    );
   }
 
   private renderMonths() {
