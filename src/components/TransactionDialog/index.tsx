@@ -39,7 +39,7 @@ class TransactionDialog extends Component<
     selectedCategory: '',
     selectedDate: moment().toDate(),
     categories: tags,
-    elementId: undefined,
+    elementId: NaN,
     showDefaultKeyboard: false,
   };
 
@@ -51,7 +51,7 @@ class TransactionDialog extends Component<
   componentDidUpdate(prevProps: TransactionDialogProps) {
     if (this.props.dataToDisplay) {
       if (this.props.dataToDisplay.id !== this.state.elementId) {
-        this.setState({elementId: this.props.dataToDisplay.id});
+        this.setState({elementId: this.props.dataToDisplay.id as number});
         if (this.state.amount !== this.props.dataToDisplay.amount.toString()) {
           this.setState({amount: this.props.dataToDisplay.amount.toString()});
         }
@@ -102,7 +102,7 @@ class TransactionDialog extends Component<
         amount: '',
         selectedDate: moment().toDate(),
         selectedCategory: '',
-        elementId: undefined,
+        elementId: NaN,
       },
       () => this.props.onCloseRequested(),
     );

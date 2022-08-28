@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import SQLite from 'react-native-sqlite-storage';
+import FilterDialog from '../../components/FilterDialog';
 import TransactionDialog from '../../components/TransactionDialog';
 import {globalStyles} from '../../styles/styles';
 import {GraphFormat, Transaction} from '../../types/types';
@@ -23,8 +24,9 @@ interface HistorySceneState {
   yearPressed: number;
   monthPressed: string;
   totalSpendForMonth: number;
-  isDialogVisible: boolean;
-  entryPressed: Transaction;
+  isEditDialogVisible: boolean;
+  isFilterDialogVisible: boolean;
+  entryPressed?: Transaction;
 }
 
 interface HistorySceneProps {
@@ -37,13 +39,14 @@ export default class HistoryScene extends Component<
 > {
   readonly state: HistorySceneState = {
     elementsToDisplay: [],
-    isDialogVisible: false,
+    isEditDialogVisible: false,
     graphData: [],
     firstEntryDate: new Date(),
     yearPressed: moment().year(),
     monthPressed: '',
     totalSpendForMonth: 0,
     entryPressed: undefined,
+    isFilterDialogVisible: false,
   };
 
   componentDidMount() {
@@ -158,7 +161,7 @@ export default class HistoryScene extends Component<
     db.transaction((tx) => {
       tx.executeSql(
         'UPDATE Transactions set amount=?, tag=?, createdAt=? where id=?',
-        [amount, category, moment(date).format(), this.state.entryPressed.id],
+        [amount, category, moment(date).format(), this.state.entryPressed!.id],
         (tx, results) => {
           if (results.rowsAffected > 0) {
             ToastAndroid.show('Eintrag aktualisiert', ToastAndroid.SHORT);
@@ -180,11 +183,11 @@ export default class HistoryScene extends Component<
       <TouchableOpacity
         key={index}
         onPress={() =>
-          this.setState({isDialogVisible: true, entryPressed: element})
+          this.setState({isEditDialogVisible: true, entryPressed: element})
         }>
         <View style={[globalStyles.rowContainerItem, {marginLeft: 20}]}>
           <Text style={{fontSize: 18}}>
-            {moment(element.createdAt).format('dd DD.MM.YYYY').toString()}
+            {moment(element.createdAt).format('dd DD.MM').toString()}
           </Text>
           <Text style={{fontSize: 18}}>{element.tag}</Text>
           <Text style={{fontSize: 18}}>{element.amount}€</Text>
@@ -217,6 +220,10 @@ export default class HistoryScene extends Component<
               }}>
               Details anzeigen
             </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.setState({isFilterDialogVisible: true})}>
+            <Icon name="filter" type="font-awesome" color="gray" />
           </TouchableOpacity>
         </View>
       );
@@ -315,6 +322,9 @@ export default class HistoryScene extends Component<
       </View>
     ));
   }
+  private hideFilterDialog() {
+    this.setState({isFilterDialogVisible: false});
+  }
 
   render() {
     return (
@@ -322,11 +332,34 @@ export default class HistoryScene extends Component<
         <TransactionDialog
           onDelete={this.deleteEntry.bind(this)}
           transactionDialogType="Edit"
-          isVisible={this.state.isDialogVisible}
-          onCloseRequested={() => this.setState({isDialogVisible: false})}
+          isVisible={this.state.isEditDialogVisible}
+          onCloseRequested={() => this.setState({isEditDialogVisible: false})}
           onFinish={this.updateEntry.bind(this)}
           dataToDisplay={this.state.entryPressed}
           submitButtonText={'Ändern'}
+        />
+        <FilterDialog
+          isVisible={this.state.isFilterDialogVisible}
+          onClose={() => this.hideFilterDialog()}
+          onOrderByAsc={() => {
+            const data = [...this.state.elementsToDisplay];
+            this.setState({
+              elementsToDisplay: data.sort(
+                (a, b) => a.createdAt.valueOf() - b.createdAt.valueOf(),
+              ),
+            });
+
+            this.hideFilterDialog();
+          }}
+          onOrderByDesc={() => {
+            const data = [...this.state.elementsToDisplay];
+            this.setState({
+              elementsToDisplay: data.sort(
+                (a, b) => b.createdAt.valueOf() - a.createdAt.valueOf(),
+              ),
+            });
+            this.hideFilterDialog();
+          }}
         />
 
         <View style={{marginTop: 15}} />
