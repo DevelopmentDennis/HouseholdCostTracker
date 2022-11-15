@@ -14,7 +14,7 @@ export interface TransactionDialogProps {
   isVisible: boolean;
   onCloseRequested: () => void;
   onFinish: (amount: number, category: string, date: Date) => void;
-  onDelete?: (id: number) => void;
+  onDelete?: (id?: number) => void;
   submitButtonText?: string;
   triggerRerender?: () => void;
   transactionDialogType: 'Edit' | 'Create';
@@ -27,7 +27,6 @@ export interface TransactionDialogState {
   selectedDate: Date;
   categories: string[];
   elementId: number;
-  showDefaultKeyboard: boolean;
 }
 
 class TransactionDialog extends Component<
@@ -40,12 +39,10 @@ class TransactionDialog extends Component<
     selectedDate: moment().toDate(),
     categories: tags,
     elementId: NaN,
-    showDefaultKeyboard: false,
   };
 
   componentDidMount() {
     this.getCustomCategories();
-    this.getKeyboardType();
   }
 
   componentDidUpdate(prevProps: TransactionDialogProps) {
@@ -64,26 +61,13 @@ class TransactionDialog extends Component<
       }
     }
     if (this.props.isVisible && !prevProps.isVisible) {
-      this.getKeyboardType();
       this.getCustomCategories();
     }
   }
 
-  getKeyboardType() {
-    AsyncStorage.getItem('showDefaultKeyboardType')
-      .then((value) => {
-        if (value != null) {
-          this.setState({showDefaultKeyboard: value === 'true'});
-        }
-      })
-      .catch((e) => {
-        console.log('error', e);
-      });
-  }
-
   getCustomCategories() {
     AsyncStorage.getItem('customCategories')
-      .then((value) => {
+      .then(value => {
         if (value !== null) {
           const customCategories = [...new Set<string>(JSON.parse(value))];
           this.setState({
@@ -91,7 +75,7 @@ class TransactionDialog extends Component<
           });
         }
       })
-      .catch((e) => {
+      .catch(e => {
         console.log('error');
       });
   }
@@ -142,7 +126,7 @@ class TransactionDialog extends Component<
   }
 
   render() {
-    const {height, width} = Dimensions.get('window');
+    const {width} = Dimensions.get('window');
     return (
       <Overlay
         isVisible={this.props.isVisible}
@@ -157,11 +141,9 @@ class TransactionDialog extends Component<
           <Text style={styles.text}>Betrag</Text>
           <Input
             placeholder="Betrag"
-            keyboardType={
-              this.state.showDefaultKeyboard ? 'default' : 'numeric'
-            }
+            keyboardType={'numeric'}
             value={this.state.amount}
-            onChangeText={(amount) => this.setState({amount})}
+            onChangeText={amount => this.setState({amount})}
             onBlur={() => Keyboard.dismiss()}
           />
           <Text style={styles.text}>Datum</Text>
@@ -171,7 +153,7 @@ class TransactionDialog extends Component<
                 ? moment(this.props.dataToDisplay.createdAt).toDate()
                 : new Date()
             }
-            onDateChanged={(date) => this.setState({selectedDate: date})}
+            onDateChanged={date => this.setState({selectedDate: date})}
           />
           <Text style={styles.text}>Kategorie</Text>
           <SelectPicker
@@ -204,8 +186,10 @@ class TransactionDialog extends Component<
                 title="Löschen"
                 buttonStyle={{backgroundColor: 'crimson'}}
                 onPress={() => {
-                  this.props.onDelete(this.props.dataToDisplay.id),
-                    this.props.onCloseRequested();
+                  if (this.props.onDelete) {
+                    this.props.onDelete(this.props.dataToDisplay?.id);
+                  }
+                  this.props.onCloseRequested();
                 }}
               />
             </View>

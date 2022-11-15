@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import * as React from 'react';
 import {Component} from 'react';
@@ -57,7 +58,7 @@ export default class HistoryScene extends Component<
   }
 
   private getOldestEntry() {
-    db.transaction((tx) => {
+    db.transaction(tx => {
       tx.executeSql(
         `select min(createdAt) as date from Transactions`,
         [],
@@ -74,7 +75,7 @@ export default class HistoryScene extends Component<
             console.log('error', error);
           }
         },
-        (error) => {
+        error => {
           console.log('error:', error);
           return false;
         },
@@ -91,17 +92,21 @@ export default class HistoryScene extends Component<
     return years;
   }
 
-  private calculateElementsForMonth() {
+  private async calculateElementsForMonth() {
     const firstDayOfMonth = moment()
       .year(this.state.yearPressed)
       .month(this.state.monthPressed)
       .startOf('month')
       .toDate();
     const lastDayOfMonth = moment(firstDayOfMonth).add(1, 'M').toDate();
+    let sortingDirection = '';
 
-    db.transaction((tx) => {
+    sortingDirection =
+      (await AsyncStorage.getItem('sortingDirection')) ?? 'desc';
+
+    db.transaction(tx => {
       tx.executeSql(
-        `select * from Transactions order by date(createdAt) asc`,
+        `select * from Transactions order by date(createdAt) ${sortingDirection}`,
         [],
         (_, resultSet) => {
           const rows = resultSet.rows;
@@ -124,15 +129,18 @@ export default class HistoryScene extends Component<
             totalSpendForMonth: totalSpend,
           });
         },
-        (error) => {
+        error => {
           console.log('error:', error);
         },
       );
     });
   }
 
-  private deleteEntry(id: number) {
-    db.transaction((tx) => {
+  private deleteEntry(id?: number) {
+    if (id == null) {
+      return;
+    }
+    db.transaction(tx => {
       tx.executeSql(
         `delete from Transactions where id=?`,
         [id],
@@ -144,7 +152,7 @@ export default class HistoryScene extends Component<
             console.log('id not found');
           }
         },
-        (error) => {
+        error => {
           console.log('error:', error);
         },
       );
@@ -158,7 +166,7 @@ export default class HistoryScene extends Component<
         ToastAndroid.SHORT,
       );
     }
-    db.transaction((tx) => {
+    db.transaction(tx => {
       tx.executeSql(
         'UPDATE Transactions set amount=?, tag=?, createdAt=? where id=?',
         [amount, category, moment(date).format(), this.state.entryPressed!.id],
@@ -168,7 +176,7 @@ export default class HistoryScene extends Component<
             this.calculateElementsForMonth();
           } else alert('Updation Failed');
         },
-        (error) => {
+        error => {
           ToastAndroid.show(
             'Es ist ein Fehler aufgetreten',
             ToastAndroid.SHORT,
@@ -322,8 +330,11 @@ export default class HistoryScene extends Component<
       </View>
     ));
   }
-  private hideFilterDialog() {
+  private hideFilterDialog(hasChanged: boolean = false) {
     this.setState({isFilterDialogVisible: false});
+    if (hasChanged) {
+      this.calculateElementsForMonth();
+    }
   }
 
   render() {
@@ -341,24 +352,15 @@ export default class HistoryScene extends Component<
         <FilterDialog
           isVisible={this.state.isFilterDialogVisible}
           onClose={() => this.hideFilterDialog()}
-          onOrderByAsc={() => {
-            const data = [...this.state.elementsToDisplay];
-            this.setState({
-              elementsToDisplay: data.sort(
-                (a, b) => a.createdAt.valueOf() - b.createdAt.valueOf(),
-              ),
-            });
-
-            this.hideFilterDialog();
+          onOrderByAsc={async () => {
+            AsyncStorage.setItem('sortingDirection', 'asc').finally(() =>
+              this.hideFilterDialog(true),
+            );
           }}
-          onOrderByDesc={() => {
-            const data = [...this.state.elementsToDisplay];
-            this.setState({
-              elementsToDisplay: data.sort(
-                (a, b) => b.createdAt.valueOf() - a.createdAt.valueOf(),
-              ),
-            });
-            this.hideFilterDialog();
+          onOrderByDesc={async () => {
+            AsyncStorage.setItem('sortingDirection', 'desc').finally(() =>
+              this.hideFilterDialog(true),
+            );
           }}
         />
 
