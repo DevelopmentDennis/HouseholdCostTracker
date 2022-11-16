@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Picker as SelectPicker} from '@react-native-community/picker';
+import {Picker as SelectPicker} from '@react-native-picker/picker';
 import * as React from 'react';
 import {Component} from 'react';
 import {View, Text, Keyboard, Dimensions} from 'react-native';
