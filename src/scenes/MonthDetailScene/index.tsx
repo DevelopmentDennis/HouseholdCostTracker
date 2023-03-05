@@ -9,6 +9,7 @@ import {
   GraphFormat,
   LegendFormat,
   sliceColors,
+  STORE_DARKMODE,
   Transaction,
 } from '../../types/types';
 import {styles} from '../HomeScene/styles';
@@ -67,12 +68,14 @@ export default class MonthDetailScene extends Component<
       return [];
     }
 
-    elementsToDisplay?.forEach((el) => {
-      if (graphDat.find((e) => e.x == el.tag)) {
-        const index = graphDat.findIndex((ind) => ind.x == el.tag);
-        const data = graphDat.find((da) => da.x == el.tag);
+    elementsToDisplay?.forEach(el => {
+      if (graphDat.find(e => e.x == el.tag)) {
+        const index = graphDat.findIndex(ind => ind.x == el.tag);
+        const data = graphDat.find(da => da.x == el.tag);
 
-        graphDat[index].y = Math.round(data.y + el.amount);
+        if (data != null) {
+          graphDat[index].y = Math.round(data.y + el.amount);
+        }
       } else {
         graphDat.push({x: el.tag, y: el.amount});
       }
@@ -89,8 +92,8 @@ export default class MonthDetailScene extends Component<
       return stringDat;
     }
 
-    elementsToDisplay.forEach((el) => {
-      if (!stringDat.find((e) => e.name == el.tag)) {
+    elementsToDisplay.forEach(el => {
+      if (!stringDat.find(e => e.name == el.tag)) {
         stringDat.push({name: el.tag});
       }
     });
@@ -106,7 +109,7 @@ export default class MonthDetailScene extends Component<
       });
     }
 
-    AsyncStorage.getItem('showDarkmodeStyle').then((value) => {
+    AsyncStorage.getItem(STORE_DARKMODE).then(value => {
       if (value) {
         this.setState({showDarkModeStyle: value === 'true'});
       }
@@ -149,7 +152,7 @@ export default class MonthDetailScene extends Component<
             </Text>
             <Switch
               value={this.state.showLabels}
-              onValueChange={(value) => this.setState({showLabels: value})}
+              onValueChange={value => this.setState({showLabels: value})}
             />
           </View>
         </View>
@@ -164,7 +167,7 @@ export default class MonthDetailScene extends Component<
                     return [
                       {
                         target: 'labels',
-                        mutation: (props) => {
+                        mutation: props => {
                           return !!props.text
                             ? {text: ''}
                             : {
@@ -195,7 +198,7 @@ export default class MonthDetailScene extends Component<
             innerRadius={width * 0.15}
             labelRadius={width * 0.2}
             padAngle={1}
-            labels={(props) =>
+            labels={props =>
               this.state.showLabels
                 ? `${props?.slice?.data?.xName}\n${Number(
                     props.slice?.data?.y,
@@ -219,7 +222,7 @@ export default class MonthDetailScene extends Component<
                     return [
                       {
                         target: 'data',
-                        mutation: (props) => {
+                        mutation: props => {
                           console.log('pressed:', props);
                           const fill = props.style && props.style.fill;
                           return fill === '#c43a31'
@@ -229,7 +232,7 @@ export default class MonthDetailScene extends Component<
                       },
                       {
                         target: 'labels',
-                        mutation: (props) => {
+                        mutation: props => {
                           return props.text === 'clicked'
                             ? null
                             : {text: 'clicked'};

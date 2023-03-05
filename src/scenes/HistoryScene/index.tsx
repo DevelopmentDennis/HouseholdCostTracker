@@ -14,7 +14,11 @@ import SQLite from 'react-native-sqlite-storage';
 import FilterDialog from '../../components/FilterDialog';
 import TransactionDialog from '../../components/TransactionDialog';
 import {globalStyles} from '../../styles/styles';
-import {GraphFormat, Transaction} from '../../types/types';
+import {
+  GraphFormat,
+  STORE_SORTING_DIRECTION,
+  Transaction,
+} from '../../types/types';
 
 const db = SQLite.openDatabase('CostTracker.db');
 
@@ -102,7 +106,7 @@ export default class HistoryScene extends Component<
     let sortingDirection = '';
 
     sortingDirection =
-      (await AsyncStorage.getItem('sortingDirection')) ?? 'desc';
+      (await AsyncStorage.getItem(STORE_SORTING_DIRECTION)) ?? 'desc';
 
     db.transaction(tx => {
       tx.executeSql(
@@ -353,12 +357,12 @@ export default class HistoryScene extends Component<
           isVisible={this.state.isFilterDialogVisible}
           onClose={() => this.hideFilterDialog()}
           onOrderByAsc={async () => {
-            AsyncStorage.setItem('sortingDirection', 'asc').finally(() =>
+            AsyncStorage.setItem(STORE_SORTING_DIRECTION, 'asc').finally(() =>
               this.hideFilterDialog(true),
             );
           }}
           onOrderByDesc={async () => {
-            AsyncStorage.setItem('sortingDirection', 'desc').finally(() =>
+            AsyncStorage.setItem(STORE_SORTING_DIRECTION, 'desc').finally(() =>
               this.hideFilterDialog(true),
             );
           }}

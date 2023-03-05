@@ -22,6 +22,9 @@ import {
   LegendFormat,
   RecurringTransaction,
   sliceColors,
+  STORE_CUSTOM_CATEGORIES,
+  STORE_DARKMODE,
+  STORE_MONTHLY_AVAILABLE,
   Transaction,
 } from '../../types/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -43,7 +46,7 @@ interface HomeScreenState {
 }
 
 const wait = (timeout: number) => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(resolve, timeout);
   });
 };
@@ -63,8 +66,8 @@ export default class HomeScene extends Component<null, HomeScreenState> {
   private async getAllAsyncStorageData() {
     let amountAvailable: number = 0;
 
-    AsyncStorage.multiGet(['monthlyAvailableAmount', 'showDarkmodeStyle']).then(
-      (values) => {
+    AsyncStorage.multiGet([STORE_MONTHLY_AVAILABLE, STORE_DARKMODE]).then(
+      values => {
         if (values[0][1]) {
           const amount = Number.parseInt(values[0][1]);
           if (!isNaN(amount)) {
@@ -77,8 +80,8 @@ export default class HomeScene extends Component<null, HomeScreenState> {
       },
     );
 
-    AsyncStorage.getItem('monthlyAvailableAmount')
-      .then((value) => {
+    AsyncStorage.getItem(STORE_MONTHLY_AVAILABLE)
+      .then(value => {
         if (value !== null) {
           const amount = Number.parseInt(value);
           if (!isNaN(amount)) {
@@ -88,8 +91,8 @@ export default class HomeScene extends Component<null, HomeScreenState> {
       })
       .catch();
 
-    AsyncStorage.getItem('customCategories')
-      .then((value) => {
+    AsyncStorage.getItem(STORE_CUSTOM_CATEGORIES)
+      .then(value => {
         if (value !== null) {
           const customCategories = [...new Set<string>(JSON.parse(value))];
 
@@ -103,7 +106,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
           });
         }
       })
-      .catch((e) => {
+      .catch(e => {
         this.setState({
           amountAvailable,
         });
@@ -112,7 +115,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
 
   componentDidMount() {
     try {
-      db.transaction((tx) => {
+      db.transaction(tx => {
         tx.executeSql(
           'create table if not exists Transactions (id integer primary key not null, amount float, createdAt date, tag text);',
         );
@@ -129,7 +132,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
   }
 
   private renderCurrentTransactions() {
-    db.transaction((tx) => {
+    db.transaction(tx => {
       let transactions: Transaction[] = [];
       tx.executeSql(
         `select * from Transactions`,
@@ -147,7 +150,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             }
           }
         },
-        (error) => {
+        error => {
           console.log('error:', error);
           return;
         },
@@ -181,7 +184,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
             this.setState({elementsToDisplay: transactions});
           }
         },
-        (error) => {
+        error => {
           console.log('error:', error);
           return false;
         },
@@ -191,10 +194,10 @@ export default class HomeScene extends Component<null, HomeScreenState> {
 
   public dropTable() {
     db.transaction(
-      (tx) => {
+      tx => {
         tx.executeSql('drop table Transactions');
       },
-      (error) => console.log('error adding transaction'),
+      error => console.log('error adding transaction'),
       () => console.log('successfully dropped table Transactions'),
     );
     return true;
@@ -206,13 +209,13 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     }
 
     db.transaction(
-      (tx) => {
+      tx => {
         tx.executeSql(
           'INSERT INTO Transactions (amount, createdAt, tag) VALUES (?, ? , ?) ',
           [amount, moment(date).format(), category],
         );
       },
-      (error) => ToastAndroid.show(error, ToastAndroid.SHORT),
+      error => ToastAndroid.show(error, ToastAndroid.SHORT),
       () => {
         ToastAndroid.show('Ausgabe hinzugefügt', ToastAndroid.SHORT);
       },
@@ -239,8 +242,8 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     if (this.state.amountAvailable > 0) {
       stringDat.push({name: 'Verfügbar'});
     }
-    this.state.elementsToDisplay.forEach((el) => {
-      if (!stringDat.find((e) => e.name == el.tag)) {
+    this.state.elementsToDisplay.forEach(el => {
+      if (!stringDat.find(e => e.name == el.tag)) {
         stringDat.push({name: el.tag});
       }
     });
@@ -254,12 +257,13 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     if (this.state.amountAvailable > 0) {
       graphDat.push({x: 'Verfügbar', y: 0});
     }
-    this.state.elementsToDisplay.forEach((el) => {
-      if (graphDat.find((e) => e.x == el.tag)) {
-        const index = graphDat.findIndex((ind) => ind.x == el.tag);
-        const data = graphDat.find((da) => da.x == el.tag);
-
-        graphDat[index].y = Math.round(data.y + el.amount);
+    this.state.elementsToDisplay.forEach(el => {
+      if (graphDat.find(e => e.x == el.tag)) {
+        const index = graphDat.findIndex(ind => ind.x == el.tag);
+        const data = graphDat.find(da => da.x == el.tag);
+        if (data != null) {
+          graphDat[index].y = Math.round(data.y + el.amount);
+        }
       } else {
         graphDat.push({x: el.tag, y: el.amount});
       }
@@ -267,7 +271,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
 
     if (this.state.amountAvailable > 0) {
       let totalSpend: number = 0;
-      graphDat.forEach((el) => (totalSpend += el.y));
+      graphDat.forEach(el => (totalSpend += el.y));
       graphDat[0].y = Math.round(this.state.amountAvailable - totalSpend);
     }
 
@@ -370,7 +374,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
                         return [
                           {
                             target: 'labels',
-                            mutation: (props) => {
+                            mutation: props => {
                               return !!props.text
                                 ? {text: ''}
                                 : {

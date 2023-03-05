@@ -8,7 +8,7 @@ import DateTimeInput from '../DateTimeInput';
 import {tags} from '../../../assets/defaultTags.json';
 import {styles} from '../../scenes/HomeScene/styles';
 import moment from 'moment';
-import {Transaction} from '../../types/types';
+import {STORE_CUSTOM_CATEGORIES, Transaction} from '../../types/types';
 
 export interface TransactionDialogProps {
   isVisible: boolean;
@@ -66,7 +66,7 @@ class TransactionDialog extends Component<
   }
 
   getCustomCategories() {
-    AsyncStorage.getItem('customCategories')
+    AsyncStorage.getItem(STORE_CUSTOM_CATEGORIES)
       .then(value => {
         if (value !== null) {
           const customCategories = [...new Set<string>(JSON.parse(value))];

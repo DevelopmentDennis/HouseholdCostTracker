@@ -22,7 +22,6 @@ export interface RecuringTransactionsState {
   addRecurringTransactionDescription: string;
   recurringTransactions: RecurringTransaction[];
   showRecurringTransactionAddDialog: boolean;
-  showDefaultKeyboard: boolean;
 }
 
 const db = SQLite.openDatabase('CostTracker.db');
@@ -31,12 +30,11 @@ export default class RecuringTransactionsScene extends Component<
   RecuringTransactionsProps,
   RecuringTransactionsState
 > {
-  readonly state = {
+  readonly state: RecuringTransactionsState = {
     addRecurringTransactionAmount: 0,
     addRecurringTransactionDescription: '',
     recurringTransactions: [],
     showRecurringTransactionAddDialog: false,
-    showDefaultKeyboard: false,
   };
 
   private checkAndSetRecurringTransactionAmount(amount: string) {
@@ -50,7 +48,7 @@ export default class RecuringTransactionsScene extends Component<
   }
 
   private getRecurringData(): RecurringTransaction[] {
-    db.transaction((tx) => {
+    db.transaction(tx => {
       tx.executeSql(
         `select * from RecurringTransactions`,
         [],
@@ -67,7 +65,7 @@ export default class RecuringTransactionsScene extends Component<
 
           this.setState({recurringTransactions: transactions});
         },
-        (error) => {
+        error => {
           console.log('error:', error);
           return [];
         },
@@ -77,7 +75,7 @@ export default class RecuringTransactionsScene extends Component<
   }
 
   private deleteRecurringTransaction(id: number) {
-    db.transaction((tx) => {
+    db.transaction(tx => {
       tx.executeSql(
         `delete from RecurringTransactions where id=?`,
         [id],
@@ -88,7 +86,7 @@ export default class RecuringTransactionsScene extends Component<
             console.log('id not found');
           }
         },
-        (error) => {
+        error => {
           console.log('error:', error);
         },
       );
@@ -98,7 +96,7 @@ export default class RecuringTransactionsScene extends Component<
   private storeRecurringData() {
     try {
       db.transaction(
-        (tx) => {
+        tx => {
           tx.executeSql(
             'INSERT INTO RecurringTransactions (amount, description) VALUES (?, ?) ',
             [
@@ -107,7 +105,7 @@ export default class RecuringTransactionsScene extends Component<
             ],
           );
         },
-        (error) => console.log('error adding recurringTransaction', error),
+        error => console.log('error adding recurringTransaction', error),
         () => {
           this.setState({
             addRecurringTransactionAmount: 0,
@@ -122,21 +120,8 @@ export default class RecuringTransactionsScene extends Component<
     }
   }
 
-  getKeyboardType() {
-    AsyncStorage.getItem('showDefaultKeyboardType')
-      .then((value) => {
-        if (value != null) {
-          this.setState({showDefaultKeyboard: value === 'true'});
-        }
-      })
-      .catch((e) => {
-        console.log('error', e);
-      });
-  }
-
   componentDidMount() {
     this.getRecurringData();
-    this.getKeyboardType();
   }
 
   render() {
@@ -156,17 +141,15 @@ export default class RecuringTransactionsScene extends Component<
             <Text style={styles.text}>Betrag</Text>
             <Input
               placeholder="Betrag"
-              keyboardType={
-                this.state.showDefaultKeyboard ? 'default' : 'numeric'
-              }
-              onChangeText={(amount) =>
+              keyboardType="numeric"
+              onChangeText={amount =>
                 this.checkAndSetRecurringTransactionAmount(amount)
               }
             />
             <Text style={styles.text}>Beschreibung</Text>
             <Input
               placeholder="Beschreibung"
-              onChangeText={(text) =>
+              onChangeText={text =>
                 this.setState({addRecurringTransactionDescription: text})
               }
             />
@@ -229,7 +212,9 @@ export default class RecuringTransactionsScene extends Component<
                       borderLeftColor: 'black',
                       paddingLeft: 15,
                     }}
-                    onPress={() => this.deleteRecurringTransaction(item.id)}>
+                    onPress={() =>
+                      this.deleteRecurringTransaction(item.id as number)
+                    }>
                     <Text style={[{color: 'red'}]}>Löschen</Text>
                   </TouchableOpacity>
                 </View>

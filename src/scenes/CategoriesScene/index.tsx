@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import {Icon, Input, Overlay} from 'react-native-elements';
 import {globalStyles} from '../../styles/styles';
+import {STORE_CUSTOM_CATEGORIES} from '../../types/types';
 import {styles} from '../HomeScene/styles';
 
 export interface CategoriesSceneState {
@@ -29,15 +30,15 @@ class CategoriesScene extends Component<undefined, CategoriesSceneState> {
   };
 
   private getAllAsyncStorageData() {
-    AsyncStorage.getItem('customCategories')
-      .then((value) => {
+    AsyncStorage.getItem(STORE_CUSTOM_CATEGORIES)
+      .then(value => {
         if (value !== null) {
           this.setState({
             categories: [...new Set<string>(JSON.parse(value))],
           });
         }
       })
-      .catch((error) => console.log('error', error));
+      .catch(error => console.log('error', error));
   }
 
   componentDidMount() {
@@ -48,10 +49,10 @@ class CategoriesScene extends Component<undefined, CategoriesSceneState> {
     if (this.state.categoryToBeAdded == '') {
       return;
     }
-    const data = await AsyncStorage.getItem('customCategories');
+    const data = await AsyncStorage.getItem(STORE_CUSTOM_CATEGORIES);
     if (data === null) {
       await AsyncStorage.setItem(
-        'customCategories',
+        STORE_CUSTOM_CATEGORIES,
         JSON.stringify([this.state.categoryToBeAdded]),
       );
     } else {
@@ -59,18 +60,18 @@ class CategoriesScene extends Component<undefined, CategoriesSceneState> {
       categoriesArray.push(this.state.categoryToBeAdded);
 
       AsyncStorage.setItem(
-        'customCategories',
+        STORE_CUSTOM_CATEGORIES,
         JSON.stringify([...new Set<string>(categoriesArray)]),
       )
         .then(() => {
           ToastAndroid.show('Erfolgreich hinzugefügt', ToastAndroid.SHORT),
-            this.setState((state) => ({
+            this.setState(state => ({
               categoryToBeAdded: '',
               addCustomCategoryDialogVisible: false,
               categories: [...state.categories, state.categoryToBeAdded],
             }));
         })
-        .catch((error) => {
+        .catch(error => {
           ToastAndroid.show(
             'Es ist ein Fehler beim Speichern aufgetreten',
             ToastAndroid.SHORT,
@@ -82,23 +83,23 @@ class CategoriesScene extends Component<undefined, CategoriesSceneState> {
 
   private async deleteCategory(categoryToDelete: string) {
     this.setState(
-      (state) => ({
+      state => ({
         categories: state.categories.filter(
-          (element) => element != categoryToDelete,
+          element => element != categoryToDelete,
         ),
       }),
       async () => {
-        const data = await AsyncStorage.getItem('customCategories');
+        const data = await AsyncStorage.getItem(STORE_CUSTOM_CATEGORIES);
         if (data === null) {
           console.log('ERROR deleting item');
         } else {
           let categoriesArray: string[] = JSON.parse(data);
           categoriesArray = categoriesArray.filter(
-            (element) => element != categoryToDelete,
+            element => element != categoryToDelete,
           );
 
           AsyncStorage.setItem(
-            'customCategories',
+            STORE_CUSTOM_CATEGORIES,
             JSON.stringify([...new Set<string>(categoriesArray)]),
           ).then(() => {
             ToastAndroid.show('Erfolgreich gelöscht', ToastAndroid.SHORT);
@@ -126,7 +127,7 @@ class CategoriesScene extends Component<undefined, CategoriesSceneState> {
             <Input
               style={{marginTop: 10}}
               placeholder="Beschreibung"
-              onChangeText={(text) => this.setState({categoryToBeAdded: text})}
+              onChangeText={text => this.setState({categoryToBeAdded: text})}
             />
 
             <Button

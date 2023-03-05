@@ -36,3 +36,9 @@ export const sliceColors = [
   '#f2aa58',
   '#e85f29',
 ];
+
+export const STORE_MONTHLY_AVAILABLE = 'monthlyAvailableAmount';
+export const STORE_DARKMODE = 'showDarkmodeStyle';
+export const STORE_CUSTOM_CATEGORIES = 'customCategories';
+export const STORE_HIDE_RECURRING = 'hideRecurringOnHome';
+export const STORE_SORTING_DIRECTION = 'sortingDirection';

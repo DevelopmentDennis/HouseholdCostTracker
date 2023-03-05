@@ -12,6 +12,7 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {STORE_MONTHLY_AVAILABLE} from '../../types/types';
 
 export interface MonthlyAvailableSceneProps {
   navigation: any;
@@ -31,7 +32,7 @@ class MonthlyAvailableScene extends Component<
 
   async componentDidMount() {
     try {
-      const value = await AsyncStorage.getItem('monthlyAvailableAmount');
+      const value = await AsyncStorage.getItem(STORE_MONTHLY_AVAILABLE);
       if (value !== null) {
         this.setState({monthlyAvailableAmount: value});
       }
@@ -53,15 +54,13 @@ class MonthlyAvailableScene extends Component<
   private async storeData() {
     if (!isNaN(Number.parseInt(this.state.monthlyAvailableAmount))) {
       AsyncStorage.setItem(
-        'monthlyAvailableAmount',
+        STORE_MONTHLY_AVAILABLE,
         this.state.monthlyAvailableAmount,
       )
         .then(() =>
           ToastAndroid.show('Erfolgreich gespeichert', ToastAndroid.SHORT),
         )
-        .catch((error) =>
-          Alert.alert(`Es ist ein Fehler aufgetreten ${error}`),
-        );
+        .catch(error => Alert.alert(`Es ist ein Fehler aufgetreten ${error}`));
     }
   }
 
@@ -92,7 +91,7 @@ class MonthlyAvailableScene extends Component<
             }}
             placeholder="Betrag"
             value={this.state.monthlyAvailableAmount}
-            onChangeText={(text) => this.checkAndSetAviableAmount(text)}
+            onChangeText={text => this.checkAndSetAviableAmount(text)}
             onSubmitEditing={() => Keyboard.dismiss()}
             onBlur={() => Keyboard.dismiss()}
           />
