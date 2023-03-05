@@ -24,6 +24,7 @@ import {
   sliceColors,
   STORE_CUSTOM_CATEGORIES,
   STORE_DARKMODE,
+  STORE_HIDE_RECURRING,
   STORE_MONTHLY_AVAILABLE,
   Transaction,
 } from '../../types/types';
@@ -39,10 +40,12 @@ interface HomeScreenState {
   defaultGraphicData: any;
   elementsToDisplay: Transaction[];
   amountAvailable: number;
+  amountRecurring: number;
   isRefreshing: boolean;
   categories: string[];
   didLoadAllData: boolean;
   showDarkModeStyle: boolean;
+  hideRecurringTransactions: boolean;
 }
 
 const wait = (timeout: number) => {
@@ -57,28 +60,35 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     isModalVisible: false,
     elementsToDisplay: [],
     amountAvailable: 0,
+    amountRecurring: 0,
     isRefreshing: false,
     categories: tags,
     didLoadAllData: false,
     showDarkModeStyle: false,
+    hideRecurringTransactions: false,
   };
 
   private async getAllAsyncStorageData() {
     let amountAvailable: number = 0;
 
-    AsyncStorage.multiGet([STORE_MONTHLY_AVAILABLE, STORE_DARKMODE]).then(
-      values => {
-        if (values[0][1]) {
-          const amount = Number.parseInt(values[0][1]);
-          if (!isNaN(amount)) {
-            amountAvailable = amount;
-          }
+    AsyncStorage.multiGet([
+      STORE_MONTHLY_AVAILABLE,
+      STORE_DARKMODE,
+      STORE_HIDE_RECURRING,
+    ]).then(values => {
+      if (values[0][1]) {
+        const amount = Number.parseInt(values[0][1]);
+        if (!isNaN(amount)) {
+          amountAvailable = amount;
         }
-        if (values[1][1]) {
-          this.setState({showDarkModeStyle: values[1][1] === 'true'});
-        }
-      },
-    );
+      }
+      if (values[1][1]) {
+        this.setState({showDarkModeStyle: values[1][1] === 'true'});
+      }
+      if (values[2][1]) {
+        this.setState({hideRecurringTransactions: values[2][1] === 'false'});
+      }
+    });
 
     AsyncStorage.getItem(STORE_MONTHLY_AVAILABLE)
       .then(value => {
@@ -161,24 +171,30 @@ export default class HomeScene extends Component<null, HomeScreenState> {
         [],
         (_, resultSet) => {
           const rows = resultSet.rows;
-          let recurringtransactions: Transaction[] = [];
+          let recurringtransactions: Transaction = {
+            createdAt: new Date(),
+            tag: 'Monatlich',
+            amount: 0,
+          };
+          let recurringAmount: number = 0;
           if (rows.length != 0) {
             for (let i = 0; i < rows.length; i++) {
               let tra: RecurringTransaction = rows.item(i);
-
-              recurringtransactions.push({
-                amount: Math.round(tra.amount),
-                createdAt: new Date(),
-                tag: 'Monatlich',
-              });
+              recurringAmount += tra.amount;
             }
 
-            transactions.splice(0, 0, recurringtransactions[0]);
+            recurringtransactions.amount = recurringAmount;
 
             this.setState({
-              elementsToDisplay: transactions.concat(
-                recurringtransactions.slice(1),
-              ),
+              amountRecurring: recurringAmount,
+            });
+
+            if (!this.state.hideRecurringTransactions) {
+              transactions.splice(0, 0, recurringtransactions);
+            }
+
+            this.setState({
+              elementsToDisplay: transactions,
             });
           } else {
             this.setState({elementsToDisplay: transactions});
@@ -272,7 +288,14 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     if (this.state.amountAvailable > 0) {
       let totalSpend: number = 0;
       graphDat.forEach(el => (totalSpend += el.y));
-      graphDat[0].y = Math.round(this.state.amountAvailable - totalSpend);
+
+      const amountRecurringNotInGraph = this.state.hideRecurringTransactions
+        ? this.state.amountRecurring
+        : 0;
+
+      graphDat[0].y = Math.round(
+        this.state.amountAvailable - totalSpend - amountRecurringNotInGraph,
+      );
     }
 
     return graphDat;

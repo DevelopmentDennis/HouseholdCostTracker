@@ -223,7 +223,6 @@ export default class MonthDetailScene extends Component<
                       {
                         target: 'data',
                         mutation: props => {
-                          console.log('pressed:', props);
                           const fill = props.style && props.style.fill;
                           return fill === '#c43a31'
                             ? null
