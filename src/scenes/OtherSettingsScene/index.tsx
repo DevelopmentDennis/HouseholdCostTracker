@@ -35,28 +35,24 @@ class OtherSettingsScene extends Component<
   }
 
   async setDarkmodeSupport(value: boolean) {
-    this.setState({showDarkModeStyle: value});
     AsyncStorage.setItem(STORE_DARKMODE, value.toString())
-      .then()
+      .then(() => this.setState({showDarkModeStyle: value}))
       .catch(() => {
         ToastAndroid.show(
           'Es ist ein Fehler beim Speichern aufgetreten',
           ToastAndroid.SHORT,
         );
-        this.setState({showDarkModeStyle: !value});
       });
   }
 
   async setRecurringOnHomeScreen(value: boolean) {
-    this.setState({hideRecurringExpensesOnHomeScreen: value});
     AsyncStorage.setItem(STORE_HIDE_RECURRING, value.toString())
-      .then()
+      .then(() => this.setState({hideRecurringExpensesOnHomeScreen: value}))
       .catch(() => {
         ToastAndroid.show(
           'Es ist ein Fehler beim Speichern aufgetreten',
           ToastAndroid.SHORT,
         );
-        this.setState({hideRecurringExpensesOnHomeScreen: !value});
       });
   }
 

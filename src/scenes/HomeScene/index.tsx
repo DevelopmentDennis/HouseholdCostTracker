@@ -32,6 +32,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BackPressHandler from '../../components/BackPressHandler';
 import Svg from 'react-native-svg';
 import TransactionDialog from '../../components/TransactionDialog';
+import {KeyValuePair} from '@react-native-async-storage/async-storage/lib/typescript/types';
 
 const db = SQLite.openDatabase('CostTracker.db');
 
@@ -69,17 +70,21 @@ export default class HomeScene extends Component<null, HomeScreenState> {
   };
 
   private async getAllAsyncStorageData() {
-    let amountAvailable: number = 0;
+    let values: readonly KeyValuePair[];
+    try {
+      values = await AsyncStorage.multiGet([
+        STORE_MONTHLY_AVAILABLE,
+        STORE_DARKMODE,
+        STORE_HIDE_RECURRING,
+        STORE_CUSTOM_CATEGORIES,
+      ]);
 
-    AsyncStorage.multiGet([
-      STORE_MONTHLY_AVAILABLE,
-      STORE_DARKMODE,
-      STORE_HIDE_RECURRING,
-    ]).then(values => {
       if (values[0][1]) {
         const amount = Number.parseInt(values[0][1]);
         if (!isNaN(amount)) {
-          amountAvailable = amount;
+          this.setState({
+            amountAvailable: amount,
+          });
         }
       }
       if (values[1][1]) {
@@ -88,42 +93,18 @@ export default class HomeScene extends Component<null, HomeScreenState> {
       if (values[2][1]) {
         this.setState({hideRecurringTransactions: values[2][1] === 'false'});
       }
-    });
-
-    AsyncStorage.getItem(STORE_MONTHLY_AVAILABLE)
-      .then(value => {
-        if (value !== null) {
-          const amount = Number.parseInt(value);
-          if (!isNaN(amount)) {
-            amountAvailable = amount;
-          }
-        }
-      })
-      .catch();
-
-    AsyncStorage.getItem(STORE_CUSTOM_CATEGORIES)
-      .then(value => {
-        if (value !== null) {
-          const customCategories = [...new Set<string>(JSON.parse(value))];
-
-          this.setState({
-            categories: [...customCategories, ...new Set<string>(tags)],
-            amountAvailable,
-          });
-        } else {
-          this.setState({
-            amountAvailable,
-          });
-        }
-      })
-      .catch(e => {
+      if (values[3][1] != null) {
+        const customCategories = [...new Set<string>(JSON.parse(values[3][1]))];
         this.setState({
-          amountAvailable,
+          categories: [...customCategories, ...new Set<string>(tags)],
         });
-      });
+      }
+    } catch (e) {
+      console.log('error getting items from async storage');
+    }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     try {
       db.transaction(tx => {
         tx.executeSql(
@@ -136,7 +117,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
     } catch (error) {
       console.log('create failed', error);
     }
-    this.getAllAsyncStorageData();
+    await this.getAllAsyncStorageData();
     this.renderCurrentTransactions();
     this.setState({didLoadAllData: true});
   }
@@ -306,7 +287,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
       isRefreshing: true,
     });
     this.renderCurrentTransactions();
-    this.getAllAsyncStorageData();
+    await this.getAllAsyncStorageData();
     wait(2000).then(() => this.setState({isRefreshing: false}));
   }
 
@@ -448,8 +429,8 @@ export default class HomeScene extends Component<null, HomeScreenState> {
               zIndex: 100,
               marginTop: -10,
             }}
-            onPress={() => {
-              this.onRefresh();
+            onPress={async () => {
+              await this.onRefresh();
             }}>
             <Icon
               name="sync"
