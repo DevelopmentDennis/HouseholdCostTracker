@@ -1,9 +1,9 @@
-import {useIsFocused, useRoute} from '@react-navigation/core';
+import {useIsFocused} from '@react-navigation/core';
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {BackHandler, ToastAndroid} from 'react-native';
 
-export const HandleBackPress = (props) => {
+export const HandleBackPress = props => {
   const {message} = props;
   const [exitApp, setExitApp] = useState(0);
   const isHomeSceneFocused = useIsFocused();
