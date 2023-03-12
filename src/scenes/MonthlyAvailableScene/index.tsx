@@ -91,6 +91,7 @@ class MonthlyAvailableScene extends Component<
             }}
             placeholder="Betrag"
             value={this.state.monthlyAvailableAmount}
+            keyboardType={'numeric'}
             onChangeText={text => this.checkAndSetAviableAmount(text)}
             onSubmitEditing={() => Keyboard.dismiss()}
             onBlur={() => Keyboard.dismiss()}
