@@ -105,8 +105,8 @@ class OtherSettingsScene extends Component<
           />
         </View>
         <Text style={{marginLeft: 10}}>
-          Da dies meist der größte Anteil der Ausgaben darstellt, gibt es die
-          Möglichkeit diese für eine bessere Übersicht auf der Startseite nicht
+          Da dies meist den größten Anteil der Ausgaben darstellt, gibt es die
+          Möglichkeit diesen für eine bessere Übersicht auf der Startseite nicht
           anzuzeigen.
         </Text>
       </View>

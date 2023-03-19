@@ -178,7 +178,10 @@ export default class HomeScene extends Component<null, HomeScreenState> {
               elementsToDisplay: transactions,
             });
           } else {
-            this.setState({elementsToDisplay: transactions});
+            this.setState({
+              elementsToDisplay: transactions,
+              amountRecurring: 0,
+            });
           }
         },
         error => {
@@ -293,6 +296,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
 
   render() {
     const {height, width} = Dimensions.get('window');
+    const graphDat = this.getGraphData();
     return (
       <ScrollView
         style={{backgroundColor: '#cccccc32'}}
@@ -345,7 +349,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
                 style={[
                   styles.text,
                   {color: this.state.showDarkModeStyle ? 'white' : 'black'},
-                ]}>{`noch ${this.getGraphData()[0].y}€ verfügbar`}</Text>
+                ]}>{`noch ${graphDat[0].y}€ verfügbar`}</Text>
             )}
           </View>
           {/* <Button title="Delete" onPress={() => this.dropTable()} /> */}
@@ -403,7 +407,7 @@ export default class HomeScene extends Component<null, HomeScreenState> {
                   },
                 ]}
                 animate={{easing: 'exp'}}
-                data={this.getGraphData()}
+                data={graphDat}
                 width={width * 0.9}
                 labelRadius={width * 0.2}
                 padding={10}
