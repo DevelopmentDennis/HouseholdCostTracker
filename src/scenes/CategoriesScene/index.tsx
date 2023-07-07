@@ -29,6 +29,14 @@ class CategoriesScene extends Component<undefined, CategoriesSceneState> {
     addCustomCategoryDialogVisible: false,
   };
 
+  componentDidMount() {
+    this.getAllAsyncStorageData();
+  }
+
+  componentWillUnmount(): void {
+    this.setAllAsyncStorageData();
+  }
+
   private getAllAsyncStorageData() {
     AsyncStorage.getItem(STORE_CUSTOM_CATEGORIES)
       .then(value => {
@@ -41,8 +49,11 @@ class CategoriesScene extends Component<undefined, CategoriesSceneState> {
       .catch(error => console.log('error', error));
   }
 
-  componentDidMount() {
-    this.getAllAsyncStorageData();
+  private setAllAsyncStorageData() {
+    AsyncStorage.setItem(
+      STORE_CUSTOM_CATEGORIES,
+      JSON.stringify([...new Set<string>(this.state.categories)]),
+    );
   }
 
   private async addCategory() {
@@ -109,6 +120,14 @@ class CategoriesScene extends Component<undefined, CategoriesSceneState> {
     );
   }
 
+  private moveItemUp(item: string, index: number) {
+    let reorderedList = this.state.categories;
+    reorderedList.splice(index, 1);
+    reorderedList.splice(index - 1, 0, item);
+
+    this.setState({categories: reorderedList});
+  }
+
   render() {
     const {width} = Dimensions.get('window');
     return (
@@ -140,7 +159,8 @@ class CategoriesScene extends Component<undefined, CategoriesSceneState> {
         </Overlay>
 
         <Text style={{padding: 10, paddingTop: 25, fontSize: 15}}>
-          Hier können eigene Kategorien hinzugefügt oder gelöscht werden.
+          Hier können eigene Kategorien hinzugefügt oder gelöscht werden. Mit
+          dem Pfeil kann die Reihenfolge geändert werden.
         </Text>
         <TouchableOpacity
           style={{
@@ -177,15 +197,38 @@ class CategoriesScene extends Component<undefined, CategoriesSceneState> {
                 <View style={globalStyles.rowContainerItem}>
                   <Text style={[styles.text, {paddingLeft: 15}]}>{item}</Text>
 
-                  <TouchableOpacity
+                  <View
                     style={{
-                      borderLeftWidth: 1,
-                      borderLeftColor: 'black',
-                      paddingLeft: 15,
-                    }}
-                    onPress={() => this.deleteCategory(item)}>
-                    <Text style={[{color: 'red'}]}>Löschen</Text>
-                  </TouchableOpacity>
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    {index != 0 && (
+                      <TouchableOpacity
+                        style={{
+                          borderLeftWidth: 1,
+                          borderLeftColor: 'black',
+                          paddingLeft: 10,
+                          paddingRight: 10,
+                        }}
+                        onPress={() => this.moveItemUp(item, index)}>
+                        <Icon
+                          type="font-awesome"
+                          name="arrow-up"
+                          color={'royalblue'}
+                        />
+                      </TouchableOpacity>
+                    )}
+
+                    <TouchableOpacity
+                      style={{
+                        borderLeftWidth: 1,
+                        borderLeftColor: 'black',
+                        paddingLeft: 15,
+                      }}
+                      onPress={() => this.deleteCategory(item)}>
+                      <Text style={[{color: 'red'}]}>Löschen</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               )}
               keyExtractor={(item, index) => index.toString()}
