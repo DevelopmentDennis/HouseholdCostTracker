@@ -16,13 +16,18 @@ import {globalStyles} from '../../styles/styles';
 import {STORE_CUSTOM_CATEGORIES} from '../../types/types';
 import {styles} from '../HomeScene/styles';
 
+interface CategoriesSceneProps {}
+
 export interface CategoriesSceneState {
   categories: string[];
   categoryToBeAdded: string;
   addCustomCategoryDialogVisible: boolean;
 }
 
-class CategoriesScene extends Component<undefined, CategoriesSceneState> {
+class CategoriesScene extends Component<
+  CategoriesSceneProps,
+  CategoriesSceneState
+> {
   readonly state: CategoriesSceneState = {
     categories: [],
     categoryToBeAdded: '',
@@ -195,7 +200,17 @@ class CategoriesScene extends Component<undefined, CategoriesSceneState> {
               showsVerticalScrollIndicator={true}
               renderItem={({item, index}) => (
                 <View style={globalStyles.rowContainerItem}>
-                  <Text style={[styles.text, {paddingLeft: 15}]}>{item}</Text>
+                  <Text
+                    style={[
+                      styles.text,
+                      {
+                        paddingLeft: 15,
+                        maxWidth: width * 0.6,
+                      },
+                    ]}
+                    numberOfLines={1}>
+                    {item}
+                  </Text>
 
                   <View
                     style={{

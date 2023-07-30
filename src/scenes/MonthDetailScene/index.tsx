@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as React from 'react';
 import {Component} from 'react';
 import {View, Text, Dimensions, Switch} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
+import {ScrollView, GestureHandlerRootView} from 'react-native-gesture-handler';
 import Svg from 'react-native-svg';
 import {VictoryLegend, VictoryPie} from 'victory-native';
 import {
@@ -120,148 +120,150 @@ export default class MonthDetailScene extends Component<
     const {width, height} = Dimensions.get('window');
     const {totalSpend} = this.props.route?.params;
     return (
-      <ScrollView
-        style={{
-          backgroundColor: '#cccccc32',
-          flex: 1,
-          paddingHorizontal: 10,
-        }}>
-        <View style={{flex: 2, paddingHorizontal: 10, marginBottom: 10}}>
-          <Text
-            style={[
-              styles.textHeading,
-              {
-                color: this.state.showDarkModeStyle ? 'white' : 'black',
-              },
-            ]}>
-            Ausgaben Gesamt: {totalSpend ?? 0}€
-          </Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <ScrollView
+          style={{
+            backgroundColor: '#cccccc32',
+            flex: 1,
+            paddingHorizontal: 10,
+          }}>
+          <View style={{flex: 2, paddingHorizontal: 10, marginBottom: 10}}>
             <Text
-              style={{
-                fontSize: 16,
-                color: this.state.showDarkModeStyle ? 'white' : 'black',
-                marginBottom: 10,
-              }}>
-              Beträge und Texte ausblenden
+              style={[
+                styles.textHeading,
+                {
+                  color: this.state.showDarkModeStyle ? 'white' : 'black',
+                },
+              ]}>
+              Ausgaben Gesamt: {totalSpend ?? 0}€
             </Text>
-            <Switch
-              value={this.state.showLabels}
-              onValueChange={value => this.setState({showLabels: value})}
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: this.state.showDarkModeStyle ? 'white' : 'black',
+                  marginBottom: 10,
+                }}>
+                Beträge und Texte ausblenden
+              </Text>
+              <Switch
+                value={this.state.showLabels}
+                onValueChange={value => this.setState({showLabels: value})}
+              />
+            </View>
+          </View>
+
+          <Svg style={{flex: 1}} height={width}>
+            <VictoryPie
+              events={[
+                {
+                  target: 'data',
+                  eventHandlers: {
+                    onPressIn: () => {
+                      return [
+                        {
+                          target: 'labels',
+                          mutation: props => {
+                            return !!props.text
+                              ? {text: ''}
+                              : {
+                                  text: `${props?.slice?.data?.xName}\n${Number(
+                                    props.slice?.data?.y,
+                                  ).toFixed(2)}€`,
+                                  style: {
+                                    fill: this.checkColorBrightness(
+                                      sliceColors[props.index],
+                                    ),
+                                    fontSize: 20,
+                                    fontWeight: 600,
+                                    textShadowColor: 'black',
+                                    textShadowOffset: 2,
+                                  },
+                                };
+                          },
+                        },
+                      ];
+                    },
+                  },
+                },
+              ]}
+              animate={{easing: 'exp'}}
+              data={this.getGraphData()}
+              width={width * 0.9}
+              padding={10}
+              innerRadius={width * 0.15}
+              labelRadius={width * 0.2}
+              padAngle={1}
+              labels={props =>
+                this.state.showLabels
+                  ? `${props?.slice?.data?.xName}\n${Number(
+                      props.slice?.data?.y,
+                    ).toFixed(2)}€`
+                  : null
+              }
+              colorScale={sliceColors}
+              cornerRadius={10}
+              style={{labels: {fontSize: 20, fill: 'black', fontWeight: 600}}}
+              standalone={false}
+            />
+          </Svg>
+
+          <View style={{flex: 1, marginTop: 30}}>
+            <VictoryLegend
+              events={[
+                {
+                  target: 'data',
+                  eventHandlers: {
+                    onClick: () => {
+                      return [
+                        {
+                          target: 'data',
+                          mutation: props => {
+                            const fill = props.style && props.style.fill;
+                            return fill === '#c43a31'
+                              ? null
+                              : {style: {fill: '#c43a31'}};
+                          },
+                        },
+                        {
+                          target: 'labels',
+                          mutation: props => {
+                            return props.text === 'clicked'
+                              ? null
+                              : {text: 'clicked'};
+                          },
+                        },
+                      ];
+                    },
+                  },
+                },
+              ]}
+              colorScale={sliceColors}
+              data={this.getLegendData()}
+              style={{
+                labels: {
+                  fontSize: 16,
+                  fill: this.state.showDarkModeStyle ? 'white' : 'black',
+                },
+              }}
+              orientation="horizontal"
+              itemsPerRow={2}
+              gutter={40}
+              height={height * 0.45}
+              borderPadding={{bottom: 0, left: 10, right: 5}}
+              width={width}
+              symbolSpacer={15}
             />
           </View>
-        </View>
 
-        <Svg style={{flex: 1}} height={width}>
-          <VictoryPie
-            events={[
-              {
-                target: 'data',
-                eventHandlers: {
-                  onPressIn: () => {
-                    return [
-                      {
-                        target: 'labels',
-                        mutation: props => {
-                          return !!props.text
-                            ? {text: ''}
-                            : {
-                                text: `${props?.slice?.data?.xName}\n${Number(
-                                  props.slice?.data?.y,
-                                ).toFixed(2)}€`,
-                                style: {
-                                  fill: this.checkColorBrightness(
-                                    sliceColors[props.index],
-                                  ),
-                                  fontSize: 20,
-                                  fontWeight: 600,
-                                  textShadowColor: 'black',
-                                  textShadowOffset: 2,
-                                },
-                              };
-                        },
-                      },
-                    ];
-                  },
-                },
-              },
-            ]}
-            animate={{easing: 'exp'}}
-            data={this.getGraphData()}
-            width={width * 0.9}
-            padding={10}
-            innerRadius={width * 0.15}
-            labelRadius={width * 0.2}
-            padAngle={1}
-            labels={props =>
-              this.state.showLabels
-                ? `${props?.slice?.data?.xName}\n${Number(
-                    props.slice?.data?.y,
-                  ).toFixed(2)}€`
-                : null
-            }
-            colorScale={sliceColors}
-            cornerRadius={10}
-            style={{labels: {fontSize: 20, fill: 'black', fontWeight: 600}}}
-            standalone={false}
-          />
-        </Svg>
-
-        <View style={{flex: 1, marginTop: 30}}>
-          <VictoryLegend
-            events={[
-              {
-                target: 'data',
-                eventHandlers: {
-                  onClick: () => {
-                    return [
-                      {
-                        target: 'data',
-                        mutation: props => {
-                          const fill = props.style && props.style.fill;
-                          return fill === '#c43a31'
-                            ? null
-                            : {style: {fill: '#c43a31'}};
-                        },
-                      },
-                      {
-                        target: 'labels',
-                        mutation: props => {
-                          return props.text === 'clicked'
-                            ? null
-                            : {text: 'clicked'};
-                        },
-                      },
-                    ];
-                  },
-                },
-              },
-            ]}
-            colorScale={sliceColors}
-            data={this.getLegendData()}
-            style={{
-              labels: {
-                fontSize: 16,
-                fill: this.state.showDarkModeStyle ? 'white' : 'black',
-              },
-            }}
-            orientation="horizontal"
-            itemsPerRow={2}
-            gutter={40}
-            height={height * 0.45}
-            borderPadding={{bottom: 0, left: 10, right: 5}}
-            width={width}
-            symbolSpacer={15}
-          />
-        </View>
-
-        {/* <View style={{flex: 1}} /> */}
-      </ScrollView>
+          {/* <View style={{flex: 1}} /> */}
+        </ScrollView>
+      </GestureHandlerRootView>
     );
   }
 }

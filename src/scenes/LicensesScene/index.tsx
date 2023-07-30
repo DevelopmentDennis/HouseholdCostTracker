@@ -2,45 +2,51 @@ import * as React from 'react';
 import {Component} from 'react';
 import {View, Text} from 'react-native';
 import {ListItem} from 'react-native-elements';
-import {ScrollView} from 'react-native-gesture-handler';
+import {ScrollView, GestureHandlerRootView} from 'react-native-gesture-handler';
 import {licenses} from '../../../assets/licenses.json';
+
+interface LicensesProps {}
 
 interface LicensesState {
   showLicenseText: boolean;
 }
 
-export default class LicensesScene extends Component<undefined, LicensesState> {
+export default class LicensesScene extends Component<
+  LicensesProps,
+  LicensesState
+> {
   readonly state: LicensesState = {
     showLicenseText: false,
   };
 
   render() {
     return (
-      <View style={{flex: 1, padding: 10, backgroundColor: '#cccccc32'}}>
-        <Text style={{fontSize: 16, marginBottom: 20, padding: 10}}>
-          Alle nachfolgenden Bibliotheken wurden unter der{' '}
-          <Text
-            style={{textDecorationLine: 'underline', color: 'gray'}}
-            onPress={() =>
-              this.setState({showLicenseText: !this.state.showLicenseText})
-            }>
-            MIT Lizenz
-          </Text>{' '}
-          veröffentlicht
-        </Text>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <View style={{flex: 1, padding: 10, backgroundColor: '#cccccc32'}}>
+          <Text style={{fontSize: 16, marginBottom: 20, padding: 10}}>
+            Alle nachfolgenden Bibliotheken wurden unter der{' '}
+            <Text
+              style={{textDecorationLine: 'underline', color: 'gray'}}
+              onPress={() =>
+                this.setState({showLicenseText: !this.state.showLicenseText})
+              }>
+              MIT Lizenz
+            </Text>{' '}
+            veröffentlicht
+          </Text>
 
-        {this.state.showLicenseText && (
-          <ScrollView
-            style={{
-              padding: 15,
-              borderWidth: 1,
-              backgroundColor: 'white',
-              borderBottomColor: 'black',
-              borderRadius: 10,
-              marginBottom: 20,
-            }}>
-            <Text style={{fontSize: 15}}>
-              {`MIT License
+          {this.state.showLicenseText && (
+            <ScrollView
+              style={{
+                padding: 15,
+                borderWidth: 1,
+                backgroundColor: 'white',
+                borderBottomColor: 'black',
+                borderRadius: 10,
+                marginBottom: 20,
+              }}>
+              <Text style={{fontSize: 15}}>
+                {`MIT License
 
 Copyright (c) 2015-present, Facebook, Inc.
 
@@ -61,19 +67,20 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.`}
-            </Text>
+              </Text>
+            </ScrollView>
+          )}
+          <ScrollView>
+            {licenses.map((element, index) => (
+              <ListItem key={index} bottomDivider>
+                <ListItem.Content>
+                  <ListItem.Title>{element.name}</ListItem.Title>
+                </ListItem.Content>
+              </ListItem>
+            ))}
           </ScrollView>
-        )}
-        <ScrollView>
-          {licenses.map((element, index) => (
-            <ListItem key={index} bottomDivider>
-              <ListItem.Content>
-                <ListItem.Title>{element.name}</ListItem.Title>
-              </ListItem.Content>
-            </ListItem>
-          ))}
-        </ScrollView>
-      </View>
+        </View>
+      </GestureHandlerRootView>
     );
   }
 }
