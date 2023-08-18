@@ -36,6 +36,8 @@ import {KeyValuePair} from '@react-native-async-storage/async-storage/lib/typesc
 
 const db = SQLite.openDatabase('CostTracker.db');
 
+interface HomeSceneProps {}
+
 interface HomeScreenState {
   isModalVisible: boolean;
   defaultGraphicData: any;
@@ -55,7 +57,10 @@ const wait = (timeout: number) => {
   });
 };
 
-export default class HomeScene extends Component<null, HomeScreenState> {
+export default class HomeScene extends Component<
+  HomeSceneProps,
+  HomeScreenState
+> {
   readonly state: HomeScreenState = {
     defaultGraphicData: [{y: 0}, {y: 0}, {y: 100}],
     isModalVisible: false,

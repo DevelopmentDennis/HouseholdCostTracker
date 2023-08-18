@@ -19,6 +19,11 @@ import {
   STORE_SORTING_DIRECTION,
   Transaction,
 } from '../../types/types';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import {RootStackParamList} from '../../navigation';
+import {CompositeScreenProps} from '@react-navigation/native';
+import {RootTabParamList} from '../../navigation/NavBar';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 const db = SQLite.openDatabase('CostTracker.db');
 
@@ -34,9 +39,10 @@ interface HistorySceneState {
   entryPressed?: Transaction;
 }
 
-interface HistorySceneProps {
-  navigation: any;
-}
+export type HistorySceneProps = CompositeScreenProps<
+  BottomTabScreenProps<RootTabParamList, 'History'>,
+  NativeStackScreenProps<RootStackParamList>
+>;
 
 export default class HistoryScene extends Component<
   HistorySceneProps,

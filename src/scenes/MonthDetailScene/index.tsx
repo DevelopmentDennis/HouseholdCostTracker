@@ -13,22 +13,20 @@ import {
   Transaction,
 } from '../../types/types';
 import {styles} from '../HomeScene/styles';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../navigation';
 
-type MonthDetails = {
+export type MonthDetails = {
   month: string;
   elementsToDisplay: Transaction[];
   totalSpend: string;
   year: number;
 };
 
-type RouteParams = {
-  params: MonthDetails;
-};
-
-interface MonthDetailProps {
-  navigation: any;
-  route: RouteParams;
-}
+type MonthDetailProps = NativeStackScreenProps<
+  RootStackParamList,
+  'MonthDetails'
+>;
 
 interface MonthDetailState {
   showLabels: boolean;

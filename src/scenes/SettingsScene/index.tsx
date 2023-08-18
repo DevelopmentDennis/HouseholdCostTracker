@@ -1,11 +1,17 @@
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 import {Component} from 'react';
 import {View, KeyboardAvoidingView, Text} from 'react-native';
 import {ListItem} from 'react-native-elements';
+import {RootStackParamList} from '../../navigation';
+import {CompositeScreenProps} from '@react-navigation/native';
+import {RootTabParamList} from '../../navigation/NavBar';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-interface SettingsSceneProps {
-  navigation: any;
-}
+type SettingsSceneProps = CompositeScreenProps<
+  BottomTabScreenProps<RootTabParamList, 'Settings'>,
+  NativeStackScreenProps<RootStackParamList>
+>;
 
 export default class SettingsScene extends Component<SettingsSceneProps> {
   render() {

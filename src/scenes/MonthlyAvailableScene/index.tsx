@@ -13,10 +13,13 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {STORE_MONTHLY_AVAILABLE} from '../../types/types';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../navigation';
 
-export interface MonthlyAvailableSceneProps {
-  navigation: any;
-}
+export type MonthlyAvailableSceneProps = NativeStackScreenProps<
+  RootStackParamList,
+  'MonthlyAvailable'
+>;
 
 export interface MonthlyAvailableSceneState {
   monthlyAvailableAmount: string;

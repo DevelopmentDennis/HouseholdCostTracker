@@ -6,7 +6,13 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Icon} from 'react-native-elements';
 import {Dimensions} from 'react-native';
 
-const Tab = createBottomTabNavigator();
+export type RootTabParamList = {
+  Home: undefined;
+  History: undefined;
+  Settings: undefined;
+};
+
+const Tab = createBottomTabNavigator<RootTabParamList>();
 const {height} = Dimensions.get('screen');
 export default class NavBar extends Component {
   render() {
