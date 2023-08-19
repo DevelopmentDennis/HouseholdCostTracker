@@ -36,7 +36,11 @@ export default class AppRouter extends Component {
               name="NavBar"
               component={NavBar}
             />
-            <Stack.Screen name="Licenses" component={LicensesScene} />
+            <Stack.Screen
+              name="Licenses"
+              component={LicensesScene}
+              options={{title: 'Lizenzen'}}
+            />
             <Stack.Screen
               name="Recurring"
               component={RecuringTransactionsScene}
