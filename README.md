@@ -1,2 +1,3 @@
 # HouseholdCostTracker
-A small react native application to track your monthly spendings
+
+A small react native application to track your monthly spendings completely offline
