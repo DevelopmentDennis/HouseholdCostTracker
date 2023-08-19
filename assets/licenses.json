@@ -1,7 +1,7 @@
 {
   "licenses": [
     {
-      "name": "@react-native-async-storage/async-storage@1.15.7",
+      "name": "@react-native-async-storage/async-storage@1.19.1",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-async-storage/async-storage",
@@ -10,7 +10,7 @@
       }
     },
     {
-      "name": "@react-native-community/datetimepicker@6.3.2",
+      "name": "@react-native-community/datetimepicker@7.4.1",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-community/datetimepicker",
@@ -19,7 +19,7 @@
       }
     },
     {
-      "name": "@react-native-picker/picker@2.4.8",
+      "name": "@react-native-picker/picker@2.4.10",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-picker/picker",
@@ -29,7 +29,7 @@
     },
 
     {
-      "name": "@react-navigation/bottom-tabs@6.0.9",
+      "name": "@react-navigation/bottom-tabs@6.5.8",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-navigation/react-navigation",
@@ -38,7 +38,7 @@
       }
     },
     {
-      "name": "@react-navigation/native@6.0.6",
+      "name": "@react-navigation/native@6.1.7",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-navigation/react-navigation",
@@ -47,7 +47,7 @@
       }
     },
     {
-      "name": "@react-navigation/native-stack@6.2.5",
+      "name": "@react-navigation/native-stack@6.9.13",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-navigation/react-navigation",
@@ -56,7 +56,7 @@
       }
     },
     {
-      "name": "moment@2.27.0",
+      "name": "moment@2.29.4",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/moment/moment",
@@ -65,7 +65,7 @@
       }
     },
     {
-      "name": "react-native-elements@3.4.2",
+      "name": "react-native-elements@3.4.3",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-elements/react-native-elements",
@@ -74,7 +74,7 @@
       }
     },
     {
-      "name": "react-native-gesture-handler@2.1.1",
+      "name": "react-native-gesture-handler@2.12.0",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/software-mansion/react-native-gesture-handler",
@@ -83,16 +83,7 @@
       }
     },
     {
-      "name": "react-native-reanimated@2.13.0",
-      "data": {
-        "licenses": "MIT",
-        "repository": "https://github.com/software-mansion/react-native-reanimated",
-        "licenseUrl": "https://github.com/software-mansion/react-native-reanimated/raw/master/LICENSE",
-        "parents": "MonthlyCostTracker"
-      }
-    },
-    {
-      "name": "react-native-screens@3.6.0",
+      "name": "react-native-screens@3.23.0",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/kmagiera/react-native-screens",
@@ -110,7 +101,7 @@
       }
     },
     {
-      "name": "react-native-safe-area-context@4.3.3",
+      "name": "react-native-safe-area-context@4.7.1",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/th3rdwave/react-native-safe-area-context",
@@ -119,7 +110,7 @@
       }
     },
     {
-      "name": "react-native-svg@13.0.0",
+      "name": "react-native-svg@13.10.0",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-community/react-native-svg",
@@ -128,7 +119,7 @@
       }
     },
     {
-      "name": "react-native-vector-icons@9.0.0",
+      "name": "react-native-vector-icons@10.0.0",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/oblador/react-native-vector-icons",
@@ -137,7 +128,7 @@
       }
     },
     {
-      "name": "react-native@0.70.6",
+      "name": "react-native@0.72.3",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/facebook/react-native",
@@ -146,7 +137,7 @@
       }
     },
     {
-      "name": "react@18.0.0",
+      "name": "react@18.2.0",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/facebook/react",
@@ -155,7 +146,7 @@
       }
     },
     {
-      "name": "victory-native@36.2.0",
+      "name": "victory-native@36.6.11",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/FormidableLabs/victory-native",
