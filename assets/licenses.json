@@ -1,7 +1,7 @@
 {
   "licenses": [
     {
-      "name": "@react-native-async-storage/async-storage@1.19.1",
+      "name": "@react-native-async-storage/async-storage@1.23.1",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-async-storage/async-storage",
@@ -10,7 +10,7 @@
       }
     },
     {
-      "name": "@react-native-community/datetimepicker@7.4.1",
+      "name": "@react-native-community/datetimepicker@7.7.0",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-community/datetimepicker",
@@ -19,7 +19,7 @@
       }
     },
     {
-      "name": "@react-native-picker/picker@2.4.10",
+      "name": "@react-native-picker/picker@2.7.7",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-picker/picker",
@@ -29,7 +29,7 @@
     },
 
     {
-      "name": "@react-navigation/bottom-tabs@6.5.8",
+      "name": "@react-navigation/bottom-tabs@6.6.0",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-navigation/react-navigation",
@@ -38,7 +38,7 @@
       }
     },
     {
-      "name": "@react-navigation/native@6.1.7",
+      "name": "@react-navigation/native@6.1.17",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-navigation/react-navigation",
@@ -47,7 +47,7 @@
       }
     },
     {
-      "name": "@react-navigation/native-stack@6.9.13",
+      "name": "@react-navigation/native-stack@6.10.0",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-navigation/react-navigation",
@@ -56,7 +56,7 @@
       }
     },
     {
-      "name": "moment@2.29.4",
+      "name": "moment@2.20.1",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/moment/moment",
@@ -74,7 +74,7 @@
       }
     },
     {
-      "name": "react-native-gesture-handler@2.12.0",
+      "name": "react-native-gesture-handler@2.17.1",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/software-mansion/react-native-gesture-handler",
@@ -83,7 +83,7 @@
       }
     },
     {
-      "name": "react-native-screens@3.23.0",
+      "name": "react-native-screens@3.32.0",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/kmagiera/react-native-screens",
@@ -101,7 +101,7 @@
       }
     },
     {
-      "name": "react-native-safe-area-context@4.7.1",
+      "name": "react-native-safe-area-context@4.10.8",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/th3rdwave/react-native-safe-area-context",
@@ -110,7 +110,7 @@
       }
     },
     {
-      "name": "react-native-svg@13.10.0",
+      "name": "react-native-svg@13.14.1",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/react-native-community/react-native-svg",
@@ -119,7 +119,7 @@
       }
     },
     {
-      "name": "react-native-vector-icons@10.0.0",
+      "name": "react-native-vector-icons@10.1.0",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/oblador/react-native-vector-icons",
@@ -128,7 +128,7 @@
       }
     },
     {
-      "name": "react-native@0.72.3",
+      "name": "react-native@0.74.3",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/facebook/react-native",
@@ -137,7 +137,7 @@
       }
     },
     {
-      "name": "react@18.2.0",
+      "name": "react@18.3.1",
       "data": {
         "licenses": "MIT",
         "repository": "https://github.com/facebook/react",
@@ -146,10 +146,10 @@
       }
     },
     {
-      "name": "victory-native@36.6.11",
+      "name": "victory-native@36.9.2",
       "data": {
         "licenses": "MIT",
-        "repository": "https://github.com/FormidableLabs/victory-native",
+        "repository": "https://github.com/FormidableLabs/victory/tree/main/packages/victory-native",
         "licenseUrl": "https://github.com/FormidableLabs/victory-native/raw/master/LICENSE.txt",
         "parents": "MonthlyCostTracker"
       }
