@@ -3,7 +3,7 @@ import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {BackHandler, ToastAndroid} from 'react-native';
 
-export const HandleBackPress = props => {
+export const HandleBackPress = (props: {message: any}) => {
   const {message} = props;
   const [exitApp, setExitApp] = useState(0);
   const isHomeSceneFocused = useIsFocused();
@@ -39,7 +39,7 @@ export const HandleBackPress = props => {
   return <></>;
 };
 
-export default function DoubleTapToClose(props) {
-  const {message = 'Nochmals drücken um zu Beenden'} = props;
+export default function DoubleTapToClose() {
+  const message = 'Nochmals drücken um zu Beenden';
   return <HandleBackPress message={message} />;
 }

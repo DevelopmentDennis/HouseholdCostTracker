@@ -14,6 +14,7 @@ export type RootTabParamList = {
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 const {height} = Dimensions.get('screen');
+
 export default class NavBar extends Component {
   render() {
     return (

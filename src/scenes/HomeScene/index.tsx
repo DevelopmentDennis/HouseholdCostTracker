@@ -33,8 +33,15 @@ import BackPressHandler from '../../components/BackPressHandler';
 import Svg from 'react-native-svg';
 import TransactionDialog from '../../components/TransactionDialog';
 import {KeyValuePair} from '@react-native-async-storage/async-storage/lib/typescript/types';
+import {DatabaseName} from '../../database';
 
-const db = SQLite.openDatabase('CostTracker.db');
+const dbParams: SQLite.DatabaseParams = {name: DatabaseName};
+
+const db = SQLite.openDatabase(
+  dbParams,
+  () => null,
+  () => null,
+);
 
 interface HomeSceneProps {}
 
@@ -220,7 +227,7 @@ export default class HomeScene extends Component<
           [amount, moment(date).format(), category],
         );
       },
-      error => ToastAndroid.show(error, ToastAndroid.SHORT),
+      error => ToastAndroid.show(error.message, ToastAndroid.SHORT),
       () => {
         ToastAndroid.show('Ausgabe hinzugefügt', ToastAndroid.SHORT);
       },

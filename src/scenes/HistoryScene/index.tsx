@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ToastAndroid,
+  Alert,
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import SQLite from 'react-native-sqlite-storage';
@@ -24,8 +25,15 @@ import {RootStackParamList} from '../../navigation';
 import {CompositeScreenProps} from '@react-navigation/native';
 import {RootTabParamList} from '../../navigation/NavBar';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {DatabaseName} from '../../database';
 
-const db = SQLite.openDatabase('CostTracker.db');
+const dbParams: SQLite.DatabaseParams = {name: DatabaseName};
+
+const db = SQLite.openDatabase(
+  dbParams,
+  () => null,
+  () => null,
+);
 
 interface HistorySceneState {
   elementsToDisplay: Transaction[];
@@ -184,7 +192,7 @@ export default class HistoryScene extends Component<
           if (results.rowsAffected > 0) {
             ToastAndroid.show('Eintrag aktualisiert', ToastAndroid.SHORT);
             this.calculateElementsForMonth();
-          } else alert('Updation Failed');
+          } else Alert.alert('Updation Failed');
         },
         error => {
           ToastAndroid.show(

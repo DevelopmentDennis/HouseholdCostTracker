@@ -15,6 +15,7 @@ import SQLite from 'react-native-sqlite-storage';
 import {globalStyles} from '../../styles/styles';
 import {RecurringTransaction} from '../../types/types';
 import {styles} from '../HomeScene/styles';
+import {DatabaseName} from '../../database';
 export interface RecuringTransactionsProps {}
 
 export interface RecuringTransactionsState {
@@ -24,7 +25,13 @@ export interface RecuringTransactionsState {
   showRecurringTransactionAddDialog: boolean;
 }
 
-const db = SQLite.openDatabase('CostTracker.db');
+const dbParams: SQLite.DatabaseParams = {name: DatabaseName};
+
+const db = SQLite.openDatabase(
+  dbParams,
+  () => null,
+  () => null,
+);
 
 export default class RecuringTransactionsScene extends Component<
   RecuringTransactionsProps,
