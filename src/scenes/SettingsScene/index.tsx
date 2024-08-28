@@ -95,7 +95,7 @@ export default class SettingsScene extends Component<SettingsSceneProps> {
         <View>
           <ListItem bottomDivider>
             <ListItem.Content>
-              <ListItem.Title>App-Version 1.8.0</ListItem.Title>
+              <ListItem.Title>App-Version 2.0.0</ListItem.Title>
             </ListItem.Content>
           </ListItem>
         </View>
