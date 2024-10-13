@@ -93,7 +93,6 @@ export default class HistoryScene extends Component<
   }
 
   private reloadTransactions() {
-    console.log('focus!');
     if (!this.state.isFirstRender) {
       this.calculateElementsForMonth();
     } else {
