@@ -23,7 +23,6 @@ import {
   RecurringTransaction,
   sliceColors,
   STORE_CUSTOM_CATEGORIES,
-  STORE_DARKMODE,
   STORE_HIDE_RECURRING,
   STORE_MONTHLY_AVAILABLE,
   Transaction,
@@ -34,6 +33,12 @@ import Svg from 'react-native-svg';
 import TransactionDialog from '../../components/TransactionDialog';
 import {KeyValuePair} from '@react-native-async-storage/async-storage/lib/typescript/types';
 import {DatabaseName} from '../../database';
+import {ColorType, getColor} from '../../styles/styles';
+import {CompositeScreenProps} from '@react-navigation/native';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
+import {RootTabParamList} from '../../navigation/NavBar';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../navigation';
 
 const dbParams: SQLite.DatabaseParams = {name: DatabaseName};
 
@@ -43,7 +48,10 @@ const db = SQLite.openDatabase(
   () => null,
 );
 
-interface HomeSceneProps {}
+type HomeSceneProps = CompositeScreenProps<
+  BottomTabScreenProps<RootTabParamList, 'Home'>,
+  NativeStackScreenProps<RootStackParamList>
+>;
 
 interface HomeScreenState {
   isModalVisible: boolean;
@@ -54,7 +62,6 @@ interface HomeScreenState {
   isRefreshing: boolean;
   categories: string[];
   didLoadAllData: boolean;
-  showDarkModeStyle: boolean;
   hideRecurringTransactions: boolean;
 }
 
@@ -68,6 +75,8 @@ export default class HomeScene extends Component<
   HomeSceneProps,
   HomeScreenState
 > {
+  isDarkMode = this.props.route.params?.isDarkMode;
+
   readonly state: HomeScreenState = {
     defaultGraphicData: [{y: 0}, {y: 0}, {y: 100}],
     isModalVisible: false,
@@ -77,7 +86,6 @@ export default class HomeScene extends Component<
     isRefreshing: false,
     categories: tags,
     didLoadAllData: false,
-    showDarkModeStyle: false,
     hideRecurringTransactions: false,
   };
 
@@ -86,7 +94,6 @@ export default class HomeScene extends Component<
     try {
       values = await AsyncStorage.multiGet([
         STORE_MONTHLY_AVAILABLE,
-        STORE_DARKMODE,
         STORE_HIDE_RECURRING,
         STORE_CUSTOM_CATEGORIES,
       ]);
@@ -100,13 +107,10 @@ export default class HomeScene extends Component<
         }
       }
       if (values[1][1]) {
-        this.setState({showDarkModeStyle: values[1][1] === 'true'});
+        this.setState({hideRecurringTransactions: values[1][1] === 'false'});
       }
       if (values[2][1]) {
-        this.setState({hideRecurringTransactions: values[2][1] === 'false'});
-      }
-      if (values[3][1] != null) {
-        const customCategories = [...new Set<string>(JSON.parse(values[3][1]))];
+        const customCategories = [...new Set<string>(JSON.parse(values[2][1]))];
         this.setState({
           categories: [...customCategories, ...new Set<string>(tags)],
         });
@@ -309,9 +313,12 @@ export default class HomeScene extends Component<
   render() {
     const {height, width} = Dimensions.get('window');
     const graphDat = this.getGraphData();
+
     return (
       <ScrollView
-        style={{backgroundColor: '#cccccc32'}}
+        style={{
+          backgroundColor: getColor(ColorType.background, this.isDarkMode),
+        }}
         scrollEnabled={true}
         keyboardShouldPersistTaps="always"
         refreshControl={
@@ -327,6 +334,7 @@ export default class HomeScene extends Component<
             onCloseRequested={() => this.setState({isModalVisible: false})}
             onFinish={this.addExpense}
             triggerRerender={() => this.renderCurrentTransactions()}
+            isDarkMode={this.isDarkMode}
           />
         )}
 
@@ -344,7 +352,7 @@ export default class HomeScene extends Component<
                 styles.textHeading,
                 {
                   textAlign: 'center',
-                  color: this.state.showDarkModeStyle ? 'white' : 'black',
+                  color: getColor(ColorType.textDefault, this.isDarkMode),
                 },
               ]}>
               Monats Kosten Übersicht
@@ -352,7 +360,9 @@ export default class HomeScene extends Component<
             <Text
               style={[
                 styles.text,
-                {color: this.state.showDarkModeStyle ? 'white' : 'black'},
+                {
+                  color: getColor(ColorType.textDefault, this.isDarkMode),
+                },
               ]}>
               {moment().locale('de').format('MMMM YYYY')}
             </Text>
@@ -360,7 +370,9 @@ export default class HomeScene extends Component<
               <Text
                 style={[
                   styles.text,
-                  {color: this.state.showDarkModeStyle ? 'white' : 'black'},
+                  {
+                    color: getColor(ColorType.textDefault, this.isDarkMode),
+                  },
                 ]}>{`noch ${graphDat[0].y}€ verfügbar`}</Text>
             )}
           </View>
@@ -474,7 +486,7 @@ export default class HomeScene extends Component<
               type="font-awesome"
               size={25}
               reverse
-              color="royalblue"
+              color={getColor(ColorType.buttonHighlight, this.isDarkMode)}
             />
           </TouchableOpacity>
         </View>
@@ -485,7 +497,7 @@ export default class HomeScene extends Component<
             style={{
               labels: {
                 fontSize: 16,
-                fill: this.state.showDarkModeStyle ? 'white' : 'black',
+                fill: getColor(ColorType.textDefault, this.isDarkMode),
               },
             }}
             orientation="horizontal"

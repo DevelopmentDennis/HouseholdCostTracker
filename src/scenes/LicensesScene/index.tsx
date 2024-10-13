@@ -4,8 +4,11 @@ import {View, Text} from 'react-native';
 import {ListItem} from 'react-native-elements';
 import {ScrollView, GestureHandlerRootView} from 'react-native-gesture-handler';
 import {licenses} from '../../../assets/licenses.json';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../navigation';
+import {ColorType, getColor, getTextColor} from '../../styles/styles';
 
-interface LicensesProps {}
+type LicensesProps = NativeStackScreenProps<RootStackParamList, 'Licenses'>;
 
 interface LicensesState {
   showLicenseText: boolean;
@@ -15,6 +18,8 @@ export default class LicensesScene extends Component<
   LicensesProps,
   LicensesState
 > {
+  isDarkMode = this.props.route.params?.isDarkMode;
+
   readonly state: LicensesState = {
     showLicenseText: false,
   };
@@ -22,11 +27,25 @@ export default class LicensesScene extends Component<
   render() {
     return (
       <GestureHandlerRootView style={{flex: 1}}>
-        <View style={{flex: 1, padding: 10, backgroundColor: '#cccccc32'}}>
-          <Text style={{fontSize: 16, marginBottom: 20, padding: 10}}>
+        <View
+          style={{
+            flex: 1,
+            padding: 10,
+            backgroundColor: getColor(ColorType.background, this.isDarkMode),
+          }}>
+          <Text
+            style={{
+              fontSize: 16,
+              marginBottom: 20,
+              padding: 10,
+              color: getTextColor(this.isDarkMode),
+            }}>
             Alle nachfolgenden Bibliotheken wurden unter der{' '}
             <Text
-              style={{textDecorationLine: 'underline', color: 'gray'}}
+              style={{
+                textDecorationLine: 'underline',
+                color: getColor(ColorType.buttonHighlight, this.isDarkMode),
+              }}
               onPress={() =>
                 this.setState({showLicenseText: !this.state.showLicenseText})
               }>
@@ -40,12 +59,19 @@ export default class LicensesScene extends Component<
               style={{
                 padding: 15,
                 borderWidth: 1,
-                backgroundColor: 'white',
+                backgroundColor: getColor(
+                  ColorType.backgroundLighter,
+                  this.isDarkMode,
+                ),
                 borderBottomColor: 'black',
                 borderRadius: 10,
                 marginBottom: 20,
               }}>
-              <Text style={{fontSize: 15}}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: getTextColor(this.isDarkMode),
+                }}>
                 {`MIT License
 
 Copyright (c) 2015-present, Facebook, Inc.
@@ -70,11 +96,30 @@ SOFTWARE.`}
               </Text>
             </ScrollView>
           )}
-          <ScrollView>
+          <ScrollView
+            style={{
+              backgroundColor: getColor(
+                ColorType.backgroundLighter,
+                this.isDarkMode,
+              ),
+            }}>
             {licenses.map((element, index) => (
-              <ListItem key={index} bottomDivider>
+              <ListItem
+                containerStyle={{
+                  backgroundColor: getColor(
+                    ColorType.backgroundLighter,
+                    this.isDarkMode,
+                  ),
+                }}
+                key={index}
+                bottomDivider>
                 <ListItem.Content>
-                  <ListItem.Title>{element.name}</ListItem.Title>
+                  <ListItem.Title
+                    style={{
+                      color: getTextColor(this.isDarkMode),
+                    }}>
+                    {element.name}
+                  </ListItem.Title>
                 </ListItem.Content>
               </ListItem>
             ))}

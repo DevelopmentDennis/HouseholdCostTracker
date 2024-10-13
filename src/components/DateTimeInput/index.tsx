@@ -4,8 +4,9 @@ import {TouchableOpacity, View} from 'react-native';
 import {Input} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
+import {ColorType, DarkMode, getColor} from '../../styles/styles';
 
-export interface DateTimeInputProps {
+export interface DateTimeInputProps extends DarkMode {
   onDateChanged: (date: Date) => void;
   initialDate: Date;
 }
@@ -27,15 +28,18 @@ class DateTimeInput extends Component<DateTimeInputProps, DateTimeInputState> {
         <TouchableOpacity
           onPress={() => this.setState({isDatePickerVisible: true})}>
           <Input
-            disabled
+            style={{
+              color: getColor(ColorType.textInput, this.props.isDarkMode),
+            }}
+            readOnly
             value={moment(this.state.date).format('DD.MM.YYYY')}
           />
         </TouchableOpacity>
 
         {this.state.isDatePickerVisible && (
           <DateTimePicker
-            testID="dateTimePicker"
             value={this.state.date}
+            textColor={getColor(ColorType.textInput, this.props.isDarkMode)}
             mode="date"
             maximumDate={moment().toDate()}
             is24Hour={true}

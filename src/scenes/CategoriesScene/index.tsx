@@ -12,11 +12,21 @@ import {
   Keyboard,
 } from 'react-native';
 import {Icon, Input, Overlay} from 'react-native-elements';
-import {globalStyles} from '../../styles/styles';
+import {
+  ColorType,
+  getColor,
+  getTextColor,
+  globalStyles,
+} from '../../styles/styles';
 import {STORE_CUSTOM_CATEGORIES} from '../../types/types';
 import {styles} from '../HomeScene/styles';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../navigation';
 
-interface CategoriesSceneProps {}
+type CategoriesSceneProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Categories'
+>;
 
 export interface CategoriesSceneState {
   categories: string[];
@@ -28,6 +38,8 @@ class CategoriesScene extends Component<
   CategoriesSceneProps,
   CategoriesSceneState
 > {
+  isDarkMode = this.props.route.params?.isDarkMode;
+
   readonly state: CategoriesSceneState = {
     categories: [],
     categoryToBeAdded: '',
@@ -136,20 +148,40 @@ class CategoriesScene extends Component<
   render() {
     const {width} = Dimensions.get('window');
     return (
-      <View style={{flex: 1, backgroundColor: '#cccccc32'}}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: getColor(ColorType.background, this.isDarkMode),
+        }}>
         <Overlay
           isVisible={this.state.addCustomCategoryDialogVisible}
-          overlayStyle={{width: width * 0.7}}
+          overlayStyle={{
+            width: width * 0.7,
+            backgroundColor: getColor(ColorType.background, this.isDarkMode),
+          }}
           onBackdropPress={() =>
             this.setState({addCustomCategoryDialogVisible: false})
           }>
           <View>
-            <Text style={[styles.text, styles.textSubHeading]}>
+            <Text
+              style={[
+                styles.text,
+                styles.textSubHeading,
+                {color: getTextColor(this.isDarkMode)},
+              ]}>
               Eigene Kategorie hinzufügen
             </Text>
 
             <Input
               style={{marginTop: 10}}
+              placeholderTextColor={getColor(
+                ColorType.textInput,
+                this.isDarkMode,
+              )}
+              inputStyle={{
+                color: getColor(ColorType.textInput, this.isDarkMode),
+              }}
+              keyboardAppearance={this.isDarkMode ? 'dark' : 'default'}
               placeholder="Beschreibung"
               onChangeText={text => this.setState({categoryToBeAdded: text})}
             />
@@ -163,7 +195,13 @@ class CategoriesScene extends Component<
           </View>
         </Overlay>
 
-        <Text style={{padding: 10, paddingTop: 25, fontSize: 15}}>
+        <Text
+          style={{
+            padding: 10,
+            paddingTop: 25,
+            fontSize: 15,
+            color: getTextColor(this.isDarkMode),
+          }}>
           Hier können eigene Kategorien hinzugefügt oder gelöscht werden. Mit
           dem Pfeil kann die Reihenfolge geändert werden.
         </Text>
@@ -175,7 +213,13 @@ class CategoriesScene extends Component<
           }}
           onPress={() => this.setState({addCustomCategoryDialogVisible: true})}>
           <Icon type="font-awesome" name="plus" reverse color={'royalblue'} />
-          <Text style={{fontSize: 17}}>Hinzufügen</Text>
+          <Text
+            style={{
+              fontSize: 17,
+              color: getTextColor(this.isDarkMode),
+            }}>
+            Hinzufügen
+          </Text>
         </TouchableOpacity>
         <View style={{padding: 10, flex: 1}}>
           {this.state.categories.length === 0 && (
@@ -206,6 +250,7 @@ class CategoriesScene extends Component<
                       {
                         paddingLeft: 15,
                         maxWidth: width * 0.6,
+                        color: getTextColor(this.isDarkMode),
                       },
                     ]}
                     numberOfLines={1}>
@@ -241,7 +286,14 @@ class CategoriesScene extends Component<
                         paddingLeft: 15,
                       }}
                       onPress={() => this.deleteCategory(item)}>
-                      <Text style={[{color: 'red'}]}>Löschen</Text>
+                      <Text
+                        style={[
+                          {
+                            color: getColor(ColorType.cancel, this.isDarkMode),
+                          },
+                        ]}>
+                        Löschen
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 </View>

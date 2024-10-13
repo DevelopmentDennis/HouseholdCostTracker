@@ -5,17 +5,23 @@ import SettingsScene from '../scenes/SettingsScene';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Icon} from 'react-native-elements';
 import {Dimensions} from 'react-native';
+import {ColorType, DarkMode, getColor} from '../styles/styles';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '.';
 
 export type RootTabParamList = {
-  Home: undefined;
-  History: undefined;
-  Settings: undefined;
+  Home: DarkMode | undefined;
+  History: DarkMode | undefined;
+  Settings: DarkMode | undefined;
 };
+
+export type NavBarProps = NativeStackScreenProps<RootStackParamList, 'NavBar'>;
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 const {height} = Dimensions.get('screen');
 
-export default class NavBar extends Component {
+export default class NavBar extends Component<NavBarProps> {
+  darkMode = this.props.route.params?.isDarkMode;
   render() {
     return (
       <Tab.Navigator
@@ -49,13 +55,21 @@ export default class NavBar extends Component {
           tabBarStyle: {
             height: height * 0.08,
             minHeight: 55,
+            backgroundColor: getColor(
+              ColorType.navBar,
+              this.props.route.params?.isDarkMode,
+            ),
           },
           tabBarLabelStyle: {
             fontWeight: 'bold',
             fontSize: 12,
             marginBottom: 5,
           },
-          tabBarActiveTintColor: 'royalblue',
+
+          tabBarActiveTintColor: getColor(
+            ColorType.buttonHighlight,
+            this.darkMode,
+          ),
           tabBarInactiveTintColor: 'gray',
         })}>
         <Tab.Screen
@@ -63,18 +77,21 @@ export default class NavBar extends Component {
           component={HomeScene}
           options={{headerShown: false, tabBarLabel: 'Übersicht'}}
           navigationKey={'home'}
+          initialParams={{isDarkMode: this.darkMode}}
         />
         <Tab.Screen
           name="History"
           component={HistoryScene}
           options={{headerShown: false, tabBarLabel: 'Verlauf'}}
           navigationKey={'history'}
+          initialParams={{isDarkMode: this.darkMode}}
         />
         <Tab.Screen
           name="Settings"
           component={SettingsScene}
           options={{headerShown: false, tabBarLabel: 'Einstellungen'}}
           navigationKey={'settings'}
+          initialParams={{isDarkMode: this.darkMode}}
         />
       </Tab.Navigator>
     );

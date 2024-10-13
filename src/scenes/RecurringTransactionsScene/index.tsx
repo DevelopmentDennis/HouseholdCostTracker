@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as React from 'react';
 import {Component} from 'react';
 import {
@@ -12,11 +11,22 @@ import {
 } from 'react-native';
 import {Icon, Input, Overlay, Button} from 'react-native-elements';
 import SQLite from 'react-native-sqlite-storage';
-import {globalStyles} from '../../styles/styles';
+import {
+  ColorType,
+  getColor,
+  getTextColor,
+  globalStyles,
+} from '../../styles/styles';
 import {RecurringTransaction} from '../../types/types';
 import {styles} from '../HomeScene/styles';
 import {DatabaseName} from '../../database';
-export interface RecuringTransactionsProps {}
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../navigation';
+
+type RecuringTransactionsProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Recurring'
+>;
 
 export interface RecuringTransactionsState {
   addRecurringTransactionAmount: number;
@@ -37,6 +47,8 @@ export default class RecuringTransactionsScene extends Component<
   RecuringTransactionsProps,
   RecuringTransactionsState
 > {
+  isDarkMode = this.props.route.params?.isDarkMode;
+
   readonly state: RecuringTransactionsState = {
     addRecurringTransactionAmount: 0,
     addRecurringTransactionDescription: '',
@@ -134,27 +146,49 @@ export default class RecuringTransactionsScene extends Component<
   render() {
     const {width} = Dimensions.get('window');
     return (
-      <View style={{flex: 1, backgroundColor: '#cccccc32'}}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: getColor(ColorType.background, this.isDarkMode),
+        }}>
         <Overlay
           isVisible={this.state.showRecurringTransactionAddDialog}
-          overlayStyle={{width: width * 0.7}}
+          overlayStyle={{
+            width: width * 0.7,
+            backgroundColor: getColor(ColorType.background, this.isDarkMode),
+          }}
           onBackdropPress={() =>
             this.setState({showRecurringTransactionAddDialog: false})
           }>
           <View>
-            <Text style={[styles.text, styles.textSubHeading]}>
+            <Text
+              style={[
+                styles.text,
+                styles.textSubHeading,
+                {color: getTextColor(this.isDarkMode)},
+              ]}>
               Monatliche Ausgabe hinzufügen
             </Text>
-            <Text style={styles.text}>Betrag</Text>
+            <Text style={[styles.text, {color: getTextColor(this.isDarkMode)}]}>
+              Betrag
+            </Text>
             <Input
+              style={{
+                color: getColor(ColorType.textInput, this.isDarkMode),
+              }}
               placeholder="Betrag"
               keyboardType="numeric"
               onChangeText={amount =>
                 this.checkAndSetRecurringTransactionAmount(amount)
               }
             />
-            <Text style={styles.text}>Beschreibung</Text>
+            <Text style={[styles.text, {color: getTextColor(this.isDarkMode)}]}>
+              Beschreibung
+            </Text>
             <Input
+              style={{
+                color: getColor(ColorType.textInput, this.isDarkMode),
+              }}
               placeholder="Beschreibung"
               onChangeText={text =>
                 this.setState({addRecurringTransactionDescription: text})
@@ -170,7 +204,13 @@ export default class RecuringTransactionsScene extends Component<
           </View>
         </Overlay>
 
-        <Text style={{padding: 10, paddingTop: 25, fontSize: 15}}>
+        <Text
+          style={{
+            padding: 10,
+            paddingTop: 25,
+            fontSize: 15,
+            color: getTextColor(this.isDarkMode),
+          }}>
           Hier aufgeführte Ausgaben werden jeden Monat automatisch vom zur
           verfügung stehenden Geld abgezogen.
         </Text>
@@ -184,7 +224,13 @@ export default class RecuringTransactionsScene extends Component<
             this.setState({showRecurringTransactionAddDialog: true})
           }>
           <Icon type="font-awesome" name="plus" reverse color={'royalblue'} />
-          <Text style={{fontSize: 17}}>Hinzufügen</Text>
+          <Text
+            style={{
+              fontSize: 17,
+              color: getTextColor(this.isDarkMode),
+            }}>
+            Hinzufügen
+          </Text>
         </TouchableOpacity>
         <View style={{padding: 10, flex: 1}}>
           {this.state.recurringTransactions.length === 0 && (
@@ -209,7 +255,14 @@ export default class RecuringTransactionsScene extends Component<
               showsVerticalScrollIndicator={true}
               renderItem={({item, index}) => (
                 <View style={globalStyles.rowContainerItem}>
-                  <Text style={[styles.text, {paddingLeft: 15}]}>
+                  <Text
+                    style={[
+                      styles.text,
+                      {
+                        paddingLeft: 15,
+                        color: getTextColor(this.isDarkMode),
+                      },
+                    ]}>
                     {item.description} : {item.amount} €
                   </Text>
 
@@ -222,7 +275,14 @@ export default class RecuringTransactionsScene extends Component<
                     onPress={() =>
                       this.deleteRecurringTransaction(item.id as number)
                     }>
-                    <Text style={[{color: 'red'}]}>Löschen</Text>
+                    <Text
+                      style={[
+                        {
+                          color: getColor(ColorType.cancel, this.isDarkMode),
+                        },
+                      ]}>
+                      Löschen
+                    </Text>
                   </TouchableOpacity>
                 </View>
               )}

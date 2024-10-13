@@ -14,7 +14,12 @@ import {Icon} from 'react-native-elements';
 import SQLite from 'react-native-sqlite-storage';
 import FilterDialog from '../../components/FilterDialog';
 import TransactionDialog from '../../components/TransactionDialog';
-import {globalStyles} from '../../styles/styles';
+import {
+  ColorType,
+  getColor,
+  getTextColor,
+  globalStyles,
+} from '../../styles/styles';
 import {
   GraphFormat,
   STORE_SORTING_DIRECTION,
@@ -45,6 +50,7 @@ interface HistorySceneState {
   isEditDialogVisible: boolean;
   isFilterDialogVisible: boolean;
   entryPressed?: Transaction;
+  isFirstRender: boolean;
 }
 
 export type HistorySceneProps = CompositeScreenProps<
@@ -56,6 +62,8 @@ export default class HistoryScene extends Component<
   HistorySceneProps,
   HistorySceneState
 > {
+  isDarkMode = this.props.route.params?.isDarkMode;
+
   readonly state: HistorySceneState = {
     elementsToDisplay: [],
     isEditDialogVisible: false,
@@ -66,13 +74,31 @@ export default class HistoryScene extends Component<
     totalSpendForMonth: 0,
     entryPressed: undefined,
     isFilterDialogVisible: false,
+    isFirstRender: false,
   };
 
   componentDidMount() {
+    this.props.navigation.addListener('focus', () => this.reloadTransactions());
+
     this.getOldestEntry();
     this.setState({monthPressed: moment().format('MMMM')}, () =>
       this.calculateElementsForMonth(),
     );
+  }
+
+  componentWillUnmount(): void {
+    this.props.navigation.removeListener('focus', () =>
+      this.reloadTransactions(),
+    );
+  }
+
+  private reloadTransactions() {
+    console.log('focus!');
+    if (!this.state.isFirstRender) {
+      this.calculateElementsForMonth();
+    } else {
+      this.setState({isFirstRender: true});
+    }
   }
 
   private getOldestEntry() {
@@ -211,12 +237,38 @@ export default class HistoryScene extends Component<
         onPress={() =>
           this.setState({isEditDialogVisible: true, entryPressed: element})
         }>
-        <View style={[globalStyles.rowContainerItem, {marginLeft: 20}]}>
-          <Text style={{fontSize: 18}}>
+        <View
+          style={[
+            globalStyles.rowContainerItem,
+            {
+              marginLeft: 20,
+              backgroundColor: getColor(
+                ColorType.backgroundLighter,
+                this.isDarkMode,
+              ),
+            },
+          ]}>
+          <Text
+            style={{
+              fontSize: 18,
+              color: getTextColor(this.isDarkMode),
+            }}>
             {moment(element.createdAt).format('dd DD.MM').toString()}
           </Text>
-          <Text style={{fontSize: 18}}>{element.tag}</Text>
-          <Text style={{fontSize: 18}}>{element.amount}€</Text>
+          <Text
+            style={{
+              fontSize: 18,
+              color: getTextColor(this.isDarkMode),
+            }}>
+            {element.tag}
+          </Text>
+          <Text
+            style={{
+              fontSize: 18,
+              color: getTextColor(this.isDarkMode),
+            }}>
+            {element.amount}€
+          </Text>
         </View>
       </TouchableOpacity>
     ));
@@ -225,7 +277,17 @@ export default class HistoryScene extends Component<
   private renderDetailButton() {
     if (this.state.totalSpendForMonth !== 0) {
       return (
-        <View style={[globalStyles.rowContainerItem, {marginLeft: 20}]}>
+        <View
+          style={[
+            globalStyles.rowContainerItem,
+            {
+              marginLeft: 20,
+              backgroundColor: getColor(
+                ColorType.backgroundLighter,
+                this.isDarkMode,
+              ),
+            },
+          ]}>
           <TouchableOpacity
             style={{flexDirection: 'row'}}
             onPress={() =>
@@ -234,6 +296,7 @@ export default class HistoryScene extends Component<
                 year: this.state.yearPressed,
                 elementsToDisplay: this.state.elementsToDisplay,
                 totalSpend: this.state.totalSpendForMonth.toFixed(2),
+                isDarkMode: this.isDarkMode,
               })
             }>
             <Icon name="info-circle" type="font-awesome" color="gray" />
@@ -241,7 +304,7 @@ export default class HistoryScene extends Component<
               style={{
                 fontSize: 18,
                 marginLeft: 10,
-                color: 'gray',
+                color: getTextColor(this.isDarkMode),
                 textDecorationLine: 'underline',
               }}>
               Details anzeigen
@@ -267,6 +330,7 @@ export default class HistoryScene extends Component<
   }
 
   private renderMonths() {
+    const currentMonthNumber = moment().month();
     return moment()
       .localeData()
       .months()
@@ -279,6 +343,10 @@ export default class HistoryScene extends Component<
                 borderColor: this.isCurrentMonthOrFocus(element)
                   ? 'green'
                   : 'gray',
+                backgroundColor:
+                  currentMonthNumber === index
+                    ? getColor(ColorType.backgroundFocus, this.isDarkMode)
+                    : getColor(ColorType.backgroundLighter, this.isDarkMode),
                 borderWidth: this.isCurrentMonthOrFocus(element) ? 2 : 1,
                 marginLeft: 10,
               },
@@ -292,8 +360,18 @@ export default class HistoryScene extends Component<
                 );
               }
             }}>
-            <Text style={{fontSize: 18}}>{element.toString()}</Text>
-            <Text style={{fontSize: 18, color: 'lightgray'}}>
+            <Text
+              style={{
+                fontSize: 18,
+                color: getTextColor(this.isDarkMode),
+              }}>
+              {element.toString()}
+            </Text>
+            <Text
+              style={{
+                fontSize: 18,
+                color: getTextColor(this.isDarkMode),
+              }}>
               {this.state.monthPressed === element ? '⌄' : '>'}
             </Text>
           </TouchableOpacity>
@@ -309,16 +387,40 @@ export default class HistoryScene extends Component<
     if (this.state.totalSpendForMonth === 0) {
       return (
         <View style={[globalStyles.rowContainerItem, {marginLeft: 20}]}>
-          <Text style={{fontSize: 18, color: 'gray'}}>
+          <Text
+            style={{
+              fontSize: 18,
+              color: getTextColor(this.isDarkMode),
+            }}>
             Keine Einträge für diesen Monat
           </Text>
         </View>
       );
     } else {
       return (
-        <View style={[globalStyles.rowContainerItem, {marginLeft: 20}]}>
-          <Text style={{fontSize: 18, color: 'black'}}>Ausgaben Gesamt</Text>
-          <Text style={{fontSize: 18}}>
+        <View
+          style={[
+            globalStyles.rowContainerItem,
+            {
+              marginLeft: 20,
+              backgroundColor: getColor(
+                ColorType.backgroundLighter,
+                this.isDarkMode,
+              ),
+            },
+          ]}>
+          <Text
+            style={{
+              fontSize: 18,
+              color: getTextColor(this.isDarkMode),
+            }}>
+            Ausgaben Gesamt
+          </Text>
+          <Text
+            style={{
+              fontSize: 18,
+              color: getTextColor(this.isDarkMode),
+            }}>
             {this.state.totalSpendForMonth.toFixed(2)}€
           </Text>
         </View>
@@ -327,11 +429,20 @@ export default class HistoryScene extends Component<
   }
 
   private renderYearsAndMonths() {
+    const currentYear = moment().year();
     return this.getYearsSinceStartYear().map((element, index) => (
       <View key={index}>
         <TouchableOpacity
           key={index}
-          style={[globalStyles.rowContainerItem]}
+          style={[
+            globalStyles.rowContainerItem,
+            {
+              backgroundColor:
+                currentYear === element
+                  ? getColor(ColorType.backgroundFocus, this.isDarkMode)
+                  : getColor(ColorType.backgroundLighter, this.isDarkMode),
+            },
+          ]}
           onPress={() => {
             if (this.state.yearPressed === element) {
               this.setState({yearPressed: -1, monthPressed: ''});
@@ -339,8 +450,18 @@ export default class HistoryScene extends Component<
               this.setState({yearPressed: element, monthPressed: ''});
             }
           }}>
-          <Text style={{fontSize: 18}}>{element.toString()}</Text>
-          <Text style={{fontSize: 18, color: 'lightgray'}}>
+          <Text
+            style={{
+              fontSize: 18,
+              color: getTextColor(this.isDarkMode),
+            }}>
+            {element.toString()}
+          </Text>
+          <Text
+            style={{
+              fontSize: 18,
+              color: getTextColor(this.isDarkMode),
+            }}>
             {this.state.yearPressed === element ? '⌄' : '>'}
           </Text>
         </TouchableOpacity>
@@ -357,7 +478,11 @@ export default class HistoryScene extends Component<
 
   render() {
     return (
-      <ScrollView style={{padding: 10, backgroundColor: '#cccccc32'}}>
+      <ScrollView
+        style={{
+          padding: 10,
+          backgroundColor: getColor(ColorType.background, this.isDarkMode),
+        }}>
         <TransactionDialog
           onDelete={this.deleteEntry.bind(this)}
           transactionDialogType="Edit"
@@ -366,6 +491,7 @@ export default class HistoryScene extends Component<
           onFinish={this.updateEntry.bind(this)}
           dataToDisplay={this.state.entryPressed}
           submitButtonText={'Ändern'}
+          isDarkMode={this.isDarkMode}
         />
         <FilterDialog
           isVisible={this.state.isFilterDialogVisible}
@@ -380,6 +506,7 @@ export default class HistoryScene extends Component<
               this.hideFilterDialog(true),
             );
           }}
+          isDarkMode={this.isDarkMode}
         />
 
         <View style={{marginTop: 15}} />

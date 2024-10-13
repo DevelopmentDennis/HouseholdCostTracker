@@ -9,8 +9,9 @@ import {tags} from '../../../assets/defaultTags.json';
 import {styles} from '../../scenes/HomeScene/styles';
 import moment from 'moment';
 import {STORE_CUSTOM_CATEGORIES, Transaction} from '../../types/types';
+import {ColorType, DarkMode, getColor, getTextColor} from '../../styles/styles';
 
-export interface TransactionDialogProps {
+export interface TransactionDialogProps extends DarkMode {
   isVisible: boolean;
   onCloseRequested: () => void;
   onFinish: (amount: number, category: string, date: Date) => void;
@@ -130,23 +131,48 @@ class TransactionDialog extends Component<
     return (
       <Overlay
         isVisible={this.props.isVisible}
-        overlayStyle={{width: width * 0.7}}
+        overlayStyle={{
+          width: width * 0.7,
+          backgroundColor: getColor(
+            ColorType.background,
+            this.props.isDarkMode,
+          ),
+        }}
         onBackdropPress={() => this.onClose()}>
         <View>
-          <Text style={[styles.text, styles.textSubHeading]}>
+          <Text
+            style={[
+              styles.text,
+              styles.textSubHeading,
+              {color: getTextColor(this.props.isDarkMode)},
+            ]}>
             {this.props.transactionDialogType === 'Create'
               ? 'Ausgabe hinzufügen'
               : 'Ausgabe bearbeiten'}
           </Text>
-          <Text style={styles.text}>Betrag</Text>
+          <Text
+            style={[styles.text, {color: getTextColor(this.props.isDarkMode)}]}>
+            Betrag
+          </Text>
           <Input
+            placeholderTextColor={getColor(
+              ColorType.textInput,
+              this.props.isDarkMode,
+            )}
+            inputStyle={{
+              color: getColor(ColorType.textInput, this.props.isDarkMode),
+            }}
+            keyboardAppearance={this.props.isDarkMode ? 'dark' : 'default'}
             placeholder="Betrag"
             keyboardType={'numeric'}
             value={this.state.amount}
             onChangeText={amount => this.setState({amount})}
             onBlur={() => Keyboard.dismiss()}
           />
-          <Text style={styles.text}>Datum</Text>
+          <Text
+            style={[styles.text, {color: getTextColor(this.props.isDarkMode)}]}>
+            Datum
+          </Text>
           <DateTimeInput
             initialDate={
               this.props.dataToDisplay
@@ -154,11 +180,27 @@ class TransactionDialog extends Component<
                 : new Date()
             }
             onDateChanged={date => this.setState({selectedDate: date})}
+            isDarkMode={this.props.isDarkMode}
           />
-          <Text style={styles.text}>Kategorie</Text>
+          <Text
+            style={[styles.text, {color: getTextColor(this.props.isDarkMode)}]}>
+            Kategorie
+          </Text>
           <SelectPicker
             selectedValue={this.state.selectedCategory}
-            itemStyle={[styles.text, {fontSize: 20}]}
+            style={{
+              backgroundColor: getColor(
+                ColorType.background,
+                this.props.isDarkMode,
+              ),
+            }}
+            itemStyle={[
+              styles.text,
+              {
+                fontSize: 20,
+                color: getTextColor(this.props.isDarkMode),
+              },
+            ]}
             onValueChange={(itemValue, itemIndex) => {
               this.setState({selectedCategory: itemValue.toString()});
               Keyboard.dismiss();
@@ -168,7 +210,7 @@ class TransactionDialog extends Component<
                 key={index}
                 label={value}
                 value={value}
-                color={'#707070'}
+                color={getColor(ColorType.textInput, this.props.isDarkMode)}
               />
             ))}
           </SelectPicker>
@@ -184,7 +226,12 @@ class TransactionDialog extends Component<
             <View style={{marginTop: 10}}>
               <Button
                 title="Löschen"
-                buttonStyle={{backgroundColor: 'crimson'}}
+                buttonStyle={{
+                  backgroundColor: getColor(
+                    ColorType.cancel,
+                    this.props.isDarkMode,
+                  ),
+                }}
                 onPress={() => {
                   if (this.props.onDelete) {
                     this.props.onDelete(this.props.dataToDisplay?.id);

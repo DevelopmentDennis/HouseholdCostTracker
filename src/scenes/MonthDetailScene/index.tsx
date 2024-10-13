@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as React from 'react';
 import {Component} from 'react';
 import {View, Text, Dimensions, Switch} from 'react-native';
@@ -9,19 +8,19 @@ import {
   GraphFormat,
   LegendFormat,
   sliceColors,
-  STORE_DARKMODE,
   Transaction,
 } from '../../types/types';
 import {styles} from '../HomeScene/styles';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation';
+import {ColorType, DarkMode, getColor, getTextColor} from '../../styles/styles';
 
-export type MonthDetails = {
+export interface MonthDetails extends DarkMode {
   month: string;
   elementsToDisplay: Transaction[];
   totalSpend: string;
   year: number;
-};
+}
 
 type MonthDetailProps = NativeStackScreenProps<
   RootStackParamList,
@@ -30,16 +29,16 @@ type MonthDetailProps = NativeStackScreenProps<
 
 interface MonthDetailState {
   showLabels: boolean;
-  showDarkModeStyle: boolean;
 }
 
 export default class MonthDetailScene extends Component<
   MonthDetailProps,
   MonthDetailState
 > {
+  isDarkMode = this.props.route.params?.isDarkMode;
+
   readonly state: MonthDetailState = {
     showLabels: false,
-    showDarkModeStyle: false,
   };
 
   private checkColorBrightness(color: string): string {
@@ -106,12 +105,6 @@ export default class MonthDetailScene extends Component<
         title: `Details ${month} ${year}`,
       });
     }
-
-    AsyncStorage.getItem(STORE_DARKMODE).then(value => {
-      if (value) {
-        this.setState({showDarkModeStyle: value === 'true'});
-      }
-    });
   }
 
   render() {
@@ -121,7 +114,7 @@ export default class MonthDetailScene extends Component<
       <GestureHandlerRootView style={{flex: 1}}>
         <ScrollView
           style={{
-            backgroundColor: '#cccccc32',
+            backgroundColor: getColor(ColorType.background, this.isDarkMode),
             flex: 1,
             paddingHorizontal: 10,
           }}>
@@ -130,7 +123,7 @@ export default class MonthDetailScene extends Component<
               style={[
                 styles.textHeading,
                 {
-                  color: this.state.showDarkModeStyle ? 'white' : 'black',
+                  color: getTextColor(this.isDarkMode),
                 },
               ]}>
               Ausgaben Gesamt: {totalSpend ?? 0}€
@@ -144,7 +137,7 @@ export default class MonthDetailScene extends Component<
               <Text
                 style={{
                   fontSize: 16,
-                  color: this.state.showDarkModeStyle ? 'white' : 'black',
+                  color: getTextColor(this.isDarkMode),
                   marginBottom: 10,
                 }}>
                 Beträge und Texte ausblenden
@@ -246,7 +239,7 @@ export default class MonthDetailScene extends Component<
               style={{
                 labels: {
                   fontSize: 16,
-                  fill: this.state.showDarkModeStyle ? 'white' : 'black',
+                  fill: getTextColor(this.isDarkMode),
                 },
               }}
               orientation="horizontal"

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {Component} from 'react';
 import {
   View,
@@ -15,8 +14,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {STORE_MONTHLY_AVAILABLE} from '../../types/types';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../navigation';
+import {ColorType, getColor, getTextColor} from '../../styles/styles';
 
-export type MonthlyAvailableSceneProps = NativeStackScreenProps<
+type MonthlyAvailableSceneProps = NativeStackScreenProps<
   RootStackParamList,
   'MonthlyAvailable'
 >;
@@ -29,6 +29,8 @@ class MonthlyAvailableScene extends Component<
   MonthlyAvailableSceneProps,
   MonthlyAvailableSceneState
 > {
+  isDarkMode = this.props.route.params?.isDarkMode;
+
   readonly state: MonthlyAvailableSceneState = {
     monthlyAvailableAmount: '0',
   };
@@ -70,8 +72,18 @@ class MonthlyAvailableScene extends Component<
   render() {
     const {width} = Dimensions.get('window');
     return (
-      <KeyboardAvoidingView style={{padding: 15}}>
-        <Text style={{marginBottom: 15, fontSize: 16}}>
+      <KeyboardAvoidingView
+        style={{
+          padding: 15,
+          flex: 1,
+          backgroundColor: getColor(ColorType.background, this.isDarkMode),
+        }}>
+        <Text
+          style={{
+            marginBottom: 15,
+            fontSize: 16,
+            color: getTextColor(this.isDarkMode),
+          }}>
           Monatlich verfügbarer Betrag in €
         </Text>
         <View
@@ -80,10 +92,13 @@ class MonthlyAvailableScene extends Component<
             borderBottomColor: 'black',
             justifyContent: 'space-around',
             alignItems: 'center',
-            backgroundColor: 'white',
             flexDirection: 'row',
             borderRadius: 10,
             borderColor: 'black',
+            backgroundColor: getColor(
+              ColorType.backgroundLighter,
+              this.isDarkMode,
+            ),
             borderWidth: 1,
           }}>
           <TextInput
@@ -91,7 +106,13 @@ class MonthlyAvailableScene extends Component<
               fontSize: 17,
               width: width * 0.4,
               paddingLeft: 25,
+              color: getColor(ColorType.textInput, this.isDarkMode),
             }}
+            placeholderTextColor={getColor(
+              ColorType.textInput,
+              this.isDarkMode,
+            )}
+            keyboardAppearance={this.isDarkMode ? 'dark' : 'default'}
             placeholder="Betrag"
             value={this.state.monthlyAvailableAmount}
             keyboardType={'numeric'}
@@ -117,13 +138,21 @@ class MonthlyAvailableScene extends Component<
             <Text style={{color: 'green'}}>Speichern</Text>
           </TouchableOpacity>
         </View>
-        <Text style={{marginTop: 15, fontSize: 15}}>
+        <Text
+          style={{
+            marginTop: 15,
+            fontSize: 15,
+            color: getTextColor(this.isDarkMode),
+          }}>
           Tragen Sie hier den Betrag ein, der Ihnen monatlich zur Verfügung
           steht. Dies ist normalerweise Ihr Nettolohn.{'\n\n'}Jeden Monat
           gleiche Ausgaben, wie Miete, Versicherungen etc, können Sie{' '}
           <Text
             onPress={() => this.props.navigation.navigate('Recurring')}
-            style={{textDecorationLine: 'underline', color: 'gray'}}>
+            style={{
+              textDecorationLine: 'underline',
+              color: getColor(ColorType.buttonHighlight, this.isDarkMode),
+            }}>
             hier
           </Text>{' '}
           eintragen.
