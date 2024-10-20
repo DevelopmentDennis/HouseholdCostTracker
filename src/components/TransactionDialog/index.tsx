@@ -43,7 +43,6 @@ class TransactionDialog extends Component<
   };
 
   componentDidMount() {
-    console.log(this.props.isDarkMode);
     this.getCustomCategories();
   }
 
