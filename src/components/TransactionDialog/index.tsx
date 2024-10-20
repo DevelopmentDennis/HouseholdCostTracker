@@ -43,6 +43,7 @@ class TransactionDialog extends Component<
   };
 
   componentDidMount() {
+    console.log(this.props.isDarkMode);
     this.getCustomCategories();
   }
 
@@ -134,7 +135,7 @@ class TransactionDialog extends Component<
         overlayStyle={{
           width: width * 0.7,
           backgroundColor: getColor(
-            ColorType.background,
+            ColorType.backgroundLighter,
             this.props.isDarkMode,
           ),
         }}
@@ -190,10 +191,11 @@ class TransactionDialog extends Component<
             selectedValue={this.state.selectedCategory}
             style={{
               backgroundColor: getColor(
-                ColorType.background,
+                ColorType.backgroundLighter,
                 this.props.isDarkMode,
               ),
             }}
+            mode="dropdown"
             itemStyle={[
               styles.text,
               {
@@ -201,12 +203,18 @@ class TransactionDialog extends Component<
                 color: getTextColor(this.props.isDarkMode),
               },
             ]}
-            onValueChange={(itemValue, itemIndex) => {
+            onValueChange={itemValue => {
               this.setState({selectedCategory: itemValue.toString()});
               Keyboard.dismiss();
             }}>
             {this.state.categories.map((value, index) => (
               <SelectPicker.Item
+                style={{
+                  backgroundColor: getColor(
+                    ColorType.backgroundLighter,
+                    this.props.isDarkMode,
+                  ),
+                }}
                 key={index}
                 label={value}
                 value={value}
