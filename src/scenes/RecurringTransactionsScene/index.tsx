@@ -155,7 +155,10 @@ export default class RecuringTransactionsScene extends Component<
           isVisible={this.state.showRecurringTransactionAddDialog}
           overlayStyle={{
             width: width * 0.7,
-            backgroundColor: getColor(ColorType.background, this.isDarkMode),
+            backgroundColor: getColor(
+              ColorType.backgroundLighter,
+              this.isDarkMode,
+            ),
           }}
           onBackdropPress={() =>
             this.setState({showRecurringTransactionAddDialog: false})

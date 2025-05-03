@@ -157,7 +157,10 @@ class CategoriesScene extends Component<
           isVisible={this.state.addCustomCategoryDialogVisible}
           overlayStyle={{
             width: width * 0.7,
-            backgroundColor: getColor(ColorType.background, this.isDarkMode),
+            backgroundColor: getColor(
+              ColorType.backgroundLighter,
+              this.isDarkMode,
+            ),
           }}
           onBackdropPress={() =>
             this.setState({addCustomCategoryDialogVisible: false})
