@@ -176,7 +176,7 @@ export default class SettingsScene extends Component<SettingsSceneProps> {
                 style={{
                   color: getTextColor(this.isDarkMode),
                 }}>
-                App-Version 2.1.2
+                App-Version 2.1.3
               </ListItem.Title>
             </ListItem.Content>
           </ListItem>
